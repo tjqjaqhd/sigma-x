@@ -21,3 +21,4 @@ dist/
 
 # Coverage data
 coverage/
+.venv/
