@@ -6,4 +6,4 @@ from sigma.core.strategies import DummyStrategy
 
 def test_bot_runs():
     bot = TradingBot(strategy=DummyStrategy())
-    bot.run()
+    bot.run(iterations=1)
