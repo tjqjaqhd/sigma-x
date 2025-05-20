@@ -81,3 +81,8 @@ black --check .
    ```bash
    python -m sigma
    ```
+## 설정 파일 개요
+
+- **.env.example**: 데이터베이스 접속 정보와 슬랙 토큰 등을 예시로 제공하는 환경 파일입니다.
+- **.pre-commit-config.yaml**: 커밋 전 `black`, `flake8`, `pytest`를 자동 실행하도록 설정합니다.
+- **.github/workflows/ci.yml**: GitHub Actions 기반 CI 파이프라인을
