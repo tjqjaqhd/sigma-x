@@ -33,3 +33,14 @@ pytest
 flake8
 black --check .
 ```
+
+## 의존성 설치
+```bash
+pip install -r requirements.txt
+pip install -r requirements-dev.txt
+```
+
+## 봇 실행 방법
+```bash
+python run_bot.py
+```
