@@ -1,0 +1,18 @@
+-r requirements.txt
+
+# 테스트 및 커버리지
+pytest
+pytest-cov
+coverage
+
+# 벤치마크
+pytest-benchmark
+
+# 코드 스타일
+black
+isort
+flake8
+
+# CI/CD 연동
+codecov
+pre-commit

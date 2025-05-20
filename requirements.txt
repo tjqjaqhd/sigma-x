@@ -1,0 +1,23 @@
+# Web/API
+fastapi
+uvicorn[standard]
+redis
+pika
+
+# DB/ORM
+SQLAlchemy>=2.0
+psycopg2-binary     # PostgreSQL sync driver
+# asyncpg           # PostgreSQL async driver
+
+# 전략 수행
+pandas
+numpy
+vectorbt
+optuna
+
+# 시뮬·백테스트
+python-dateutil
+
+# 모니터링
+prometheus-client
+
