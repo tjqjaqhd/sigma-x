@@ -19,3 +19,4 @@ repos:
     hooks:
       - id: pytest
         additional_dependencies: ['pytest']
+
