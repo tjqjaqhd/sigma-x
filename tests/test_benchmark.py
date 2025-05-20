@@ -1,9 +1,7 @@
-# flake8: noqa
-
 from sigma.core.bot import TradingBot
 from sigma.core.strategies import DummyStrategy
 
 
-def test_bot_runs():
+def test_bot_benchmark(benchmark):
     bot = TradingBot(strategy=DummyStrategy())
-    bot.run()
+    benchmark(bot.run)

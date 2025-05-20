@@ -1,3 +1,7 @@
-from loguru import logger
+import logging
+
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger("sigma")
 
 __all__ = ["logger"]
