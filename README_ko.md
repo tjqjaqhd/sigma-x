@@ -62,3 +62,10 @@ flake8
 black --check .
 ```
 
+
+## 주요 모듈 소개
+
+- **scheduler.py**: APScheduler를 활용해 트레이딩 봇을 주기적으로 실행합니다.
+- **slack_notifier.py**: 슬랙 채널로 메시지를 보내는 유틸리티 모듈입니다.
+- **collector.py**: 외부 API에서 시세 데이터를 수집하는 기본 뼈대를 제공합니다.
+- **models.py**: SQLAlchemy를 이용한 예시 데이터 모델을 정의합니다.
