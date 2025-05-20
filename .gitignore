@@ -1,3 +1,23 @@
 __pycache__/
 *.pyc
+
+# Virtual environment folders
 .venv/
+venv/
+
+# IDE settings
+.vscode/
+.idea/
+
+# Log files
+*.log
+
+# Environment variables
+.env
+
+# Build artifacts
+build/
+dist/
+
+# Coverage data
+coverage/
