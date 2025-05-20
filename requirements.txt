@@ -6,7 +6,6 @@ psycopg2-binary
 requests
 python-dotenv
 loguru
-schedule
 ta
 pytest
 pytest-cov
