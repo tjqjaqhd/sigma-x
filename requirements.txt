@@ -1,19 +1,21 @@
+# Web/API
+fastapi
+uvicorn[standard]
+redis
+pika           # RabbitMQ client
+
+# DB/ORM
+SQLAlchemy
+psycopg2-binary
+
+# 전략 수행
 pandas
 numpy
-sqlalchemy
-alembic
-psycopg2-binary
-requests
-python-dotenv
-loguru
-ta
-pytest
-pytest-cov
-mypy
-black
-flake8
-isort
-fastapi
-uvicorn
-apscheduler
-slack_sdk
+vectorbt
+optuna
+
+# 시뮬·백테스트
+python-dateutil
+
+# 모니터링
+prometheus-client
