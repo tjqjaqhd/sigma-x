@@ -18,35 +18,7 @@
 - VPC 이름: sigma-vpc
 - Subnet: public-subnet1 (KR-1)
 
-## PR이 안 될 때 확인할 점
 
-1. 원격 저장소가 설정되어 있는지 확인합니다.
-   ```bash
-   git remote -v
-   ```
-   출력이 없거나 오류가 발생하면 다음과 같이 원격 저장소를 추가합니다.
-   ```bash
-   git remote add origin <원격_저장소_URL>
-   ```
-
-2. 변경 사항을 커밋했는지 확인합니다.
-   ```bash
-   git status
-   ```
-   만약 커밋할 파일이 있다면 다음과 같이 커밋합니다.
-   ```bash
-   git add <파일들>
-   git commit -m "커밋 메시지"
-   ```
-
-3. 푸시 권한이 있는지 확인합니다. 권한이 없다면 토큰이나 SSH 키 설정을 점검해야 합니다.
-
-4. 위 사항이 모두 정상이라면 브랜치를 푸시하고 PR을 생성합니다.
-   ```bash
-   git push origin <브랜치명>
-   ```
-
-PR 생성 시 문제가 계속 발생한다면 구체적인 오류 메시지나 로그를 확인해 보는 것이 좋습니다.
 
 
 ## 테스트와 린트 사용 방법
@@ -61,28 +33,3 @@ pytest
 flake8
 black --check .
 ```
-
-
-## 주요 모듈 소개
-
-- **scheduler.py**: APScheduler를 활용해 트레이딩 봇을 주기적으로 실행합니다.
-- **slack_notifier.py**: 슬랙 채널로 메시지를 보내는 유틸리티 모듈입니다.
-- **collector.py**: 외부 API에서 시세 데이터를 수집하는 기본 뼈대를 제공합니다.
-- **models.py**: SQLAlchemy를 이용한 예시 데이터 모델을 정의합니다.
-
-## 기본 사용 방법
-1. `.env.example` 파일을 복사해 `.env`를 작성합니다.
-2. 의존성 설치 후 데이터베이스 테이블을 생성합니다.
-   ```bash
-   pip install -r requirements.txt
-   python -m sigma.db.init_db
-   ```
-3. 트레이딩 봇 실행은 다음과 같이 수행합니다.
-   ```bash
-   python -m sigma
-   ```
-## 설정 파일 개요
-
-- **.env.example**: 데이터베이스 접속 정보와 슬랙 토큰 등을 예시로 제공하는 환경 파일입니다.
-- **.pre-commit-config.yaml**: 커밋 전 `black`, `flake8`, `pytest`를 자동 실행하도록 설정합니다.
-- **.github/workflows/ci.yml**: GitHub Actions 기반 CI 파이프라인을
