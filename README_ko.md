@@ -18,7 +18,15 @@
 - VPC 이름: sigma-vpc
 - Subnet: public-subnet1 (KR-1)
 
+## 의존성 설치
 
+개발 환경에서는 `requirements.txt`와 `requirements-dev.txt` 두 파일을 사용합니다.
+다음 명령어로 모든 의존성을 설치할 수 있습니다.
+
+```bash
+pip install -r requirements.txt
+pip install -r requirements-dev.txt
+```
 
 
 ## 테스트와 린트 사용 방법
