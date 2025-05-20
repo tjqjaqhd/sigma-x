@@ -33,3 +33,21 @@ pytest
 flake8
 black --check .
 ```
+
+## 의존성 설치
+두 파일을 모두 설치해야 합니다:
+
+```bash
+pip install -r requirements.txt
+pip install -r requirements-dev.txt
+```
+
+## 봇 실행
+초기화 모듈을 모두 호출하는 `run_bot.py` 스크립트를 제공합니다.
+
+```bash
+python run_bot.py
+```
+
+이 스크립트는 환경 변수 로드부터 알림, API 서버 초기화까지
+플로우차트에 명시된 과정을 순차적으로 실행한 후 스케줄러를 시작합니다.
