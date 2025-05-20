@@ -62,3 +62,22 @@ flake8
 black --check .
 ```
 
+
+## 주요 모듈 소개
+
+- **scheduler.py**: APScheduler를 활용해 트레이딩 봇을 주기적으로 실행합니다.
+- **slack_notifier.py**: 슬랙 채널로 메시지를 보내는 유틸리티 모듈입니다.
+- **collector.py**: 외부 API에서 시세 데이터를 수집하는 기본 뼈대를 제공합니다.
+- **models.py**: SQLAlchemy를 이용한 예시 데이터 모델을 정의합니다.
+
+## 기본 사용 방법
+1. `.env.example` 파일을 복사해 `.env`를 작성합니다.
+2. 의존성 설치 후 데이터베이스 테이블을 생성합니다.
+   ```bash
+   pip install -r requirements.txt
+   python -m sigma.db.init_db
+   ```
+3. 트레이딩 봇 실행은 다음과 같이 수행합니다.
+   ```bash
+   python -m sigma
+   ```
