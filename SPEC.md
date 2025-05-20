@@ -40,3 +40,7 @@
 3. `TradingBot`은 전략에서 받은 신호를 `OrderExecutor`를 통해 처리합니다.
 4. 모든 모듈에서 `logger`를 사용하여 로그를 남깁니다.
 5. `start_bot_scheduler()`로 봇을 주기 실행하고, 필요 시 `SlackNotifier`로 알림을 전송합니다.
+## 설정 파일
+- `.env.example`: 데이터베이스와 슬랙 인증 정보를 예시로 제공하는 환경 변수 파일입니다.
+- `.pre-commit-config.yaml`: 커밋 시 `black`, `flake8`, `pytest`를 자동 실행하도록 설정합니다.
+- `.github/workflows/ci.yml`: GitHub Actions에서 린트와 테스트를 수행하는 CI 구성을 정의합니다.
