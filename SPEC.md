@@ -2,10 +2,14 @@
 
 본 문서는 SIGMA 자동매매 시스템 개선을 위해 도입되는 모듈 구조와 설정 방식을 정의합니다.
 
+## 환경 설정 예시
+- `.env.example` 파일을 참고하여 실제 `.env` 파일을 작성합니다.
+
 ## 데이터베이스 모듈 (`sigma/db/database.py`)
 - `python-dotenv`를 사용해 `.env` 파일을 로드합니다.
 - 환경 변수 `DATABASE_URL`을 읽어 데이터베이스에 연결합니다.
 - `get_db()` 함수는 세션을 생성하여 사용 후 종료하도록 제너레이터 형태로 제공합니다.
+- `init_db.py` 스크립트로 테이블을 초기 생성할 수 있습니다.
 
 ## 핵심 로직 (`sigma/core`)
 - `bot.py`: 트레이딩 봇의 실행 흐름을 담당합니다.
@@ -38,8 +42,8 @@
 1. 애플리케이션 시작 시 `.env` 파일을 통해 환경 변수를 불러옵니다.
 2. 데이터베이스 모듈에서 `DATABASE_URL`을 사용해 세션을 생성합니다.
 3. `TradingBot`은 전략에서 받은 신호를 `OrderExecutor`를 통해 처리합니다.
-4. 모든 모듈에서 `logger`를 사용하여 로그를 남깁니다.
-5. `start_bot_scheduler()`로 봇을 주기 실행하고, 필요 시 `SlackNotifier`로 알림을 전송합니다.
+4. 모든 모듈에서 `logger`를 사용
+5. `start_bot_scheduler()`로 봇을 주기 실행하고, 필요 시 `SlackNotifier`로 알림을 전송합니다
 ## 설정 파일
 - `.env.example`: 데이터베이스와 슬랙 인증 정보를 예시로 제공하는 환경 변수 파일입니다.
 - `.pre-commit-config.yaml`: 커밋 시 `black`, `flake8`, `pytest`를 자동 실행하도록 설정합니다.
