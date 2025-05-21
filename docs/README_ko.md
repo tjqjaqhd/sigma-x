@@ -11,9 +11,11 @@
 ## 기본 사용법
 
 1. `run_bot.py`를 실행하면 `sigma.system.initialize()`가 호출되어 필수 서비스가 순차적으로 초기화됩니다.
-2. 이후 `TradingBot`이 동작하여 전략을 수행합니다.
+2. 이후 `TradingBot`이 동작하며 `RegimeDetector`가 시장 국면을 판단하고 `ParamAdjuster`가 전략 파라미터를 DB에 갱신합니다.
+3. `NotificationService.notify()` 호출 시 메시지가 DB의 `alert` 테이블에 저장되고 Slack으로 전송됩니다.
 
 `system_config` 테이블에 등록된 설정 값이 초기화 단계에서 자동으로 로드됩니다. `/metrics` 엔드포인트로 Prometheus 지표를 수집할 수 있습니다.
 
 프로젝트를 처음 접하는 사용자는 이 문서를 읽은 뒤 필요한 추가 정보를 이곳에서 확인하세요.
+
 

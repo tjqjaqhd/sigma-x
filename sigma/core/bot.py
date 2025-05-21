@@ -6,7 +6,12 @@ from .execution import OrderExecutor
 class TradingBot:
     """단순 자동매매 봇."""
 
-    def __init__(self, strategy: BaseStrategy, collector: DataCollector | None = None, is_simulation: bool = True) -> None:
+    def __init__(
+        self,
+        strategy: BaseStrategy,
+        collector: DataCollector | None = None,
+        is_simulation: bool = True,
+    ) -> None:
         self.strategy = strategy
         self.collector = collector or DataCollector()
         self.executor = OrderExecutor(is_simulation=is_simulation)
