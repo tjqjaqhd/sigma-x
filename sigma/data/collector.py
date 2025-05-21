@@ -5,6 +5,6 @@ class DataCollector:
     """Fetch market data from external sources."""
 
     def fetch_market_data(self) -> dict:
-        # TODO: Implement real data fetching logic
+        """임시로 고정된 가격 데이터를 반환합니다."""
         logger.info("Fetching market data")
-        return {}
+        return {"price": 100.0}

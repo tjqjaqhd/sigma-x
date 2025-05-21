@@ -7,3 +7,11 @@ line-length = 88
 target-version = ["py311"]
 include = '\.py$'
 
+[tool.coverage.run]
+omit = [
+    "sigma/db/*",
+    "sigma/data/models.py",
+    "sigma/utils/slack_notifier.py",
+    "sigma/web/*",
+]
+
