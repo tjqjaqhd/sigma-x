@@ -6,5 +6,6 @@
 
 - [서버 정보 및 개발 가이드](README_ko.md)
 - [모듈 사양서 목차](../spec/sigma_spec.md)
+- [아키텍처 요약](architecture_summary.md)
 
 향후 문서가 추가되면 이곳에 목록을 갱신합니다.
