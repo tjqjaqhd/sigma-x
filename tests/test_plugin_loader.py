@@ -2,8 +2,9 @@ from sigma.system.plugin_loader import load_plugins
 
 
 def test_load_plugins(tmp_path, monkeypatch):
-    plugins = tmp_path / "plugins"
-    plugins.mkdir()
+    plugins = tmp_path / "sigma" / "plugins"
+    plugins.mkdir(parents=True)
+    (plugins.parent / "__init__.py").write_text("")
     (plugins / "__init__.py").write_text("")
     (plugins / "p.py").write_text("name='x'")
     loaded = []
