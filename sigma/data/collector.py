@@ -2,9 +2,9 @@ from sigma.utils.logger import logger
 
 
 class DataCollector:
-    """Fetch market data from external sources."""
+    """시장 데이터를 가져오는 클래스."""
 
     def fetch_market_data(self) -> dict:
-        # TODO: Implement real data fetching logic
-        logger.info("Fetching market data")
-        return {}
+        """시장 데이터를 반환합니다 (더미 데이터)."""
+        logger.info("시장 데이터 수집")
+        return {"price": 0.0}
