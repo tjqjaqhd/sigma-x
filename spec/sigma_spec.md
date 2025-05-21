@@ -9,6 +9,7 @@
 | `sigma/core/strategies.py` | [core_strategies.md](core_strategies.md) |
 | `sigma/core/execution.py` | [core_execution.md](core_execution.md) |
 | `sigma/core/scheduler.py` | [core_scheduler.md](core_scheduler.md) |
+| `sigma/core/adaptation.py` | [adaptation.md](adaptation.md) |
 | `sigma/data/collector.py` | [data_collector.md](data_collector.md) |
 | `sigma/data/models.py` | [data_models.md](data_models.md) |
 | `sigma/db/database.py` | [db_database.md](db_database.md) |
@@ -28,3 +29,4 @@
 | `sigma/utils/slack_notifier.py` | [utils_slack_notifier.md](utils_slack_notifier.md) |
 | `sigma/web/dashboard.py` | [web_dashboard.md](web_dashboard.md) |
 | `sigma/__main__.py` | [main_module.md](main_module.md) |
+
