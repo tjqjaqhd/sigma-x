@@ -3,14 +3,14 @@
 from importlib import import_module
 from pathlib import Path
 from sigma.utils.logger import logger
-from plugins.plugin_base import PluginBase
+from sigma.plugins.plugin_base import PluginBase
 import inspect
 
 plugins = []
 
 
-def load_plugins(directory: str = "plugins") -> None:
-    """plugins 디렉터리의 PluginBase 상속 플러그인을 동적으로 로드 및 등록/실행한다."""
+def load_plugins(directory: str = "sigma/plugins") -> None:
+    """sigma/plugins 디렉터리의 PluginBase 상속 플러그인을 동적으로 로드 및 등록/실행한다."""
     plugin_path = Path(directory)
     if not plugin_path.exists():
         logger.warning("플러그인 디렉터리가 존재하지 않습니다: %s", directory)
