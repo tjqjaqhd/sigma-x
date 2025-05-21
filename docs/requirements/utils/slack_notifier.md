@@ -14,14 +14,14 @@ Slack 채널로 메시지를 전송하는 유틸리티 클래스를 제공하는
 ## 2. 구조 개요
 
 * 포함된 클래스:
-  - SlackNotifier: Slack 메시지 전송 유틸리티
+  - NotificationService: 다채널 알림 메시지 전송 유틸리티
 * 주요 함수/메서드 목록:
   - __init__(token, channel): Slack 클라이언트/채널 초기화
   - send_message(text): 메시지 전송
 * 외부 API 제공 여부: 해당 없음
 
 **설명:**
-- SlackNotifier: Slack WebClient로 메시지 전송, 채널/토큰 설정, 예외/로깅 처리
+- NotificationService: Slack, Email 등 다채널 메시지 전송, 채널/토큰 설정, 예외/로깅 처리
 
 ## 3. 인터페이스 명세
 
@@ -81,7 +81,7 @@ Slack 채널로 메시지를 전송하는 유틸리티 클래스를 제공하는
 * 사용하는 서드파티/외부 API: slack_sdk
 
 ## 9. 테스트 및 검증
-* 단위 테스트 항목: SlackNotifier 생성, send_message 정상 동작
+* 단위 테스트 항목: NotificationService 생성, notify 정상 동작
 * 예외 테스트 항목: 채널 미설정, Slack API 오류 등
 * 통합 테스트 체크리스트: 시스템 전체 알림 연동 정상 동작
 * 테스트 커버리지 목표: 90% 이상
@@ -94,4 +94,4 @@ Slack 채널로 메시지를 전송하는 유틸리티 클래스를 제공하는
 
 | 클래스/함수 | 설명 |
 |-------------|------|
-| `SlackNotifier` | Slack 채널로 메시지 전송 유틸리티 | 
+| `NotificationService` | 다채널 알림 메시지 전송 유틸리티 | 

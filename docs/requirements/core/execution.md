@@ -18,9 +18,9 @@
   - OrderEvent: 주문 신호 데이터 구조체
   - OrderWorker: 주문 이벤트 비동기 소비 및 DB 기록
 * 주요 함수/메서드 목록:
-  - OrderExecutor.__init__(is_simulation): 시뮬레이션 여부 설정
-  - OrderExecutor.execute(signal): 주문 신호 실행(로그/실거래)
-  - OrderWorker.__init__(queue): 주문 큐 바인딩
+  - OrderExecutor.__init__(is_simulation): 실거래/시뮬레이션 여부(통합 플래그) 설정
+  - OrderExecutor.execute(signal): 주문 신호 실행(실거래/시뮬레이션 분기)
+  - OrderWorker.__init__(): RabbitMQ 주문 큐 바인딩
   - OrderWorker.start(): 비동기 소비 시작
   - OrderWorker.stop(): 소비 중단
   - OrderWorker._consume(): 주문 이벤트 소비 및 DB 기록(비동기)
@@ -29,15 +29,14 @@
 ## 3. 인터페이스 명세
 
 ### 3.1. 입력 (Input)
-* 입력 유형: str(주문 신호), asyncio.Queue(OrderEvent)
-* 형식 및 구조: signal: str, queue: asyncio.Queue[OrderEvent]
-* 제약 조건: signal은 "BUY"/"SELL" 등, queue는 asyncio 기반
-* 예시: "BUY", queue
+* 입력 유형: str(주문 신호)
+* 형식 및 구조: signal: str
+* 제약 조건: signal은 "BUY"/"SELL" 등
+* 예시: "BUY"
 
 ### 3.2. 출력 (Output)
 * 출력 유형: None(로그/DB 기록)
 * 형식 및 구조: None
-* 예시: 해당 없음
 * 반환 조건: 주문 실행/DB 기록 시
 
 ### 3.3. API 엔드포인트 (해당 시)
@@ -49,10 +48,12 @@
 
 ## 4. 내부 처리 로직
 * 처리 흐름 요약:
-  1. OrderExecutor.execute: 시뮬레이션 여부에 따라 주문 신호 로그 또는 실거래 처리
-  2. OrderWorker.start: asyncio.create_task로 _consume 비동기 실행
-  3. OrderWorker._consume: 큐에서 OrderEvent를 꺼내 DB(Alert)에 기록
-  4. OrderWorker.stop: 비동기 태스크 중단
+  1. OrderExecutor.execute: is_simulation 플래그에 따라 실거래/시뮬레이션 코드 경로를 통합 처리
+     - 시뮬레이션: 체결가=요청가, 체결시간=now로 Order(status=EXECUTED) 기록
+     - 실거래: 실제 거래소 API 호출(추후 구현)
+  2. OrderWorker.start: RabbitMQ 큐 소비 시작
+  3. OrderWorker._callback: RabbitMQ 큐에서 주문 이벤트를 꺼내 DB(Order)에 기록
+  4. OrderWorker.stop: 소비 중단
 * 순서도/플로우차트: 해당 없음
 * 알고리즘 요약: 비동기 큐 기반 주문 이벤트 소비 및 DB 기록
 
@@ -65,7 +66,7 @@
 ## 6. 연관 모듈 및 외부 시스템
 * 상위 호출자: core/bot, system/plugin_loader 등
 * 하위 호출 대상: src.sigma.data.models.Alert, db/database, logger
-* 연계되는 DB/캐시/메시지큐: alert 테이블
+* 연계되는 DB/캐시/메시지큐: orders 테이블, RabbitMQ
 * 타 모듈 간 의존 관계: data/models, db/database, utils/logger
 
 ## 7. 리소스 및 성능
@@ -81,7 +82,7 @@
 
 ## 8. 설정 및 의존성
 * 사용하는 DB 테이블 및 필드: alert(level, message)
-* 설정값 및 기본값: is_simulation=True(기본값)
+* 설정값 및 기본값: is_simulation=True(기본값, Simulation Mode)
 * 외부 환경 변수: 해당 없음
 * 사용하는 서드파티/외부 API: 해당 없음
 
@@ -101,4 +102,11 @@
 |------|------|
 | `OrderExecutor` | 실제 주문 또는 모의 주문을 수행, execute(signal) 제공 |
 | `OrderEvent` | 주문 신호 데이터 구조체(dataclass) |
-| `OrderWorker` | asyncio.Queue 기반 주문 이벤트 소비 및 DB 기록 |
+| `OrderWorker` | RabbitMQ 기반 주문 이벤트 소비 및 DB 기록 |
+
+## 11. 시뮬레이션/실거래 모드
+
+* OrderExecutor, TradingBot 등 모든 주요 경로는 is_simulation 플래그로 실거래/시뮬레이션을 통합 관리한다.
+* CLI에서는 --mode=sim, API에서는 ?mode=sim 파라미터로 시뮬레이션 모드 진입이 가능하다.
+* 시뮬레이션 모드(Simulation Mode)는 is_simulation 플래그로 분기, SimRunner 용어는 사용하지 않는다.
+* 시뮬레이션 모드에서는 체결가=요청가, 체결시간=now로 가상 체결만 기록된다.

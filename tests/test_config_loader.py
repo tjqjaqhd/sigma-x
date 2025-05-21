@@ -15,6 +15,7 @@ def test_load_db_config_reads_table():
     engine = create_engine("sqlite:///:memory:")
     database.echo_engine = engine
     SessionLocal.configure(bind=engine)
+    Base.metadata.drop_all(bind=engine)
     Base.metadata.create_all(bind=engine)
     session = SessionLocal()
     session.add(SystemConfig(key="SLACK_TOKEN", value="TEST"))

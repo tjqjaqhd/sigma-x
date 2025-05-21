@@ -61,7 +61,7 @@ Redis Pub/Sub을 이용한 실시간 가격 발행 및 구독
 
 전략 신호 생성(TradingBot), 주문 실행(OrderExecutor)
 
-모의 체결 시뮬레이션(SimRunner)
+시뮬레이션 모드(Simulation Mode)
 
 시장 국면 탐지(RegimeDetector) 및 전략 파라미터 자동 조정(ParamAdjuster)
 
@@ -150,7 +150,7 @@ VPS: Ubuntu 24.04, 4 vCPU, 16 GB RAM
 flowchart TB
   subgraph Initialization____Initialization__
     A["src/run_bot.py:main()"] --> B["config_loader.py:load_env(),load_db_config()"]
-    B --> C["db/session.py:create_engine(),SessionLocal"]
+    B --> C["db/session.py:create_engine(),SessionLocal (SystemConfig.get)"]
     C --> D["db/models.py:Base.metadata.create_all()"]
     D --> E["logger.py:init_logger()"]
     E --> F["plugin_loader.py:load_plugins()"]
@@ -180,7 +180,7 @@ flowchart TB
     R --> OW["OrderWorker:consume_event(),place_api()"]
     OW --> DB1["PostgreSQL:store orders & positions"]
     OW --> PM["PaymentProcessor:process_payments()"]
-    SIM --> DB2["PostgreSQL:store sim_orders"]
+    SIM --> DB2["PostgreSQL:store orders (is_simulation)"]
     TB --> MT["MetricsTracker:record_metrics()"]
     TB --> Notif["NotificationService:send_alerts()"]
     Notif --> Alerts["AlertLog"]

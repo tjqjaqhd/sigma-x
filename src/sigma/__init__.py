@@ -9,7 +9,7 @@ from .core.adaptation import (
     FeedbackMechanism,
 )
 from .core.risk import RiskManager, AnomalyDetector, NewsHandler
-from .config_loader import load_env, load_db_config
+from .config_loader import load_db_config
 
 __all__ = [
     "TradingBot",
@@ -24,6 +24,5 @@ __all__ = [
     "RiskManager",
     "AnomalyDetector",
     "NewsHandler",
-    "load_env",
     "load_db_config",
 ]

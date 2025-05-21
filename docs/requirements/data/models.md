@@ -61,7 +61,7 @@
 ## 6. 연관 모듈 및 외부 시스템
 * 상위 호출자: core/adaptation, core/execution, data/collector 등
 * 하위 호출 대상: db/database
-* 연계되는 DB/캐시/메시지큐: market_data, system_config, strategy_param, orders, positions, alert 테이블
+* 연계되는 DB/캐시/메시지큐: market_data, system_config, strategy_param, orders, positions, alert(일반 알림만) 테이블
 * 타 모듈 간 의존 관계: db/database
 
 ## 7. 리소스 및 성능

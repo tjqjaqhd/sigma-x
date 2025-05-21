@@ -1,9 +1,10 @@
 # Web/API
 fastapi
 uvicorn[standard]
-redis
+redis>=4.2.0
 pika
 slack-sdk
+websockets
 
 # DB/ORM
 SQLAlchemy>=2.0

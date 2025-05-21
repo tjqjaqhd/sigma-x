@@ -1,6 +1,6 @@
 import argparse
 
-from src.sigma.config_loader import load_env, load_db_config
+from src.sigma.config_loader import load_db_config
 from src.sigma.core.bot import TradingBot
 from src.sigma.core.strategies import DummyStrategy
 from src.sigma.system import initialize
@@ -12,7 +12,6 @@ def main() -> None:
     parser.add_argument("--mode", choices=["live", "sim"], default="live")
     args = parser.parse_args()
 
-    load_env()
     db_conf = load_db_config()
     logger.info(f"DB config: {db_conf['url']}")
     initialize()

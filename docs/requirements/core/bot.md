@@ -16,8 +16,8 @@ TradingBot 클래스를 통해 전략 실행, 시장 데이터 수집, 주문 �
 * 포함된 클래스:
   - TradingBot: 전략 실행, 데이터 수집, 주문 처리 담당
 * 주요 함수/메서드 목록:
-  - __init__(strategy, collector, is_simulation): 전략, 데이터 수집기, 시뮬레이션 여부 초기화
-  - process_market_data(data, order_queue): 비동기 시장 데이터 처리 및 신호 큐 전송
+  - __init__(strategy, collector, is_simulation): 전략, 데이터 수집기, 시뮬레이션 여부(실거래/시뮬레이션 모드) 초기화
+  - process_market_data(data): 비동기 시장 데이터 처리 및 신호 Redis Pub/Sub 전송
   - run(iterations): 시장 데이터 수집 및 전략 실행 반복
   - execute_order(signal): 단일 신호 주문 실행
 * 외부 API 제공 여부: 해당 없음
@@ -31,7 +31,7 @@ TradingBot 클래스를 통해 전략 실행, 시장 데이터 수집, 주문 �
 * 예시: {"price": 100.0}, iterations=10, signal="BUY"
 
 ### 3.2. 출력 (Output)
-* 출력 유형: 주문 실행 결과(내부 처리), 큐에 신호 전달
+* 출력 유형: 주문 실행 결과(내부 처리), Redis Pub/Sub 신호 전달
 * 형식 및 구조: None(내부 처리)
 * 예시: 해당 없음
 * 반환 조건: 해당 없음
@@ -48,7 +48,7 @@ TradingBot 클래스를 통해 전략 실행, 시장 데이터 수집, 주문 �
   1. TradingBot 인스턴스 생성 시 전략, 데이터 수집기, 주문 실행기 초기화
   2. run(iterations) 호출 시 반복적으로 시장 데이터 수집 및 전략 신호 생성
   3. 신호에 따라 주문 실행기(OrderExecutor)로 주문 실행
-  4. process_market_data는 비동기적으로 신호를 큐에 전달
+  4. process_market_data는 비동기적으로 신호를 Redis Pub/Sub에 전달
 * 순서도/플로우차트: 해당 없음
 * 알고리즘 요약: 반복적으로 시장 데이터를 수집하고, 전략 신호를 생성하여 주문을 실행
 
@@ -77,7 +77,7 @@ TradingBot 클래스를 통해 전략 실행, 시장 데이터 수집, 주문 �
 
 ## 8. 설정 및 의존성
 * 사용하는 DB 테이블 및 필드: 해당 없음
-* 설정값 및 기본값: is_simulation=True(기본값)
+* 설정값 및 기본값: is_simulation=True(기본값, 시뮬레이션 모드)
 * 외부 환경 변수: 해당 없음
 * 사용하는 서드파티/외부 API: 해당 없음
 
@@ -92,6 +92,13 @@ TradingBot 클래스를 통해 전략 실행, 시장 데이터 수집, 주문 �
 * 기술적 부채: 예외처리/로깅/알림 미흡
 * 향후 개선/확장 예정 사항: 실시간 데이터 연동, 외부 API 연동, 전략 자동화, 테스트 강화
 * 폐지 예정 요소: 해당 없음
+
+## 11. 시뮬레이션/실거래 모드
+
+* TradingBot, OrderExecutor 등 모든 주요 경로는 is_simulation 플래그로 실거래/시뮬레이션을 통합 관리한다.
+* CLI에서는 --mode=sim, API에서는 ?mode=sim 파라미터로 시뮬레이션 모드 진입이 가능하다.
+* 시뮬레이션 모드(Simulation Mode)는 is_simulation 플래그로 분기, SimRunner 용어는 사용하지 않는다.
+* 시뮬레이션 모드에서는 체결가=요청가, 체결시간=now로 가상 체결만 기록된다.
 
 | 객체 | 설명 |
 |------|------|

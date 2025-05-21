@@ -36,7 +36,7 @@ class MyPlugin(PluginBase):
 - 이벤트 발생 시 on_event() 호출 가능
 
 ## 5. 유틸리티 활용
-- 플러그인 내에서 `SlackNotifier` 등 sigma 유틸리티 자유롭게 활용 가능
+- 플러그인 내에서 NotificationService 등 sigma 유틸리티 자유롭게 활용 가능
 
 ## 6. 확장/적용 가이드
 - 신규 플러그인 개발 시 반드시 PluginBase 상속

@@ -1,5 +1,4 @@
 import os
-from dotenv import load_dotenv
 from sqlalchemy.orm import Session
 
 from src.sigma.db.database import SessionLocal
@@ -7,14 +6,8 @@ from src.sigma.data.models import SystemConfig
 from src.sigma.utils.logger import logger
 
 
-def load_env() -> None:
-    """환경 변수 파일(.env)을 로드합니다."""
-    load_dotenv()
-
-
 def load_db_config() -> dict:
-    """시스템 설정을 DB에서 읽어 딕셔너리로 반환합니다."""
-    load_env()
+    """시스템 설정을 DB에서 읽어 딕셔너리로 반환합니다. DB URL만 환경변수 허용."""
     db_url = os.getenv("DATABASE_URL", "sqlite:///./sigma.db")
     config: dict[str, str] = {"url": db_url}
     session: Session = SessionLocal()
@@ -29,4 +22,4 @@ def load_db_config() -> dict:
     return config
 
 
-__all__ = ["load_env", "load_db_config"]
+__all__ = ["load_db_config"]

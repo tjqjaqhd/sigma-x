@@ -4,8 +4,8 @@
 
 ## 아키텍처 개요
 
-- **초기화 단계**: 환경 변수/DB 설정 로드, ORM 테이블 자동 생성, 로깅, 플러그인 로딩, 모니터링, 헬스체크, 캐시, 알림, API, 이벤트 루프, 세션 관리 등 순차적 초기화
-- **실시간 처리 루프**: WebSocket 시세 수집 → Redis Pub/Sub 배포 → TradingBot 신호 생성 → RabbitMQ 주문 큐 → OrderWorker 주문 실행. 모의 체결, 시장 국면 탐지, 전략 파라미터 자동 조정, 리스크 관리, 알림, 품질 평가, 이상치/뉴스 이벤트 처리 포함
+- **초기화 단계**: SystemConfig.get(key) 기반 DB 설정 로드, ORM 테이블 자동 생성, 로깅, 플러그인 로딩, 모니터링, 헬스체크, 캐시, 알림(NotificationService), API, 이벤트 루프, 세션 관리 등 순차적 초기화
+- **실시간 처리 루프**: WebSocket 시세 수집 → Redis Pub/Sub 배포 → TradingBot 신호 생성 → RabbitMQ 주문 큐 → OrderWorker 주문 실행. 시뮬레이션 모드(Simulation Mode)는 is_simulation 플래그로 분기, 모든 설정은 SystemConfig.get(key)로 통일. 시장 국면 탐지, 전략 파라미터 자동 조정, 리스크 관리, 알림(NotificationService), 품질 평가, 이상치/뉴스 이벤트 처리 포함
 - **스케줄러 작업**: APScheduler로 전략 최적화, 데이터 정리, 점검, 보고서, ML 튜닝 등 주기적 실행
 - **시뮬레이션/백테스트**: 실시간 루프 구조 재사용, 데이터 소스만 변경해 모의 체결/백테스트 수행, 결과 저장·분석
 - **API/대시보드**: FastAPI REST API, WebSocket, React 대시보드로 실시간 데이터/성과 시각화

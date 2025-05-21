@@ -2,7 +2,7 @@
 
 ### 1. 환경설정 구조 개선
 
-* `.env` 기반 설정 제거
+* `.env` 기반 설정 제거, 모든 설정은 SystemConfig.get(key)로 통일
 * DB 테이블 `system_config` 도입: key-value 구조
 * `config_loader`는 DB로부터만 설정 수신
 * 초기 접속용 DB URL만 `.env`로 유지
@@ -12,7 +12,7 @@
 
 * `initialize()` 내에 `init_db()` 추가해 ORM 테이블 자동 생성
 * FastAPI 서버 실행 코드 삽입 (`uvicorn.run` 또는 백그라운드 스레드)
-* SlackNotifier, Redis, DB 상태 검사 포함한 `health_check` 구현
+* NotificationService, Redis, DB 상태 검사 포함한 `health_check` 구현
 * Prometheus 지표 수집기 등록 및 `/metrics` 엔드포인트 노출
 
 ### 3. 실시간 트레이딩 구조 전환
@@ -56,7 +56,7 @@
 
 ### 8. NotificationService 통합
 
-* SlackNotifier 등 알림 채널은 NotificationService 아래 통합
+* 모든 알림 채널은 NotificationService 아래 통합
 * `notify(level, message)` 방식 인터페이스 제공
 * 설정값에 따라 Slack/Email 등 분기
 * 시스템 전역에서 NotificationService 호출 방식 일원화

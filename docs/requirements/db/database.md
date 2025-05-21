@@ -61,7 +61,7 @@ SQLAlchemy 기반 데이터베이스 연결, 세션 생성, 모델 베이스 클
 
 ## 6. 연관 모듈 및 외부 시스템
 * 상위 호출자: data/models, db/init_db, core/adaptation 등
-* 하위 호출 대상: SQLAlchemy, dotenv
+* 하위 호출 대상: SQLAlchemy, SystemConfig.get(key)
 * 연계되는 DB/캐시/메시지큐: PostgreSQL 등
 * 타 모듈 간 의존 관계: data/models, db/init_db 등
 
@@ -80,7 +80,7 @@ SQLAlchemy 기반 데이터베이스 연결, 세션 생성, 모델 베이스 클
 * 사용하는 DB 테이블 및 필드: 해당 없음(모델에서 정의)
 * 설정값 및 기본값: DATABASE_URL(기본값 제공)
 * 외부 환경 변수: DATABASE_URL
-* 사용하는 서드파티/외부 API: SQLAlchemy, python-dotenv
+* 사용하는 서드파티/외부 API: SQLAlchemy
 
 ## 9. 테스트 및 검증
 * 단위 테스트 항목: SessionLocal, get_db 정상 동작

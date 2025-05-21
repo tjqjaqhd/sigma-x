@@ -9,23 +9,23 @@
 * 최종 수정일: 2024-06-XX
 
 **설명:**
-비동기 이벤트 루프를 통해 실시간 시장 데이터 처리 및 전략 신호 큐잉을 담당하는 모듈. TradingBot, price_queue, order_queue를 연동하여 실시간 자동매매의 핵심 루프를 구현한다.
+비동기 이벤트 루프를 통해 실시간 시장 데이터 처리 및 전략 신호 분배를 담당하는 모듈. TradingBot, Redis Pub/Sub, RabbitMQ를 연동하여 실시간 자동매매의 핵심 루프를 구현한다.
 
 ## 2. 구조 개요
 
 * 포함된 함수:
   - start_event_loop: 비동기 이벤트 루프 시작
 * 주요 함수/메서드 목록:
-  - start_event_loop(bot, price_queue, order_queue): 실시간 데이터 처리 루프
+  - start_event_loop(bot): 실시간 데이터 처리 루프
 * 외부 API 제공 여부: 해당 없음
 
 ## 3. 인터페이스 명세
 
 ### 3.1. 입력 (Input)
-* 입력 유형: bot(TradingBot), price_queue(asyncio.Queue), order_queue(asyncio.Queue)
-* 형식 및 구조: bot, price_queue, order_queue
+* 입력 유형: bot(TradingBot)
+* 형식 및 구조: bot
 * 제약 조건: bot은 strategy.generate_signals 구현 필요
-* 예시: bot, price_queue, order_queue
+* 예시: 해당 없음
 
 ### 3.2. 출력 (Output)
 * 출력 유형: None
@@ -42,9 +42,8 @@
 
 ## 4. 내부 처리 로직
 * 처리 흐름 요약:
-  1. run_bot 내부에서 price_queue에서 데이터 수신
+  1. run_bot 내부에서 Redis Pub/Sub로 데이터 수신 및 신호 분배
   2. bot.strategy.generate_signals로 신호 생성
-  3. order_queue에 신호 put
   4. asyncio.gather로 run_bot 실행
 * 순서도/플로우차트: 해당 없음
 * 알고리즘 요약: 비동기 큐 기반 실시간 신호 처리

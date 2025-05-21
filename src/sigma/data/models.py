@@ -15,12 +15,27 @@ class MarketData(Base):
 
 
 class SystemConfig(Base):
-    """시스템 설정을 저장하는 테이블."""
+    """시스템 설정을 저장하는 테이블.
+    RABBIT_URL: RabbitMQ 접속 URL (예: amqp://guest:guest@localhost:5672/)
+    ORDERS_QUEUE: 주문 큐 이름 (예: orders)
+    """
 
     __tablename__ = "system_config"
 
     key = Column(String, primary_key=True)
     value = Column(Text)
+
+    @classmethod
+    def get(cls, key: str, default=None):
+        from src.sigma.db.database import SessionLocal
+        session = SessionLocal()
+        try:
+            row = session.query(cls).filter_by(key=key).first()
+            if row:
+                return row.value
+            return default
+        finally:
+            session.close()
 
 
 class StrategyParam(Base):
@@ -39,6 +54,7 @@ class Order(Base):
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     signal = Column(String)
+    status = Column(String, default="PENDING")
     timestamp = Column(DateTime, default=datetime.utcnow)
 
 
