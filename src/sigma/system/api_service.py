@@ -8,16 +8,19 @@ import uvicorn
 from fastapi import FastAPI, Response, Depends, HTTPException, status, Query
 from prometheus_client import CONTENT_TYPE_LATEST, generate_latest
 
-from src.sigma.utils.logger import logger
-from src.sigma.data.models import SystemConfig
+from sigma.utils.logger import logger
+from sigma.data.models import SystemConfig
 
 app = FastAPI()
 
-API_TOKEN = SystemConfig.get("API_TOKEN", "changeme")
+# API_TOKEN = SystemConfig.get("API_TOKEN", "changeme")  # 모듈 레벨에서 제거
+
+def get_api_token():
+    return SystemConfig.get("API_TOKEN", "changeme")
 
 
 def auth_header(token: Annotated[str, Depends(lambda: "")]):
-    if token != API_TOKEN:
+    if token != get_api_token():
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
 
 

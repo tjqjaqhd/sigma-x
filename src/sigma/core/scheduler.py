@@ -5,7 +5,7 @@ try:
 except Exception:  # pragma: no cover - fallback when APScheduler is missing
     BackgroundScheduler = None
 
-from src.sigma.core.bot import TradingBot
+from sigma.core.bot import TradingBot
 
 
 class SimpleScheduler:

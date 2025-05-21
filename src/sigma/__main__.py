@@ -1,5 +1,5 @@
-from src.sigma.core.bot import TradingBot
-from src.sigma.core.strategies import DummyStrategy
+from sigma.core.bot import TradingBot
+from sigma.core.strategies import DummyStrategy
 
 
 def main():

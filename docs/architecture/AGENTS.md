@@ -168,7 +168,6 @@ flowchart TB
   subgraph RealTimeLoop____Real_Time_Loop__
     WS["WebSocket:receive_prices()"] --> Q["Redis.publish('price_update')"]
     Q --> TB["TradingBot:generate_signals(),execute_order()"]
-    Q --> SIM["SimRunner:simulate_execution()"]
     Q --> RD["RegimeDetector:detect_regime()"]
     RD --> PA["ParamAdjuster:update_parameters()"]
     PA --> SPT["Update strategy_param table"]
@@ -180,7 +179,6 @@ flowchart TB
     R --> OW["OrderWorker:consume_event(),place_api()"]
     OW --> DB1["PostgreSQL:store orders & positions"]
     OW --> PM["PaymentProcessor:process_payments()"]
-    SIM --> DB2["PostgreSQL:store orders (is_simulation)"]
     TB --> MT["MetricsTracker:record_metrics()"]
     TB --> Notif["NotificationService:send_alerts()"]
     Notif --> Alerts["AlertLog"]

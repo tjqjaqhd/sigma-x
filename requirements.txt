@@ -24,3 +24,5 @@ python-dateutil
 prometheus-client
 
 PyPDF2
+
+aio_pika>=9.3.0

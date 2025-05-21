@@ -1,11 +1,10 @@
 import asyncio
 from dataclasses import dataclass
-import pika
 import json
-
-from src.sigma.utils.logger import logger
-from src.sigma.data.models import Order, SystemConfig
-from src.sigma.db.database import SessionLocal
+import aio_pika
+from sigma.utils.logger import logger
+from sigma.data.models import Order, SystemConfig
+from sigma.db.database import SessionLocal
 
 
 class OrderExecutor:
@@ -38,38 +37,36 @@ class OrderEvent:
 
 
 class OrderWorker:
-    """RabbitMQ 기반 주문 소비 워커."""
+    """aio_pika 기반 비동기 RabbitMQ 주문 소비 워커."""
 
     def __init__(self):
-        self._connection = None
-        self._channel = None
         self._queue = SystemConfig.get("ORDERS_QUEUE", "orders")
         self._rabbit_url = SystemConfig.get("RABBIT_URL", "amqp://guest:guest@localhost:5672/")
+        self._connection = None
+        self._channel = None
+        self._task = None
 
-    def _callback(self, ch, method, properties, body):
-        order_data = json.loads(body)
-        event = OrderEvent(signal=order_data["signal"])
-        logger.info("주문 처리: %s", event.signal)
-        session = SessionLocal()
-        try:
-            session.add(Order(signal=event.signal, status="PENDING"))
-            session.commit()
-        finally:
-            session.close()
-        ch.basic_ack(delivery_tag=method.delivery_tag)
+    async def _on_message(self, message: aio_pika.IncomingMessage):
+        async with message.process():
+            order_data = json.loads(message.body)
+            event = OrderEvent(signal=order_data["signal"])
+            logger.info("주문 처리: %s", event.signal)
+            session = SessionLocal()
+            try:
+                session.add(Order(signal=event.signal, status="PENDING"))
+                session.commit()
+            finally:
+                session.close()
 
-    def start(self):
-        params = pika.URLParameters(self._rabbit_url)
-        self._connection = pika.BlockingConnection(params)
-        self._channel = self._connection.channel()
-        self._channel.queue_declare(queue=self._queue, durable=True)
-        self._channel.basic_qos(prefetch_count=1)
-        self._channel.basic_consume(queue=self._queue, on_message_callback=self._callback)
-        logger.info("RabbitMQ 주문 소비 시작")
-        self._channel.start_consuming()
+    async def start(self):
+        self._connection = await aio_pika.connect_robust(self._rabbit_url)
+        self._channel = await self._connection.channel()
+        queue = await self._channel.declare_queue(self._queue, durable=True)
+        logger.info("RabbitMQ 주문 소비 시작(aio_pika 비동기)")
+        self._task = asyncio.create_task(queue.consume(self._on_message))
 
-    def stop(self):
-        if self._channel:
-            self._channel.stop_consuming()
+    async def stop(self):
+        if self._task:
+            self._task.cancel()
         if self._connection:
-            self._connection.close()
+            await self._connection.close()

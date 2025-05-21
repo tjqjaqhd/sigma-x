@@ -17,10 +17,11 @@ def test_notify_records_alert(tmp_path, monkeypatch):
     sent = []
 
     class DummySlack:
-        def send_message(self, text: str) -> None:
-            sent.append(text)
+        def send(self, level, message):
+            sent.append(f"[{level}] {message}")
 
-    monkeypatch.setattr(notification_service, "notifier", DummySlack())
+    # NotificationService._plugins을 DummySlack만 사용하도록 monkeypatch
+    monkeypatch.setattr(notification_service.NotificationService, "_plugins", [DummySlack()])
 
     notification_service.notify("INFO", "hello")
 

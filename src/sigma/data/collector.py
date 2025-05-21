@@ -1,12 +1,12 @@
 import asyncio
 import websockets
 import redis.asyncio as redis_asyncio
-from src.sigma.utils.logger import logger
-from src.sigma.data.models import SystemConfig
+from sigma.utils.logger import logger
+from sigma.data.models import SystemConfig
 
 
 class DataCollector:
-    """시장 데이터를 가져오는 클래스."""
+    """WebSocket→Redis Pub/Sub 기반 실시간 시장 데이터 수집기."""
 
     async def stream_prices(self):
         """WebSocket에서 실시간 시세를 받아 Redis Pub/Sub로 전파."""

@@ -2,9 +2,9 @@
 
 import asyncio
 import redis.asyncio as redis_asyncio
-from src.sigma.data.models import SystemConfig
+from sigma.data.models import SystemConfig
 
-from src.sigma.utils.logger import logger
+from sigma.utils.logger import logger
 
 
 async def start_event_loop(bot, price_queue, order_queue) -> None:

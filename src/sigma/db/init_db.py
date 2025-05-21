@@ -1,4 +1,4 @@
-from src.sigma.db.database import Base, echo_engine
+from sigma.db.database import Base, echo_engine
 
 
 def init_db() -> None:

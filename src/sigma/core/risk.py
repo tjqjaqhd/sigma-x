@@ -1,4 +1,4 @@
-from src.sigma.utils.logger import logger
+from sigma.utils.logger import logger
 
 
 class RiskManager:

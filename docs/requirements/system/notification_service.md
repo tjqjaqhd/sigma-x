@@ -58,9 +58,9 @@
 
 ## 6. 연관 모듈 및 외부 시스템
 * 상위 호출자: system 초기화, core/bot 등
-* 하위 호출 대상: utils/logger, utils/slack_notifier, db/database, data/models
+* 하위 호출 대상: utils/logger, db/database, data/models
 * 연계되는 DB/캐시/메시지큐: alert 테이블, NotificationService(다채널)
-* 타 모듈 간 의존 관계: utils/logger, utils/slack_notifier, db/database, data/models
+* 타 모듈 간 의존 관계: utils/logger, db/database, data/models
 
 ## 7. 리소스 및 성능
 ### 7.1. 리소스 소비

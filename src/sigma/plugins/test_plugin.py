@@ -1,5 +1,5 @@
-from src.sigma.plugins.plugin_base import PluginBase
-from src.sigma.system.notification_service import notify
+from sigma.plugins.plugin_base import PluginBase
+from sigma.system.notification_service import notify
 
 
 class TestPlugin(PluginBase):

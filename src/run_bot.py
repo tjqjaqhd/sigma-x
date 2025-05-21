@@ -1,10 +1,10 @@
 import argparse
 
-from src.sigma.config_loader import load_db_config
-from src.sigma.core.bot import TradingBot
-from src.sigma.core.strategies import DummyStrategy
-from src.sigma.system import initialize
-from src.sigma.utils.logger import logger
+from sigma.config_loader import load_db_config
+from sigma.core.bot import TradingBot
+from sigma.core.strategies import DummyStrategy
+from sigma.system import initialize
+from sigma.utils.logger import logger
 
 
 def main() -> None:

@@ -1,22 +1,24 @@
-from src.sigma.data.collector import DataCollector
+from sigma.data.collector import DataCollector
 from .strategies import BaseStrategy
 from .execution import OrderExecutor
 import pika
 import json
-from src.sigma.data.models import SystemConfig
+from sigma.data.models import SystemConfig
+import asyncio
+import redis.asyncio as redis_asyncio
 
 
 class TradingBot:
-    """단순 자동매매 봇. is_simulation 플래그로 실거래/시뮬레이션 모드 통합 관리."""
+    """실시간 Redis Pub/Sub 기반 자동매매 봇. is_simulation 플래그로 실거래/시뮬레이션 모드 통합 관리."""
 
     def __init__(
         self,
         strategy: BaseStrategy,
-        collector: DataCollector | None = None,
+        redis_url: str | None = None,
         is_simulation: bool = True,
     ) -> None:
         self.strategy = strategy
-        self.collector = collector or DataCollector()
+        self.redis_url = redis_url or SystemConfig.get("REDIS_URL", "redis://localhost:6379/0")
         self.is_simulation = is_simulation
         self.executor = OrderExecutor(is_simulation=is_simulation)
 
@@ -37,11 +39,16 @@ class TradingBot:
             )
         connection.close()
 
-    def run(self, iterations: int = 1) -> None:
-        """시장 데이터를 수집하고 전략을 실행합니다."""
-        for _ in range(iterations):
-            data = self.collector.fetch_market_data()
-            self.executor.execute(next(self.strategy.generate_signals(data)))
+    async def run(self) -> None:
+        """Redis Pub/Sub에서 실시간 데이터를 받아 전략을 실행한다."""
+        redis = redis_asyncio.from_url(self.redis_url)
+        pubsub = redis.pubsub()
+        await pubsub.subscribe("prices")
+        async for msg in pubsub.listen():
+            if msg["type"] != "message":
+                continue
+            data = json.loads(msg["data"])
+            await self.process_market_data(data)
 
     def execute_order(self, signal: str) -> None:
         self.executor.execute(signal)

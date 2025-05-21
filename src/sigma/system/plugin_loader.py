@@ -2,8 +2,8 @@
 
 from importlib import import_module
 from pathlib import Path
-from src.sigma.utils.logger import logger
-from src.sigma.plugins.plugin_base import PluginBase
+from sigma.utils.logger import logger
+from sigma.plugins.plugin_base import PluginBase
 import inspect
 
 plugins = []

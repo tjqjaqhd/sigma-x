@@ -2,7 +2,7 @@
 
 from prometheus_client import Counter, start_http_server
 
-from src.sigma.utils.logger import logger
+from sigma.utils.logger import logger
 
 REQUEST_COUNT = Counter("sigma_request_total", "총 요청 수")
 

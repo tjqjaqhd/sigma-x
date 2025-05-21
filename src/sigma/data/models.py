@@ -1,8 +1,10 @@
 from datetime import datetime
+import sys
 
 from sqlalchemy import Column, DateTime, Float, Integer, String, Text
+from sigma.db.database import Base
 
-from src.sigma.db.database import Base
+print("MODELS MODULE ID:", id(sys.modules[__name__]), __name__)
 
 
 class MarketData(Base):
@@ -27,7 +29,7 @@ class SystemConfig(Base):
 
     @classmethod
     def get(cls, key: str, default=None):
-        from src.sigma.db.database import SessionLocal
+        from sigma.db.database import SessionLocal
         session = SessionLocal()
         try:
             row = session.query(cls).filter_by(key=key).first()

@@ -1,9 +1,10 @@
 import os
 from sqlalchemy.orm import Session
+import logging
 
-from src.sigma.db.database import SessionLocal
-from src.sigma.data.models import SystemConfig
-from src.sigma.utils.logger import logger
+from sigma.db.database import SessionLocal
+from sigma.data.models import SystemConfig
+from sigma.utils.logger import logger
 
 
 def load_db_config() -> dict:
@@ -15,6 +16,7 @@ def load_db_config() -> dict:
         rows = session.query(SystemConfig).all()
         for row in rows:
             config[row.key] = row.value
+        logging.info("Loaded config from DB")
     except Exception as exc:  # pragma: no cover - DB 오류 로깅
         logger.warning(f"설정 로드 실패: {exc}")
     finally:

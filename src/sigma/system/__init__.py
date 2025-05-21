@@ -1,7 +1,7 @@
 """시스템 초기화 모듈."""
 
-from src.sigma.utils.logger import logger, init_logger
-from src.sigma.db.init_db import init_db
+from sigma.utils.logger import logger, init_logger
+from sigma.db.init_db import init_db
 
 from . import (
     plugin_loader,

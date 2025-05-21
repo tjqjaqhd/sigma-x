@@ -26,8 +26,4 @@
 | `sigma/system/session_manager.py` | [session_manager.md](session_manager.md) |
 | `sigma/system/logging_service.py` | [logging_service.md](logging_service.md) |
 | `sigma/utils/logger.py` | [utils_logger.md](utils_logger.md) |
-| `sigma/utils/slack_notifier.py` | [utils_slack_notifier.md](utils_slack_notifier.md) |
-| `sigma/web/dashboard.py` | [web_dashboard.md](web_dashboard.md) |
-| `sigma/__main__.py` | [main_module.md](main_module.md) |
-| `plugins/plugin_base.py` | [plugin_loader.md](plugin_loader.md) |
-
+| `sigma/web/dashboard.py`

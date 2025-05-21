@@ -1,6 +1,6 @@
 """추가 서비스 설정."""
 
-from src.sigma.utils.logger import logger
+from sigma.utils.logger import logger
 
 
 def configure_additional_services() -> None:

@@ -1,55 +1,82 @@
 """알림 서비스."""
 
 from datetime import datetime
-from src.sigma.utils.logger import logger
-from src.sigma.db.database import SessionLocal
-from src.sigma.data.models import Alert
-from src.sigma.config_loader import load_db_config
-from slack_sdk import WebClient
-from slack_sdk.errors import SlackApiError
+from sigma.utils.logger import logger
+from sigma.db.database import SessionLocal
+from sigma.data.models import Alert, SystemConfig
 
-config = load_db_config()
-
-class BaseNotifier:
-    async def send(self, level, msg):
+class NotifierPlugin:
+    def send(self, level: str, message: str) -> None:
         raise NotImplementedError
 
-class SlackNotifier(BaseNotifier):
+class SlackNotifier(NotifierPlugin):
     def __init__(self):
-        self.token = config.get("SLACK_TOKEN")
-        self.channel = config.get("SLACK_CHANNEL")
-        self.client = WebClient(token=self.token) if self.token else None
+        self.client = None
+        self.channel = None
+        self._initialized = False
 
-    async def send(self, level, msg):
-        if not self.client or not self.channel:
-            logger.warning("Slack channel not configured")
+    def _init(self):
+        if self._initialized:
             return
         try:
-            self.client.chat_postMessage(channel=self.channel, text=f"[{level}] {msg}")
-        except SlackApiError as exc:
-            logger.error(f"Slack API error: {exc.response['error']}")
+            from slack_sdk import WebClient
+        except ImportError:
+            self.client = None
+            return
+        token = SystemConfig.get("SLACK_TOKEN")
+        channel = SystemConfig.get("SLACK_CHANNEL")
+        self.client = WebClient(token=token) if token else None
+        self.channel = channel
+        self._initialized = True
 
-class EmailNotifier(BaseNotifier):
+    def send(self, level: str, message: str) -> None:
+        self._init()
+        if not self.client or not self.channel:
+            logger.warning("슬랙 알림 채널 미설정")
+            return
+        try:
+            self.client.chat_postMessage(channel=self.channel, text=f"[{level}] {message}")
+        except Exception as exc:
+            logger.error(f"슬랙 알림 전송 실패: {exc}")
+
+class EmailNotifier(NotifierPlugin):
     def __init__(self):
-        self.smtp_host = config.get("SMTP_HOST")
-        self.smtp_user = config.get("SMTP_USER")
-        self.smtp_pass = config.get("SMTP_PASS")
-        self.to = config.get("ALERT_EMAIL")
+        self._initialized = False
+        self.smtp_host = None
+        self.smtp_user = None
+        self.smtp_pass = None
+        self.to = None
 
-    async def send(self, level, msg):
-        # TODO: SMTP 연동 구현
-        logger.info(f"[Email] {level}: {msg} (미구현)")
+    def _init(self):
+        if self._initialized:
+            return
+        self.smtp_host = SystemConfig.get("SMTP_HOST")
+        self.smtp_user = SystemConfig.get("SMTP_USER")
+        self.smtp_pass = SystemConfig.get("SMTP_PASS")
+        self.to = SystemConfig.get("ALERT_EMAIL")
+        self._initialized = True
 
-_notifiers = [SlackNotifier(), EmailNotifier()]
+    def send(self, level: str, message: str) -> None:
+        self._init()
+        # TODO: 실제 이메일 발송 로직 구현 예정
+        logger.info(f"[이메일 알림] {level}: {message} (미구현)")
+
+class NotificationService:
+    """플러그인 방식 다채널 알림(notification) 서비스."""
+    _plugins = [SlackNotifier(), EmailNotifier()]
+
+    @classmethod
+    def send(cls, level: str, message: str) -> None:
+        for plugin in cls._plugins:
+            plugin.send(level, message)
+        logger.info(f"[알림] {level}: {message}")
 
 def init_notification() -> None:
-    """알림 서비스를 초기화합니다."""
+    """알림(notification) 서비스를 초기화합니다."""
     logger.info("알림 서비스 초기화")
 
-import asyncio
-
 def notify(level: str, message: str) -> None:
-    """메시지를 DB에 저장하고 Slack으로 전송합니다. 주문 type 기록은 제거."""
+    """메시지를 DB에 저장하고 NotificationService로 전송합니다."""
     session = SessionLocal()
     try:
         alert = Alert(level=level, message=message, timestamp=datetime.utcnow())
@@ -57,9 +84,7 @@ def notify(level: str, message: str) -> None:
         session.commit()
     finally:
         session.close()
-    asyncio.get_event_loop().run_until_complete(
-        asyncio.gather(*(n.send(level, message) for n in _notifiers))
-    )
+    NotificationService.send(level, message)
     logger.info(f"알림 전송: {message}")
 
 __all__ = ["init_notification", "notify"]

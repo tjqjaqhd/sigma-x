@@ -4,13 +4,13 @@ from sqlalchemy import text
 from sqlalchemy.exc import SQLAlchemyError
 import redis
 
-from src.sigma.utils.logger import logger
-from src.sigma.db.database import echo_engine
-from src.sigma.utils.slack_notifier import SlackNotifier
+from sigma.utils.logger import logger
+from sigma.db.database import echo_engine
+from sigma.system.notification_service import notify
 
 
 def check_system_health() -> None:
-    """DB, Redis, Slack 설정을 점검합니다."""
+    """DB, Redis, 알림 설정을 점검합니다."""
     try:
         with echo_engine.connect() as conn:
             conn.execute(text("SELECT 1"))
@@ -24,10 +24,11 @@ def check_system_health() -> None:
     except Exception:
         logger.error("Redis 연결 실패")
 
-    notifier = SlackNotifier()
-    if notifier.channel:
-        logger.info("Slack 설정 확인")
-    else:
-        logger.warning("Slack 설정 없음")
+    # 알림 서비스 설정 확인 (NotificationService로 일원화)
+    try:
+        notify("INFO", "헬스 체크: 알림 서비스 정상 동작 확인")
+        logger.info("알림 서비스 설정 확인")
+    except Exception as exc:
+        logger.warning(f"알림 서비스 설정 오류: {exc}")
 
     logger.info("시스템 헬스 체크 완료")

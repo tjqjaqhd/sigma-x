@@ -1,6 +1,6 @@
 """추가 로깅 서비스."""
 
-from src.sigma.utils.logger import logger
+from sigma.utils.logger import logger
 
 
 def init_logging() -> None:

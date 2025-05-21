@@ -1,6 +1,6 @@
 """사용자 설정 로더."""
 
-from src.sigma.utils.logger import logger
+from sigma.utils.logger import logger
 
 
 def load_user_preferences() -> None:

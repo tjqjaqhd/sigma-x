@@ -22,7 +22,7 @@ class ParamAdjuster:
         while True:  # pragma: no cover - 무한 루프
             session = self.SessionLocal()
             try:
-                from src.sigma.data.models import StrategyParam
+                from sigma.data.models import StrategyParam
 
                 params = session.query(StrategyParam).all()
                 for p in params:
@@ -36,7 +36,7 @@ class ParamAdjuster:
     def update_parameter(self, name: str, value: str) -> None:
         session = self.SessionLocal()
         try:
-            from src.sigma.data.models import StrategyParam
+            from sigma.data.models import StrategyParam
 
             param = session.get(StrategyParam, name)
             if param:

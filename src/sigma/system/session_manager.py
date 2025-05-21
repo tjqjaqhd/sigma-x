@@ -1,6 +1,6 @@
 """세션 관리자."""
 
-from src.sigma.utils.logger import logger
+from sigma.utils.logger import logger
 
 
 def init_session() -> None:

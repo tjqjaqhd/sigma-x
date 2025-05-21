@@ -1,34 +1,33 @@
-# 환경 설정(DB 중심 설정 통일화) 지시 문서
+# 실행 모드 및 알림 체계 통일(Simulation & Notification) 지시 문서
 
 ## 1. 개요
 
-SIGMA 시스템의 설정 관리가 기존 파일 기반(.env, yaml 등)에서 DB 기반(SystemConfig 테이블)으로 전면 전환되었습니다. 현재 일부 코드에서 여전히 파일 설정을 사용하거나 불필요한 환경변수를 참조하여 혼란이 발생하고 있습니다. 명확한 통일이 필요합니다.
+SIGMA 시스템에서 시뮬레이션 처리 및 알림 시스템의 설계와 코드가 불일치하여 혼란을 일으키고 있습니다. 현재 별도 SimRunner 클래스가 문서에만 존재하며, NotificationService를 통한 알림 채널 확장이 제한적으로만 구현되어 있습니다.
 
 ## 2. 목표 상태
 
-* `.env` 파일은 오직 초기 DB 접속 정보(`DATABASE_URL`) 설정 용도로만 사용합니다.
-* 그 외의 모든 환경설정 정보는 `SystemConfig` 테이블에서만 관리하며, 코드 내에서는 이 테이블을 통해서만 설정을 조회합니다.
-* 기존의 파일 기반 설정은 코드와 문서 모두에서 완전히 제거됩니다.
+* 별도 SimRunner 컴포넌트를 제거하고, is\_simulation 플래그를 이용한 통일된 시뮬레이션 모드 구현
+* NotificationService를 통해 Slack, 이메일 등 다양한 채널로의 알림 발송이 가능하도록 구조 정비
+* "알림", "경고", "Alert" 등 혼용 용어의 통일 및 명확화
 
 ## 3. 작업 항목
 
-| 우선순위   | 작업 내용                                                | 담당       | 예상 기간 |
-| ------ | ---------------------------------------------------- | -------- | ----- |
-| HIGH   | 모든 코드에서 `.env` 파일을 통해 로드하는 설정을 `DATABASE_URL` 외에는 제거 | AI Agent | 1일    |
-| HIGH   | `SystemConfig` 테이블에서 모든 환경변수를 로드하도록 코드 수정            | AI Agent | 1일    |
-| MEDIUM | `.env.example` 파일에서 불필요한 예시 환경변수 삭제 및 문서화 업데이트       | AI Agent | 1일    |
-| MEDIUM | Alembic migration을 통해 SystemConfig 테이블의 기본 환경변수 값 명시 | AI Agent | 1일    |
-| LOW    | 설정 로드 과정에서 DB 접근 로깅("Loaded config from DB") 명확히 추가  | AI Agent | 0.5일  |
+| 우선순위   | 작업 내용                                                                       | 담당       | 예상 기간 |
+| ------ | --------------------------------------------------------------------------- | -------- | ----- |
+| HIGH   | SimRunner 관련 모든 문서 및 코드 제거하고, OrderExecutor 내 is\_simulation 플래그로 처리 방식 통합  | AI Agent | 1일    |
+| HIGH   | NotificationService의 notify(level, message) 단일 인터페이스 구현 및 SlackNotifier를 통합 | AI Agent | 1일    |
+| MEDIUM | EmailNotifier 기본 구조 마련 및 향후 확장 가능하도록 설계 준비                                  | AI Agent | 1일    |
+| MEDIUM | 알림 관련 용어를 "알림(notification)"으로 문서 및 코드 전반에 걸쳐 통일화                           | AI Agent | 0.5일  |
+| LOW    | 시뮬레이션 모드와 관련된 문서 및 예시를 명확히 업데이트하여 신규 개발자 혼란 방지                              | AI Agent | 0.5일  |
 
 ## 4. 체크리스트
 
-* [ ] 모든 코드 내에서 `.env` 참조가 `DATABASE_URL` 이외에 없음을 확인
-* [ ] `SystemConfig`를 통한 설정 로드 코드가 모든 모듈에서 작동함을 확인
-* [ ] Alembic 마이그레이션으로 SystemConfig 기본값이 DB에 정상적으로 기록됨을 확인
-* [ ] `.env.example` 파일과 설정 문서가 업데이트되었음을 확인
-* [ ] 환경 설정 로드 시 로그 메시지가 출력됨을 확인
+* [ ] SimRunner의 흔적이 코드 및 문서에서 완전히 제거됨을 확인
+* [ ] is\_simulation 플래그를 통한 모의 체결이 정상 작동함을 확인
+* [ ] NotificationService가 Slack 및 향후 이메일 등 다중 채널을 지원할 수 있도록 준비됨을 확인
+* [ ] 코드 및 문서의 모든 알림 관련 용어가 "알림(notification)"으로 일관되게 사용됨을 확인
 
 ## 5. 참고
 
-* 기존 설정 관리 코드 위치: `config_loader.py`, `src/sigma/data/models.py`
-* DB 접속 정보는 VPS 외부에서 별도 관리(부트스트랩 용도로만 유지)
+* 이메일 발송은 SMTP 설정을 기준으로 하며, 실제 발송 로직은 향후 구현 예정
+* NotificationService 구조는 플러그인 방식으로 설계하여 채널 확장을 용이하게 할 것
