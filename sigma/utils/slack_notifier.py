@@ -1,14 +1,14 @@
 import os
-from dotenv import load_dotenv
 from slack_sdk import WebClient
 from slack_sdk.errors import SlackApiError
 
+from sigma.config_loader import load_db_config
+
 from sigma.utils.logger import logger
 
-load_dotenv()
-
-SLACK_TOKEN = os.getenv("SLACK_TOKEN")
-SLACK_CHANNEL = os.getenv("SLACK_CHANNEL")
+config = load_db_config()
+SLACK_TOKEN = config.get("SLACK_TOKEN")
+SLACK_CHANNEL = config.get("SLACK_CHANNEL")
 
 
 class SlackNotifier:
