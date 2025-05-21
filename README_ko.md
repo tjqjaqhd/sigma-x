@@ -52,3 +52,8 @@ pip install -r requirements-dev.txt
 ```bash
 python run_bot.py
 ```
+
+## 주요 변경 사항
+
+- 모든 설정은 DB의 `system_config` 테이블에서 로드됩니다.
+- `initialize()` 호출 시 DB 테이블이 자동으로 생성되며 `/metrics` 경로가 노출됩니다.

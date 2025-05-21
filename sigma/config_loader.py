@@ -1,5 +1,10 @@
 import os
 from dotenv import load_dotenv
+from sqlalchemy.orm import Session
+
+from sigma.db.database import SessionLocal
+from sigma.data.models import SystemConfig
+from sigma.utils.logger import logger
 
 
 def load_env() -> None:
@@ -8,9 +13,20 @@ def load_env() -> None:
 
 
 def load_db_config() -> dict:
-    """데이터베이스 설정을 딕셔너리 형태로 반환합니다."""
+    """시스템 설정을 DB에서 읽어 딕셔너리로 반환합니다."""
     load_env()
-    return {"url": os.getenv("DATABASE_URL", "sqlite:///./sigma.db")}
+    db_url = os.getenv("DATABASE_URL", "sqlite:///./sigma.db")
+    config: dict[str, str] = {"url": db_url}
+    session: Session = SessionLocal()
+    try:
+        rows = session.query(SystemConfig).all()
+        for row in rows:
+            config[row.key] = row.value
+    except Exception as exc:  # pragma: no cover - DB 오류 로깅
+        logger.warning(f"설정 로드 실패: {exc}")
+    finally:
+        session.close()
+    return config
 
 
 __all__ = ["load_env", "load_db_config"]
