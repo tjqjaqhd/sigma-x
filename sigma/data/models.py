@@ -32,6 +32,28 @@ class StrategyParam(Base):
     value = Column(Text)
 
 
+class Order(Base):
+    """주문 정보를 저장하는 테이블."""
+
+    __tablename__ = "orders"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    signal = Column(String)
+    timestamp = Column(DateTime, default=datetime.utcnow)
+
+
+class Position(Base):
+    """포지션 상태를 저장하는 테이블."""
+
+    __tablename__ = "positions"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    symbol = Column(String)
+    amount = Column(Float)
+    entry_price = Column(Float)
+    timestamp = Column(DateTime, default=datetime.utcnow)
+
+
 class Alert(Base):
     """알림 메시지를 저장하는 테이블."""
 
@@ -43,4 +65,11 @@ class Alert(Base):
     timestamp = Column(DateTime, default=datetime.utcnow)
 
 
-__all__ = ["MarketData", "SystemConfig", "StrategyParam", "Alert"]
+__all__ = [
+    "MarketData",
+    "SystemConfig",
+    "StrategyParam",
+    "Order",
+    "Position",
+    "Alert",
+]
