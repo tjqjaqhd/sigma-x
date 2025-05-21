@@ -1,4 +1,4 @@
-# Sigma 모듈 사양서
+# Sigma Module Specification
 
 이 문서는 `sigma` 패키지의 각 모듈과 해당 사양서를 연결한 목차입니다.
 

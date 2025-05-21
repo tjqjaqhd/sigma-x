@@ -1,16 +1,12 @@
-# Sigma-X 자동매매 시스템
+# Guides Index
 
-Sigma-X는 실시간 자동매매, 전략 플러그인, 시뮬레이션/백테스트, API/대시보드 기능을 갖춘 모듈형 트레이딩 서버입니다.
+이 섹션은 sigma 프로젝트의 사용자 및 개발자 가이드를 제공합니다.
 
-## 필수 사용법
+## 가이드
 
-- 의존성 설치
-```bash
-pip install -r requirements.txt
-pip install -r requirements-dev.txt
-```
-- 테스트 실행: `pytest`
-- 코드 스타일 검사: `flake8`, `black --check .`
-- 봇 실행: `python src/run_bot.py`
+- [설치 가이드](../setup/)
+- [요구사항](../requirements/)
+- [아키텍처](../architecture/architecture_summary.md)
+- [구조 개편 지침](../structure_refactor_instruction.md)
 
-자세한 개발/운영/구성 안내는 `docs/` 디렉토리와 [모듈 사양서](docs/requirements/sigma_spec.md)를 참고하세요.
+모든 가이드는 목적별로 정리되어 있습니다. 디렉터리 구조에 대한 자세한 내용은 [구조 개편 지침](../structure_refactor_instruction.md)을 참고하세요.

@@ -1,4 +1,4 @@
-# 디렉터리 구조 개편 지시
+# Directory Structure Refactor Instruction
 
 ## 문제점 요약
 
@@ -20,7 +20,7 @@
 │   ├─ moduleB/           # 모듈B 관련 코드
 │   └─ ...
 ├─ tests/                 # 모든 테스트 코드
-├─ src/scripts/               # 빌드 및 배포 자동화 스크립트
+├─ src/scripts/           # 빌드 및 배포 자동화 스크립트
 └─ README.md              # 프로젝트 개요 및 목차
 ```
 

@@ -1,4 +1,4 @@
-# sigma/plugins 플러그인 구조 및 개발 가이드
+# sigma/plugins plugin structure and development guide
 
 ## 목차
 1. 목적

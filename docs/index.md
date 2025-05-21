@@ -1,12 +1,16 @@
-# Sigma 문서 모음
+# Documentation Index
 
-이 디렉터리는 프로젝트 운영에 필요한 문서를 한곳에 정리합니다. 각 모듈별 사양서는 `docs/requirements/` 디렉터리에서 확인할 수 있습니다.
+sigma 프로젝트 문서에 오신 것을 환영합니다. 아래 목차를 통해 모든 문서를 탐색할 수 있습니다.
 
-## 주요 문서
+## 주요 섹션
 
-- [서버 정보 및 개발 가이드](../docs/guides/README.md)
-- [모듈 사양서 목차](../docs/requirements/sigma_spec.md)
-- [아키텍처 요약](architecture_summary.md)
-- [시스템 개선방향](../docs/requirements/improvement_plan.md)
+- [프로젝트 개요](README.md)
+- [아키텍처](architecture/architecture_summary.md)
+- [요구사항](requirements/)
+- [가이드](guides/)
+- [설치](setup/)
+- [구조 개편 지침](structure_refactor_instruction.md)
 
-향후 문서가 추가되면 이곳에 목록을 갱신합니다.
+## 참고
+
+모든 문서는 목적별로 정리되어 있습니다. 디렉터리 구조 및 문서 관리에 대한 자세한 내용은 [구조 개편 지침](structure_refactor_instruction.md)을 참고하세요.
