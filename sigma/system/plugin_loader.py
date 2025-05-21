@@ -3,10 +3,11 @@
 from importlib import import_module
 from pathlib import Path
 from sigma.utils.logger import logger
-from sigma.plugins.plugin_base import PluginBase
+from plugins.plugin_base import PluginBase
 import inspect
 
 plugins = []
+
 
 def load_plugins(directory: str = "plugins") -> None:
     """plugins 디렉터리의 PluginBase 상속 플러그인을 동적으로 로드 및 등록/실행한다."""
@@ -23,11 +24,13 @@ def load_plugins(directory: str = "plugins") -> None:
             for name, obj in inspect.getmembers(module, inspect.isclass):
                 if issubclass(obj, PluginBase) and obj is not PluginBase:
                     plugin_instance = obj()
+                    plugins.append(plugin_instance)
                     plugin_instance.on_load()
                     logger.info("플러그인 로드 및 on_load 실행: %s", obj.__name__)
         except Exception as exc:
             logger.exception("플러그인 로드 실패: %s", exc)
     logger.info("플러그인 로드 완료")
+
 
 def run_all_plugins(*args, **kwargs):
     for plugin in plugins:
