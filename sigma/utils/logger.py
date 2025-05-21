@@ -1,7 +1,12 @@
 import logging
 
 
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger("sigma")
+def init_logger(level: int = logging.INFO) -> logging.Logger:
+    """로거를 초기화하고 반환합니다."""
+    logging.basicConfig(level=level)
+    return logging.getLogger("sigma")
 
-__all__ = ["logger"]
+
+logger = init_logger()
+
+__all__ = ["logger", "init_logger"]

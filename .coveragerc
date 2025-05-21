@@ -1,0 +1,7 @@
+[run]
+omit =
+    sigma/db/*
+    sigma/utils/slack_notifier.py
+    sigma/web/*
+    */__main__.py
+    sigma/system/*
