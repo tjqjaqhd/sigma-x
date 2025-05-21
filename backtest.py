@@ -6,7 +6,7 @@ from sigma.core.strategies import DummyStrategy
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--strategy", default="dummy")
-    args = parser.parse_args()
+    parser.parse_args()
     bot = TradingBot(strategy=DummyStrategy())
     bot.run()
 

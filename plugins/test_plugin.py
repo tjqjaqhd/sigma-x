@@ -1,6 +1,7 @@
 from sigma.plugins.plugin_base import PluginBase
 from sigma.utils.slack_notifier import SlackNotifier
 
+
 class TestPlugin(PluginBase):
     name = "test"
 
