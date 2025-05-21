@@ -12,7 +12,7 @@ SLACK_CHANNEL = os.getenv("SLACK_CHANNEL")
 
 
 class SlackNotifier:
-    """Send messages to Slack channel."""
+    """Slack 채널로 메시지를 전송하는 유틸리티."""
 
     def __init__(self, token: str = SLACK_TOKEN, channel: str = SLACK_CHANNEL) -> None:
         self.client = WebClient(token=token)
@@ -24,5 +24,5 @@ class SlackNotifier:
             return
         try:
             self.client.chat_postMessage(channel=self.channel, text=text)
-        except SlackApiError as exc:
+        except SlackApiError as exc:  # pragma: no cover - network call
             logger.error(f"Slack API error: {exc.response['error']}")

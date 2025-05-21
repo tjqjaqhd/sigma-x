@@ -2,7 +2,19 @@
 
 from sigma.utils.logger import logger, init_logger
 
-from . import plugin_loader, metrics, user_prefs, health_check, cache, additional_setup, notification_service, api_service, event_loop, session_manager, logging_service
+from . import (
+    plugin_loader,
+    metrics,
+    user_prefs,
+    health_check,
+    cache,
+    additional_setup,
+    notification_service,
+    api_service,
+    event_loop,
+    session_manager,
+    logging_service,
+)
 
 
 def initialize() -> None:
@@ -20,5 +32,6 @@ def initialize() -> None:
     session_manager.init_session()
     logging_service.init_logging()
     logger.info("시스템 초기화 완료")
+
 
 __all__ = ["initialize"]
