@@ -1,6 +1,7 @@
 """시스템 초기화 모듈."""
 
 from sigma.utils.logger import logger, init_logger
+from sigma.db.init_db import init_db
 
 from . import (
     plugin_loader,
@@ -20,6 +21,7 @@ from . import (
 def initialize() -> None:
     """플로우 차트에 맞춰 시스템을 순차적으로 초기화합니다."""
     init_logger()
+    init_db()
     plugin_loader.load_plugins()
     metrics.init_metrics()
     user_prefs.load_user_preferences()

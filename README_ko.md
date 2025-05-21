@@ -52,3 +52,11 @@ pip install -r requirements-dev.txt
 ```bash
 python run_bot.py
 ```
+
+## 주요 변경 사항
+
+- 모든 설정은 DB의 `system_config` 테이블에서 로드됩니다.
+- `initialize()` 호출 시 DB 테이블이 자동으로 생성되며 `/metrics` 경로가 노출됩니다.
+- `NotificationService`를 도입하여 Slack 알림을 통합 관리합니다.
+- 주문, 포지션, 전략 파라미터, 알림 테이블이 추가되었습니다.
+- FastAPI 서버는 `/bot/start`, `/bot/stop`, `/strategy/update` 엔드포인트를 제공합니다.

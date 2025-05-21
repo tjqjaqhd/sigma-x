@@ -3,6 +3,7 @@ fastapi
 uvicorn[standard]
 redis
 pika
+slack-sdk
 
 # DB/ORM
 SQLAlchemy>=2.0
