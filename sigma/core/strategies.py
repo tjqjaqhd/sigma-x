@@ -1,18 +1,22 @@
-클래스  BaseStrategy :
- md 
+from __future__ import annotations
+
+from abc import ABC, abstractmethod
+
+
+class BaseStrategy(ABC):
+    """전략 기본 클래스."""
+
+    @abstractmethod
     def generate_signals(self, market_data: dict):
-
-    def generate_signals ( self , data : dict ): 
-        """ 시장 데이터를 입력하여 매매 신호를 생성합니다."""
-
+        """시장 데이터를 기반으로 매매 신호를 생성합니다."""
         raise NotImplementedError
 
 
-class DummyStrategy(BaseStrategy): ncq
-  ct1-codex/md
+class DummyStrategy(BaseStrategy):
+    """매수와 매도 신호를 번갈아 발생시키는 더미 전략."""
+
     def generate_signals(self, market_data: dict):
-      # 간단한 더미 신호 생성 예시
- 이터 . get ( " 가격" , 0 )   ㅣ
+        price = market_data.get("price", 0)
         for _ in range(5):
             if price > 0:
                 yield "BUY"
