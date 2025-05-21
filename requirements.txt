@@ -22,3 +22,4 @@ python-dateutil
 # 모니터링
 prometheus-client
 
+PyPDF2

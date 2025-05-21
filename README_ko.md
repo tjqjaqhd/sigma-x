@@ -57,3 +57,14 @@ python run_bot.py
 
 - 모든 설정은 DB의 `system_config` 테이블에서 로드됩니다.
 - `initialize()` 호출 시 DB 테이블이 자동으로 생성되며 `/metrics` 경로가 노출됩니다.
+
+## PDF 문서 변환
+
+`Sigma-X 자동매매 시스템 아키텍처 분석.pdf` 파일의 내용을 텍스트로 활용하려면
+다음 스크립트를 실행합니다.
+
+```bash
+python scripts/pdf_to_md.py 'Sigma-X 자동매매 시스템 아키텍처 분석.pdf' docs/architecture_summary.md
+```
+
+`docs/architecture_summary.md` 파일이 생성되면 내용을 검토 후 서식을 정리해 사용합니다.
