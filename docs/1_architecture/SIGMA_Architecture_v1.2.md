@@ -1,4 +1,4 @@
-# SIGMA Architecture v1.2
+# SIGMA Architecture v1.3
 
 ## 1. Purpose & Scope
 
@@ -161,30 +161,49 @@
 
 ## 4. Component Catalog
 
-| ID | Module                   | Mode(s)      | 책임                               |
-| -- | ------------------------ | ------------ | -------------------------------- |
-| 1  | **MarketDataWebSocket**  | ALL          | 업비트·바이낸스 실시간 시세 수집               |
-| 2  | **HistoricalDataLoader** | BACKTEST     | 과거 틱·캔들 → `market.tick` 재생       |
-| 3  | **TradingBot**           | ALL          | 틱 처리·전략 호출·주문 파이프라인 오케스트레이션      |
-| 4  | **StrategyManager**      | ALL          | 플러그인 전략 실행·주문 초안 반환              |
-| 5  | **RiskManager**          | ALL          | 주문 검증(증거금·한도·중복)                 |
-| 6  | **OrderExecutor**        | LIVE         | REST/WS API로 실계좌 주문·체결 수신        |
-| 7  | **SimulatorExecutor**    | SIM/BACKTEST | 가상 체결·잔고 업데이트                    |
-| 8  | **MetricsTracker**       | ALL          | 지표(P\&L, 레이턴시) Prometheus push   |
-| 9  | **NotificationService**  | ALL          | Alertmanager 경보 → Slack/Telegram |
-| 10 | **DashboardAPI**         | ALL          | FastAPI + WS, 포지션·실적 실시간 제공      |
+| ID | Module | Mode(s) | 책임 |
+| -- | --- | --- | --- |
+| 1 | **MarketDataWebSocket** | ALL | 업비트·바이낸스 실시간 시세 수집 |
+| 2 | **HistoricalDataLoader** | BACKTEST | 과거 데이터 재생 |
+| 3 | **TradingBot** | ALL | 틱 처리·전략 호출·주문 파이프라인 |
+| 4 | **StrategyManager** | ALL | 전략 플러그인 실행 |
+| 5 | **RiskManager** | ALL | 주문 검증 및 제한 관리 |
+| 6 | **OrderExecutor** | LIVE | 실계좌 주문·체결 수신 |
+| 7 | **SimulatorExecutor** | SIM/BACKTEST | 가상 체결 및 잔고 갱신 |
+| 8 | **MetricsTracker** | ALL | P&L·레이턴시 지표 수집 |
+| 9 | **NotificationService** | ALL | 경보 → Slack/Telegram |
+| 10 | **DashboardAPI** | ALL | 실시간 포지션·실적 제공 |
+| 11 | **StrategySelector** | ALL | 스케줄 기반 전략 교체 |
+| 12 | **OptimizationModule** | ALL | 파라미터 최적화 수행 |
+| 13 | **TrendScanner** | ALL | 시장 추세 감지 |
+| 14 | **PerformanceReporter** | ALL | 주간/월간 리포트 생성 |
+| 15 | **MLModule** | ALL | ML 기반 신호 보조 |
+| 16 | **SystemStatus** | ALL | 서비스 상태 모니터링 |
+| 17 | **StrategyTester** | SIM/BACKTEST | 전략 성과 검증 |
+| 18 | **NewsHandler** | ALL | 뉴스 이벤트 수집 |
+| 19 | **AnomalyDetector** | ALL | 이상 징후 탐지 |
+| 20 | **DataCleaner** | ALL | 데이터 정제 및 보정 |
+| 21 | **CommentaryModule** | ALL | 요약 코멘트 생성 |
 
+자세한 모듈별 사양은 `docs/4_development/module_specs/` 디렉터리를 참조하세요.
 ---
 
 ## 5. Data Flow & Sequence (high-level)
-
 1. **DataSource**
-   LIVE → WebSocket, BACKTEST → HistoricalDataLoader
+   LIVE → MarketDataWebSocket, BACKTEST → HistoricalDataLoader
 2. `market.tick` → Redis → **TradingBot**
-3. Strategy → Risk → Executor (LIVE or SIM)
-4. `order.fill` 이벤트 → TradingBot 잔고 갱신
-5. MetricsTracker·Dashboard 출력 → Grafana 대시보드
-6. Alert 임계치 초과 → Slack 알림
+3. TradingBot → StrategyManager → RiskManager → (OrderExecutor | SimulatorExecutor)
+4. SimulatorExecutor → StrategyTester → StrategyManager
+5. `order.fill` 이벤트 → TradingBot 잔고 갱신
+6. DataCleaner 주기 실행 → Postgres 기록
+7. StrategySelector·OptimizationModule 주기 실행 → StrategyManager 업데이트
+8. TrendScanner 결과 게시 → Redis → StrategyManager 참조
+9. NewsHandler 뉴스 이벤트 게시 → Redis → StrategyManager
+10. AnomalyDetector 경보 발생 → NotificationService
+11. CommentaryModule 세션 요약 → ReportRepository 저장
+12. PerformanceReporter·DashboardAPI 출력 → Grafana 대시보드
+13. Alert 임계치 초과 → NotificationService → Slack
+
 
 ---
 
@@ -196,6 +215,7 @@
 | **RPO / RTO** | 5 분 / 30 분                | Postgres WAL·Redis AOF |
 | **가용성**       | 99.5 % /월                 | 컨테이너 재시작 자동            |
 | **보안**        | NAVER KMS 관리 키, 30 일 회전   | GitHub Actions OIDC    |
+이 시스템은 `requirements/Server_Spec.md`에 명시된 단일 VPS 환경을 기준으로 설계되었습니다.
 
 ---
 
@@ -205,6 +225,7 @@
 | ----------------- | --------------------------------------- | ---------------------- |
 | **App**           | `sigma-app` (모듈 run-via CLI arg)        | MODE=live/sim/backtest |
 | **Data**          | `redis`, `postgres`, `rabbitmq`         | Named volume `db-data` |
+| **Scheduler**     | `sigma-scheduler`                   | 전략 교체 및 리포트 cron |
 | **Observability** | `prometheus`, `grafana`, `alertmanager` | dev · prod 공통          |
 | **Dev-only**      | `sim_replay` (HD 전용), `sim_grafana`     | dev compose override   |
 
@@ -226,6 +247,7 @@
 | -------- | ---------- | ------------------------------------------------------- |
 | v1.0     | 2025-05-21 | Baseline (거래 5 모듈)                                      |
 | v1.1     | 2025-05-22 | Metrics·Notification·Dashboard 추가                       |
-| **v1.2** | 2025-05-22 | SimulatorExecutor · HistoricalDataLoader 통합, 다이어그램/표 갱신 |
+| v1.2 | 2025-05-22 | SimulatorExecutor · HistoricalDataLoader 통합, 다이어그램/표 갱신 |
+| **v1.3** | 2025-05-23 | 3번 다이어그램 기반 전체 항목 개편 |
 
 ---
