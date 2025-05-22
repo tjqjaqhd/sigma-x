@@ -1,0 +1,1 @@
+docs/SIGMA Architecture v1.2
