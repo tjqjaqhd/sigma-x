@@ -163,22 +163,50 @@
 
 | ID | Module | Mode(s) | 책임 |
 | -- | --- | --- | --- |
-| 1 | **MarketDataWebSocket** | ALL | 업비트·바이낸스 실시간 시세 수집 |
-| 2 | **HistoricalDataLoader** | BACKTEST | 과거 데이터 재생 |
-| 3 | **TradingBot** | ALL | 틱 처리·전략 호출·주문 파이프라인 |
-| 4 | **StrategyManager** | ALL | 전략 플러그인 실행 |
-| 5 | **RiskManager** | ALL | 주문 검증 및 제한 관리 |
-| 6 | **OrderExecutor** | LIVE | 실계좌 주문·체결 수신 |
-| 7 | **SimulatorExecutor** | SIM/BACKTEST | 가상 체결 및 잔고 갱신 |
-| 8 | **MetricsTracker** | ALL | P&L·레이턴시 지표 수집 |
-| 9 | **NotificationService** | ALL | 경보 → Slack/Telegram |
-| 10 | **DashboardAPI** | ALL | 실시간 포지션·실적 제공 |
-| 11 | **StrategySelector** | ALL | 스케줄 기반 전략 교체 |
-| 12 | **OptimizationModule** | ALL | 파라미터 최적화 수행 |
-| 13 | **TrendScanner** | ALL | 시장 추세 감지 |
-| 14 | **PerformanceReporter** | ALL | 주간/월간 리포트 생성 |
-| 15 | **MLModule** | ALL | ML 기반 신호 보조 |
-| 16 | **SystemStatus** | ALL | 서비스 상태 모니터링 |
+| 1 | **run_bot.py:main** | ALL | CLI 진입점 |
+| 2 | **backtest.py CLI** | BACKTEST | 백테스트 실행 |
+| 3 | **WebSocket.receive_prices** | LIVE | 실시간 시세 수신 |
+| 4 | **Redis.subscribe_price_update** | ALL | 가격 업데이트 구독 |
+| 5 | **FastAPI.initApp** | ALL | REST/WS 서버 초기화 |
+| 6 | **/ws endpoint** | ALL | 웹소켓 엔드포인트 |
+| 7 | **ReactDashboard.useWebSocket** | ALL | 대시보드 실시간 표시 |
+| 8 | **REST /api/orders,/api/pnl** | ALL | 주문·손익 API |
+| 9 | **TradingBot** | ALL | 틱 처리·전략 호출 |
+| 10 | **StrategyManager** | ALL | 전략 플러그인 실행 |
+| 11 | **RiskManager** | ALL | 주문 검증 및 제한 |
+| 12 | **OrderExecutor** | LIVE | 실계좌 주문 처리 |
+| 13 | **SimulatorExecutor** | SIM/BACKTEST | 가상 체결 처리 |
+| 14 | **StrategySelector** | ALL | 스케줄 기반 전략 교체 |
+| 15 | **OptimizationModule** | ALL | 파라미터 최적화 |
+| 16 | **TrendScanner** | ALL | 시장 추세 감지 |
+| 17 | **PerformanceReporter** | ALL | 성과 리포트 생성 |
+| 18 | **MLModule** | ALL | ML 기반 신호 보조 |
+| 19 | **StrategyTester** | SIM/BACKTEST | 전략 테스트 |
+| 20 | **NewsHandler** | ALL | 뉴스 이벤트 처리 |
+| 21 | **AnomalyDetector** | ALL | 이상 징후 감지 |
+| 22 | **DataCleaner** | ALL | 데이터 정제 |
+| 23 | **CommentaryModule** | ALL | 코멘터리 생성 |
+| 24 | **SystemStatus** | ALL | 서비스 상태 모니터링 |
+| 25 | **config_loader.py** | ALL | 설정 파일 로드 |
+| 26 | **db/session.py** | ALL | DB 세션 관리 |
+| 27 | **db/models.py** | ALL | ORM 모델 정의 |
+| 28 | **logger.py** | ALL | 로깅 설정 |
+| 29 | **plugin_loader.py** | ALL | 플러그인 로드 |
+| 30 | **metrics.py** | ALL | 지표 수집 모듈 |
+| 31 | **user_prefs.py** | ALL | 사용자 설정 관리 |
+| 32 | **health_check.py** | ALL | 상태 점검 |
+| 33 | **cache.py** | ALL | 캐시 계층 |
+| 34 | **additional_setup.py** | ALL | 초기 추가 설정 |
+| 35 | **notification_service.py** | ALL | 알림 전송 |
+| 36 | **api_service.py** | ALL | API 서비스 공통 모듈 |
+| 37 | **event_loop.py** | ALL | 비동기 이벤트 루프 |
+| 38 | **session_manager.py** | ALL | 세션 관리 |
+| 39 | **logging_service.py** | ALL | 중앙 로그 수집 |
+| 40 | **Redis Pub/Sub** | ALL | 메시지 브로커 |
+| 41 | **RabbitMQ Queue** | ALL | 작업 큐 |
+| 42 | **PostgreSQL** | ALL | 영속 데이터베이스 |
+| 43 | **PaymentProcessor** | LIVE | 결제 처리 |
+| 44 | **ReportRepository** | ALL | 리포트 저장소 |
 
 자세한 모듈별 사양은 `docs/4_development/module_specs/` 디렉터리를 참조하세요.
 ---
