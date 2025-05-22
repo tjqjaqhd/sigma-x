@@ -8,3 +8,4 @@
 - `4_development/` : 개발 규칙과 플러그인, **모듈별 사양서**
 - `5_testing/` : 테스트 및 성능 검증 기준
 - `9_archive/` : 이전 버전 문서 보관소
+- [`../requirements/Server_Spec.md`](../requirements/Server_Spec.md) : 서버 기본 사양
