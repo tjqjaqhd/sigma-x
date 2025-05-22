@@ -6,4 +6,5 @@ testpaths = ["tests"]
 line-length = 88
 target-version = ["py311"]
 include = '\.py$'
+exclude = "archive"
 
