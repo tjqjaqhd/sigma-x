@@ -16,7 +16,7 @@
 * 포함된 클래스:
   - OrderExecutor: 주문 실행(실거래/모의)
   - OrderEvent: 주문 신호 데이터 구조체
-  - OrderWorker: aio_pika 기반 비동기 RabbitMQ 주문 소비 및 DB 기록
+  - OrderWorker: RabbitMQ(aio_pika) 기반 주문 소비 및 DB 기록
 * 주요 함수/메서드 목록:
   - OrderExecutor.__init__(is_simulation): 실거래/시뮬레이션 여부(통합 플래그) 설정
   - OrderExecutor.execute(signal): 주문 신호 실행(실거래/시뮬레이션 분기)

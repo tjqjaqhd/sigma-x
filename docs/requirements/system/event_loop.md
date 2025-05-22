@@ -9,7 +9,7 @@
 * 최종 수정일: 2024-06-XX
 
 **설명:**
-비동기 이벤트 루프를 통해 실시간 시장 데이터 처리 및 전략 신호 분배를 담당하는 모듈. TradingBot, Redis Pub/Sub, RabbitMQ를 연동하여 실시간 자동매매의 핵심 루프를 구현한다.
+비동기 이벤트 루프를 통해 실시간 시장 데이터 처리 및 전략 신호 분배를 담당하는 모듈. TradingBot, WebSocket, Redis Pub/Sub, RabbitMQ를 연동하여 실시간 자동매매의 핵심 루프를 구현한다.
 
 ## 2. 구조 개요
 
@@ -42,7 +42,7 @@
 
 ## 4. 내부 처리 로직
 * 처리 흐름 요약:
-  1. run_bot 내부에서 Redis Pub/Sub로 데이터 수신 및 신호 분배
+  1. run_bot 내부에서 WebSocket→Redis Pub/Sub로 데이터 수신 및 신호 분배
   2. bot.strategy.generate_signals로 신호 생성
   4. asyncio.gather로 run_bot 실행
 * 순서도/플로우차트: 해당 없음

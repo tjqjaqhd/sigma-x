@@ -17,8 +17,8 @@ TradingBot 클래스를 통해 전략 실행, 시장 데이터 수집, 주문 �
   - TradingBot: 전략 실행, 데이터 수집, 주문 처리 담당
 * 주요 함수/메서드 목록:
   - __init__(strategy, redis_url, is_simulation): 전략, Redis URL, 시뮬레이션 여부(실거래/시뮬레이션 모드) 초기화
-  - process_market_data(data): 실시간 데이터 처리 및 신호 RabbitMQ 전송
-  - run(): Redis Pub/Sub에서 실시간 데이터 구독 및 처리
+  - process_market_data(data): 실시간 데이터 처리 및 RabbitMQ 주문 신호 전송
+  - run(): WebSocket→Redis Pub/Sub에서 실시간 데이터 구독 및 처리
   - execute_order(signal): 단일 신호 주문 실행
 * 외부 API 제공 여부: 해당 없음
 
@@ -46,7 +46,7 @@ TradingBot 클래스를 통해 전략 실행, 시장 데이터 수집, 주문 �
 ## 4. 내부 처리 로직
 * 처리 흐름 요약:
   1. TradingBot 인스턴스 생성 시 전략, 데이터 수집기, 주문 실행기 초기화
-  2. run() 호출 시 Redis Pub/Sub에서 실시간 데이터 구독 및 전략 신호 생성
+  2. run() 호출 시 WebSocket→Redis Pub/Sub에서 실시간 데이터 구독 및 전략 신호 생성
   3. 신호에 따라 주문 실행기(OrderExecutor)로 주문 실행
   4. process_market_data는 실시간 데이터 처리 및 RabbitMQ 주문 신호 전송
 * 순서도/플로우차트: 해당 없음
