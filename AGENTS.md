@@ -1,1 +1,2 @@
-docs/SIGMA Architecture v1.2
+- docs/1_architecture/SIGMA Architecture v1.2 이 문서가 모든 작업의 기본입니다 플로우차트를 항상 참조하세요
+- 사양서와 코드는 뼈대 수준이 이닌 완벽한 수준으로 구현하세요
