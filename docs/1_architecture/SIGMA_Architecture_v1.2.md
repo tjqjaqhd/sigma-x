@@ -207,6 +207,7 @@
 | 42 | **PostgreSQL** | ALL | 영속 데이터베이스 |
 | 43 | **PaymentProcessor** | LIVE | 결제 처리 |
 | 44 | **ReportRepository** | ALL | 리포트 저장소 |
+| 45 | **DashboardAPI** | ALL | 실적 및 상태 조회 API |
 
 자세한 모듈별 사양은 `docs/4_development/module_specs/` 디렉터리를 참조하세요.
 ---
