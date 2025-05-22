@@ -1,3 +1,10 @@
+<!--
+Author: 친구
+Created Date: 2024-05-22
+Last Modified: 2024-05-22
+Version: 1.0
+-->
+
 # Document Standardization Guide
 
 이 문서는 프로젝트 내 모든 문서 작성 시 일관된 형식을 유지하고 GitHub에서 인덱스 구조를 명확하게 관리하기 위한 표준 가이드라인을 정의합니다.
