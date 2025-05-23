@@ -15,7 +15,7 @@
 * 포함된 클래스/함수: `MetricsTracker`, `collect_pnl`, `collect_latency`
 * 주요 메서드: `push_metrics()`, `start()`
 * 외부 API 제공 여부: 없음
-* 소스 파일 위치: `sigma/metrics_tracker.py`
+* 소스 파일 위치: `sigma/metrics.py`
 
 ## 3. 인터페이스 명세
 ### 3.1 입력
