@@ -9,3 +9,17 @@ SIGMA 아키텍처의 레이어별로 모듈 사양서를 구분했습니다.
 - `legacy/` : 현재 아키텍처에서 제외되었지만 참고용으로 유지되는 모듈
 
 각 파일은 `Module_Spec_Template.md` 형식을 따릅니다.
+
+### 최근 업데이트 (2025-05-24)
+
+다음 모듈들이 구현되어 사양서와 코드가 동기화되었습니다.
+
+- `Logger`
+- `MetricsTracker`
+- `NotificationService`
+- `ApiService`
+- `Cache`
+- `SessionManager`
+- `RedisPubsub`
+- `RabbitmqQueue`
+- `PaymentProcessor`
