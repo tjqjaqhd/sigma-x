@@ -13,7 +13,20 @@ black
 isort
 flake8
 
+# 정적 분석 추가
+mypy                # 정적 타입 검사
+pylint              # 코드 품질 검사
+
 # CI/CD 연동
 codecov
 pre-commit
 
+# JSON/YAML/문서 변환
+jq                  # JSON 가공용 (※ 실제 설치는 CLI → 외부에서 관리)
+yq                  # YAML 처리용
+markdown-it-py      # Markdown 파싱용
+
+# 문서화 및 docstring 관리
+docformatter
+pydoc-markdown
+mkdocstrings
