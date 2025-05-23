@@ -6,6 +6,7 @@ repos:
         language_version: python3.12
         additional_dependencies: []
         args: ["--line-length=120", "--skip-string-normalization", "src", "tests"]
+
   - repo: https://github.com/pycqa/flake8
     rev: 7.2.0
     hooks:
@@ -13,6 +14,7 @@ repos:
         language_version: python3.12
         additional_dependencies: []
         args: ["--max-line-length=120", "--ignore=E203"]
+
   - repo: local
     hooks:
       - id: check-naming
@@ -20,4 +22,27 @@ repos:
         entry: scripts/check_naming.py
         language: python
         types: [python, markdown]
-        pass_filenames: false 
+        pass_filenames: false
+        always_run: true
+
+      - id: check-architecture-flow
+        name: check_architecture_consistency_ast_advanced.py
+        entry: venv/bin/python scripts/check_architecture_consistency_ast_advanced.py
+        language: system
+        types: [python, markdown]
+        pass_filenames: false
+        always_run: true
+
+      - id: check-architecture-consistency
+        name: check_architecture_consistency.py
+        entry: venv/bin/python scripts/check_architecture_consistency.py
+        language: system
+        pass_filenames: false
+        always_run: true
+
+      - id: check-architecture-consistency-ast
+        name: check_architecture_consistency_ast.py
+        entry: venv/bin/python scripts/check_architecture_consistency_ast.py
+        language: system
+        pass_filenames: false
+        always_run: true
