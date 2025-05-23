@@ -14,7 +14,9 @@ from typing import Any, Dict
 
 
 class DummyRedis:
-    async def publish(self, channel: str, message: str) -> None:  # pragma: no cover - 외부 의존성 대체
+    async def publish(
+        self, channel: str, message: str
+    ) -> None:  # pragma: no cover - 외부 의존성 대체
         pass
 
 
@@ -36,5 +38,22 @@ class OrderExecutor:
         return fill
 
     async def listen_fills(self) -> None:
-        """체결 데이터 수신용 더미 메서드."""
-        pass
+        """Redis `order.fill` 채널을 구독해 체결 이벤트를 처리한다."""
+        if not hasattr(self.redis, "pubsub"):
+            self.logger.debug("Redis 구독 기능 없음")
+            return
+
+        pubsub = self.redis.pubsub()
+        await pubsub.subscribe("order.fill")
+        try:
+            async for msg in pubsub.listen():
+                if msg["type"] != "message":
+                    continue
+                try:
+                    data = json.loads(msg["data"])
+                except json.JSONDecodeError:
+                    self.logger.warning("잘못된 체결 메시지: %s", msg["data"])
+                    continue
+                self.logger.info("체결 수신: %s", data)
+        finally:
+            await pubsub.unsubscribe("order.fill")

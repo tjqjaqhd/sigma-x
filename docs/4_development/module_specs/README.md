@@ -10,7 +10,7 @@ SIGMA 아키텍처의 레이어별로 모듈 사양서를 구분했습니다.
 
 각 파일은 `Module_Spec_Template.md` 형식을 따릅니다.
 
-### 최근 업데이트 (2025-05-24)
+### 최근 업데이트 (2025-05-26)
 
 다음 모듈들이 구현되어 사양서와 코드가 동기화되었습니다.
 
@@ -43,3 +43,13 @@ SIGMA 아키텍처의 레이어별로 모듈 사양서를 구분했습니다.
 - `DataCleaner`
 - `Backtest_CLI`
 - `StrategyTester`
+- `DBModels`
+- `DBSession`
+- `PostgreSQL`
+- `LoggingService`
+- `ReportRepository`
+- `AnomalyDetector`
+- `MarketDataWebSocket`
+- `StrategyManager`
+- `OrderExecutor`
+- `TrendScanner`
