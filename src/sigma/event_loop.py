@@ -1,8 +1,56 @@
-"""event_loop module skeleton.
+"""비동기 이벤트 루프 관리 모듈.
 
-See docs/4_development/module_specs for specification.
+``EventLoop`` 은 여러 코루틴 태스크를 등록하여 순차적으로 실행하고, 완료되면
+자동으로 정리한다. 사양은
+``docs/4_development/module_specs/common/EventLoop_Spec.md`` 를 따른다.
 """
 
+from __future__ import annotations
+
+import asyncio
+import logging
+from typing import Any, Coroutine, Iterable, Set
+
+
 class EventLoop:
-    def __init__(self):
-        pass
+    """asyncio 기반 간단한 태스크 스케줄러."""
+
+    def __init__(self, max_tasks: int = 100, logger: logging.Logger | None = None) -> None:
+        self.max_tasks = max_tasks
+        self.logger = logger or logging.getLogger(__name__)
+        self._tasks: Set[asyncio.Task[Any]] = set()
+        self._running = False
+
+    def spawn(self, coro: Coroutine[Any, Any, Any]) -> asyncio.Task[Any]:
+        """코루틴을 태스크로 등록한다."""
+        if len(self._tasks) >= self.max_tasks:
+            raise RuntimeError("too many tasks")
+        task = asyncio.create_task(coro)
+        self._tasks.add(task)
+        task.add_done_callback(self._tasks.discard)
+        return task
+
+    async def start(self) -> None:
+        """등록된 태스크가 모두 끝날 때까지 실행한다."""
+        self._running = True
+        while self._running and self._tasks:
+            done, _ = await asyncio.wait(self._tasks, return_when=asyncio.FIRST_COMPLETED)
+            for task in done:
+                if exc := task.exception():
+                    self.logger.exception("태스크 예외: %s", exc)
+
+    async def stop(self) -> None:
+        """모든 태스크를 취소하고 종료한다."""
+        self._running = False
+        for task in list(self._tasks):
+            task.cancel()
+        await asyncio.gather(*self._tasks, return_exceptions=True)
+        self._tasks.clear()
+
+
+def create_tasks(loop: EventLoop, coros: Iterable[Coroutine[Any, Any, Any]]) -> None:
+    """여러 코루틴을 일괄 등록한다."""
+
+    for coro in coros:
+        loop.spawn(coro)
+

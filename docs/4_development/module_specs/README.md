@@ -33,3 +33,13 @@ SIGMA 아키텍처의 레이어별로 모듈 사양서를 구분했습니다.
 - `RunBot_Main`
 - `Redis_SubscribePriceUpdate`
 - `WebSocket_Endpoint`
+- `AdditionalSetup`
+- `ConfigLoader`
+- `EventLoop`
+- `SystemStatus`
+- `DashboardAPI`
+- `HealthCheck`
+- `UserPrefs`
+- `DataCleaner`
+- `Backtest_CLI`
+- `StrategyTester`
