@@ -46,7 +46,7 @@
 
 ## 6. 연관 모듈 및 외부 시스템
 * 상위 호출자: MarketDataWebSocket, HistoricalDataLoader
-* 하위 호출 대상: StrategyManager, RiskManager, MetricsTracker, NotificationService
+* 하위 호출 대상: StrategyManager, RiskManager, metrics.py, NotificationService
 * 연계되는 DB/캐시/메시지큐: Redis, Postgres
 * 타 모듈 간 의존 관계: OrderExecutor 또는 SimulatorExecutor와 직접 연결
 

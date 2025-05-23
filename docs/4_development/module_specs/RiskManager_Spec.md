@@ -48,7 +48,7 @@
 * 상위 호출자: StrategyManager 또는 TradingBot
 * 하위 호출 대상: OrderExecutor, SimulatorExecutor
 * 연계되는 DB/캐시/메시지큐: Postgres, Redis 캐시
-* 타 모듈 간 의존 관계: MetricsTracker와 연동하여 리젝 통계 수집
+* 타 모듈 간 의존 관계: metrics.py와 연동하여 리젝 통계 수집
 
 ## 7. 리소스 및 성능
 ### 7.1 리소스 소비

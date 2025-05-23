@@ -48,7 +48,7 @@
 * 상위 호출자: TradingBot
 * 하위 호출 대상: RiskManager
 * 연계되는 DB/캐시/메시지큐: Redis(옵션), 플러그인 스토리지
-* 타 모듈 간 의존 관계: PluginLoader, MetricsTracker
+* 타 모듈 간 의존 관계: PluginLoader, metrics.py
 
 ## 7. 리소스 및 성능
 ### 7.1 리소스 소비

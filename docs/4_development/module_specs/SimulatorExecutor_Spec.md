@@ -48,7 +48,7 @@
 * 상위 호출자: RiskManager, HistoricalDataLoader
 * 하위 호출 대상: Redis Pub/Sub
 * 연계되는 DB/캐시/메시지큐: Postgres(잔고), Redis
-* 타 모듈 간 의존 관계: MetricsTracker와 연결
+* 타 모듈 간 의존 관계: metrics.py와 연결
 
 ## 7. 리소스 및 성능
 ### 7.1 리소스 소비
