@@ -13,7 +13,7 @@ from typing import Deque, Dict, Iterable
 
 class DummyRedis:
     async def publish(self, channel: str, message: str) -> None:  # pragma: no cover
-        pass
+        print(f"{channel}: {message}")
 
 
 class TrendScanner:
