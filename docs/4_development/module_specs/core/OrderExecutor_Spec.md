@@ -4,9 +4,9 @@
 
 ## 1. 모듈 개요
 * 모듈명: OrderExecutor
-* 작성자: TBD
+* 작성자: Codex
 * 작성일: 2025-05-22
-* 최종 검토자: TBD
+* 최종 검토자: Codex
 * 최종 수정일: 2025-05-22
 
 실계좌 주문을 거래소 REST/WS API로 전송하고 체결 결과를 수신한다. 체결 정보는 Redis `order.fill` 채널로 퍼블리시하며 Postgres에 기록한다.
