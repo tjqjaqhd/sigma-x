@@ -8,8 +8,8 @@ websockets
 
 # DB/ORM
 SQLAlchemy>=2.0
-psycopg2-binary     # PostgreSQL sync driver
-# asyncpg           # PostgreSQL async driver
+psycopg2-binary       # PostgreSQL sync driver
+# asyncpg             # PostgreSQL async driver
 
 # 전략 수행
 pandas
@@ -17,12 +17,17 @@ numpy
 vectorbt
 optuna
 
-# 시뮬·백테스트
+# 시뮬 · 백테스트
 python-dateutil
 
 # 모니터링
 prometheus-client
 
+# PDF 처리
 PyPDF2
 
+# 메시지 큐 비동기 처리
 aio_pika>=9.3.0
+
+# 파일 MIME 타입 분석 (Python 버전)
+python-magic
