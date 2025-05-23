@@ -11,12 +11,13 @@ import logging
 from typing import Dict, Optional
 
 import psutil
+from sigma.common.logging_service import get_logger
 
 
 class SystemStatus:
     def __init__(self, interval: int = 5, logger: Optional[logging.Logger] = None) -> None:
         self.interval = interval
-        self.logger = logger or logging.getLogger(__name__)
+        self.logger = logger or get_logger(__name__)
         self.status: Dict[str, float] = {}
         self._task: asyncio.Task | None = None
 

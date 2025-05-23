@@ -1,11 +1,12 @@
 """Redis Pub/Sub 래퍼 모듈.
 
-사양은 ``docs/4_development/module_specs/infrastructure/RedisPubSub_Spec.md`` 를 따른다.
+사양은
+``docs/4_development/module_specs/infrastructure/RedisPubSub_Spec.md``
+를 따른다.
 """
 
 from __future__ import annotations
 
-import asyncio
 import json
 import logging
 from typing import Any, AsyncGenerator, Dict, Optional
@@ -13,7 +14,7 @@ from typing import Any, AsyncGenerator, Dict, Optional
 import aioredis
 
 
-class RedisPubsub:
+class RedisPubSub:
     def __init__(self, url: str = "redis://localhost", logger=None) -> None:
         self.url = url
         self.redis: Optional[aioredis.Redis] = None
@@ -41,4 +42,3 @@ class RedisPubsub:
                     yield json.loads(msg["data"])
         finally:
             await pubsub.unsubscribe(channel)
-

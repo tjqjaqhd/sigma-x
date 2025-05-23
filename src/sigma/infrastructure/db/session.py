@@ -17,9 +17,7 @@ class DBSession:
 
     def __init__(self, dsn: str, pool_size: int = 5) -> None:
         self.engine = create_engine(dsn, pool_size=pool_size, future=True)
-        self.SessionLocal = sessionmaker(
-            bind=self.engine, autoflush=False, autocommit=False
-        )
+        self.SessionLocal = sessionmaker(bind=self.engine, autoflush=False, autocommit=False)
 
     def get_session(self) -> _Session:
         return self.SessionLocal()

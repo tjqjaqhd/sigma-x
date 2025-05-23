@@ -8,23 +8,28 @@ from __future__ import annotations
 import json
 import logging
 import os
-from typing import Any, Optional
+from typing import Any, Dict
 
 import pandas as pd
 
 
 class ReportRepository:
-    def __init__(
-        self, base_dir: str = "reports", logger: Optional[logging.Logger] = None
-    ) -> None:
-        self.base_dir = base_dir
+    def __init__(self, db, logger=None) -> None:
+        self.db = db
         self.logger = logger or logging.getLogger(__name__)
-        os.makedirs(self.base_dir, exist_ok=True)
+
+    async def save_report(self, report: Dict[str, Any]) -> None:
+        # 실제 DB 저장 로직 필요
+        self.logger.info(
+            "리포트 저장: %s, PnL: %s",
+            report.get("strategy_id"),
+            report.get("pnl"),
+        )
 
     def _path(self, name: str) -> str:
         return os.path.join(self.base_dir, name)
 
-    def save_report(self, data: Any, name: str) -> str:
+    def save_report_sync(self, data: Any, name: str) -> str:
         path = self._path(name)
         if hasattr(data, "to_csv"):
             data.to_csv(path, index=False)

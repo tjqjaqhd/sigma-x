@@ -12,7 +12,7 @@ from typing import Any, AsyncGenerator, Dict, Optional
 import aio_pika
 
 
-class RabbitmqQueue:
+class RabbitMQQueue:
     def __init__(
         self,
         queue_name: str = "sigma",
@@ -39,9 +39,7 @@ class RabbitmqQueue:
     async def send(self, task: str, payload: Dict[str, Any]) -> Dict[str, Any]:
         assert self.channel
         body = json.dumps({"task": task, "payload": payload}).encode()
-        await self.channel.default_exchange.publish(
-            aio_pika.Message(body=body), routing_key=self.queue_name
-        )
+        await self.channel.default_exchange.publish(aio_pika.Message(body=body), routing_key=self.queue_name)
         self.logger.debug("큐 전송: %s", body)
         return {"task": task, "status": "queued"}
 
@@ -51,4 +49,3 @@ class RabbitmqQueue:
             async for message in iterator:
                 async with message.process():
                     yield json.loads(message.body.decode())
-

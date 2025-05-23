@@ -17,7 +17,7 @@ FastAPI에서 `/ws` 경로로 노출되는 실시간 스트림 엔드포인트�
 * 포함된 클래스/함수: `WebSocketEndpoint`, `broadcast_message`
 * 주요 메서드: `on_connect`, `on_receive`, `on_disconnect`
 * 외부 API 제공 여부: WebSocket
-* 소스 파일 위치: `sigma/ws_endpoint.py`
+* 소스 파일 위치: `sigma/interfaces/ws_endpoint.py`
 
 ## 3. 인터페이스 명세
 ### 3.1 입력

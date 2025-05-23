@@ -3,7 +3,7 @@
 이 문서는 SIGMA 프로젝트의 각 모듈을 명확히 기록하기 위한 문서입니다. 모든 항목은 누락 없이 작성하며, 해당 사항이 없을 경우 **해당 없음**으로 표기합니다.
 
 ## 1. 모듈 개요
-* 모듈명: Logger
+* 모듈명: LoggingService
 * 작성자: TBD
 * 작성일: 2025-05-23
 * 최종 검토자: TBD
@@ -13,10 +13,11 @@
 지원하며, JSON 포맷 출력도 가능하다.
 
 ## 2. 구조 개요
-* 포함된 클래스/함수: `setup_logger`
-* 주요 메서드: `get_logger()`
+* 포함된 클래스/함수: `LoggingService`, `setup_logger`, `get_logger`
+* 주요 메서드: `get_logger()`, `set_level()`
 * 외부 API 제공 여부: 없음
-* 소스 파일 위치: `sigma/logger.py`
+* 소스 파일 위치: `sigma/logging_service.py`
+* 예시: `logger = get_logger("order")`
 
 ## 3. 인터페이스 명세
 ### 3.1 입력
@@ -36,20 +37,20 @@
 
 ## 4. 내부 처리 로직
 * 처리 흐름 요약: 로거 인스턴스 생성 → 핸들러 설정 → 포맷 지정
-* 순서도/플로우차트: Initialization flow의 logger 단계
+* 순서도/플로우차트: Initialization flow의 LoggingService 단계
 * 알고리즘 요약: Python logging 모듈 래핑
 
 ## 5. 예외 처리
 * 주요 예외 유형: 파일 쓰기 실패
 * 발생 조건: 디스크 공간 부족 등
 * 대응 방식: 콘솔로 폴백
-* 로깅/알림: logging_service에 자체 로그 기록
+* 로깅/알림: logging_service.py에 자체 로그 기록
 
 ## 6. 연관 모듈 및 외부 시스템
 * 상위 호출자: 모든 모듈
 * 하위 호출 대상: 파일 시스템
 * 연계되는 DB/캐시/메시지큐: 없음
-* 타 모듈 간 의존 관계: logging_service와 연계
+* 타 모듈 간 의존 관계: logging_service.py와 연계
 
 ## 7. 리소스 및 성능
 ### 7.1 리소스 소비
@@ -80,3 +81,5 @@
 * 기술적 부채: 구조화 로깅 미흡
 * 향후 개선/확장 예정 사항: 로그 집계 도구 연동
 * 폐지 예정 요소: 없음
+
+## [DEPRECATED] logger.py는 더 이상 사용하지 않음. logging_service.py만 사용

@@ -6,11 +6,12 @@ YAML 파일과 환경 변수 값을 병합하여 설정 딕셔너리를 제공�
 
 from __future__ import annotations
 
-import logging
 import os
+import logging
 from typing import Any, Dict
 
 import yaml
+from sigma.common.logging_service import get_logger
 
 
 class ConfigLoader:
@@ -24,7 +25,7 @@ class ConfigLoader:
     ) -> None:
         self.default_path = default_path
         self.env_prefix = env_prefix
-        self.logger = logger or logging.getLogger(__name__)
+        self.logger = logger or get_logger(__name__)
         self.config: Dict[str, Any] = {}
 
     def load_yaml(self, path: str) -> Dict[str, Any]:
@@ -52,4 +53,3 @@ class ConfigLoader:
 
     def get(self, key: str, default: Any | None = None) -> Any:
         return self.config.get(key, default)
-

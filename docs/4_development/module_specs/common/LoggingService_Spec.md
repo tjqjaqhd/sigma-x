@@ -13,10 +13,12 @@
 시스템(예: Loki)으로 전송하며, 로그 레벨은 설정에 따라 동적으로 변경 가능하다.
 
 ## 2. 구조 개요
-* 포함된 클래스/함수: `LoggingService`, `setup_logger`
+* 포함된 클래스/함수: `LoggingService`, `setup_logger`, `get_logger`
 * 주요 메서드: `get_logger`, `set_level`
 * 외부 API 제공 여부: 없음
 * 소스 파일 위치: `sigma/logging_service.py`
+* 예시: `logger = get_logger("order")`
+* [DEPRECATED] logger.py는 더 이상 사용하지 않음. logging_service.py만 사용
 
 ## 3. 인터페이스 명세
 ### 3.1 입력

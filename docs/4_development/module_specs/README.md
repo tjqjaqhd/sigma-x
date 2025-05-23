@@ -20,8 +20,8 @@ SIGMA 아키텍처의 레이어별로 모듈 사양서를 구분했습니다.
 - `ApiService`
 - `Cache`
 - `SessionManager`
-- `RedisPubsub`
-- `RabbitmqQueue`
+- `RedisPubSub`
+- `RabbitMQQueue`
 - `PaymentProcessor`
 - `MLModule`
 - `PluginLoader`
@@ -53,3 +53,5 @@ SIGMA 아키텍처의 레이어별로 모듈 사양서를 구분했습니다.
 - `StrategyManager`
 - `OrderExecutor`
 - `TrendScanner`
+
+[DEPRECATED] logger.py는 더 이상 사용하지 않음. logging_service.py만 사용

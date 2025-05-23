@@ -12,10 +12,10 @@
 업비트·바이낸스 등 거래소의 실시간 틱 데이터를 받아 전략을 실행하고 주문 파이프라인을 오케스트레이션한다. 주문 체결 후 포지션과 잔고를 갱신하며 지표 및 알림 모듈과 연동한다.
 
 ## 2. 구조 개요
-* 포함된 클래스/함수: `TradingBot`, `handle_tick`, `update_position`
-* 주요 메서드: `start()`, `process_tick()`, `dispatch_order()`
+* 포함된 클래스/함수: `TradingBot`, `process_tick`, `run`
+* 주요 메서드: `run()`, `process_tick()`
 * 외부 API 제공 여부: 없음
-* 소스 파일 위치: `sigma/tradingbot.py`
+* 소스 파일 위치: `sigma/core/trading_bot.py`
 
 ## 3. 인터페이스 명세
 ### 3.1 입력

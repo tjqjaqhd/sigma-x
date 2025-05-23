@@ -13,16 +13,12 @@ from sqlalchemy.engine import Engine
 from sqlalchemy.orm import Session, sessionmaker
 
 
-class Postgres:
+class PostgresClient:
     """동기식 PostgreSQL 클라이언트."""
 
     def __init__(self, dsn: str, pool_size: int = 5, echo: bool = False) -> None:
-        self.engine: Engine = create_engine(
-            dsn, pool_size=pool_size, echo=echo, future=True
-        )
-        self.SessionLocal = sessionmaker(
-            bind=self.engine, autoflush=False, autocommit=False
-        )
+        self.engine: Engine = create_engine(dsn, pool_size=pool_size, echo=echo, future=True)
+        self.SessionLocal = sessionmaker(bind=self.engine, autoflush=False, autocommit=False)
 
     @contextmanager
     def session_scope(self) -> Generator[Session, None, None]:
