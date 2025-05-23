@@ -11,7 +11,7 @@ from fastapi import APIRouter, FastAPI
 from typing import Any, Dict
 
 
-class DashboardApi:
+class DashboardAPI:
     def __init__(self, session_manager, system_status, ws_endpoint, logger=None) -> None:
         self.session_manager = session_manager
         self.system_status = system_status
