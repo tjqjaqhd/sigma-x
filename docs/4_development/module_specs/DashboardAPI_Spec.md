@@ -52,7 +52,7 @@ FastAPI 기반의 REST 및 WebSocket 서버로 포지션, 실적, 시스템 상�
 * 상위 호출자: 사용자의 웹 브라우저
 * 하위 호출 대상: Redis, Postgres
 * 연계되는 DB/캐시/메시지큐: Redis, Postgres
-* 타 모듈 간 의존 관계: MetricsTracker와 데이터 공유
+* 타 모듈 간 의존 관계: metrics.py와 데이터 공유
 
 ## 7. 리소스 및 성능
 ### 7.1 리소스 소비
@@ -75,7 +75,7 @@ FastAPI 기반의 REST 및 WebSocket 서버로 포지션, 실적, 시스템 상�
 ## 9. 테스트 및 검증
 * 단위 테스트 항목: 각 엔드포인트 응답, 인증 로직
 * 예외 테스트 항목: 잘못된 요청, 권한 없음
-* 통합 테스트 체크리스트: TradingBot 및 MetricsTracker와 데이터 연동
+* 통합 테스트 체크리스트: TradingBot 및 metrics.py와 데이터 연동
 * 테스트 커버리지 목표: 80% 이상
 
 ## 10. 제약사항 및 향후 계획

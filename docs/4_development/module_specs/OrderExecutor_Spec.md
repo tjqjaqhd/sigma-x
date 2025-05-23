@@ -48,7 +48,7 @@
 * 상위 호출자: RiskManager
 * 하위 호출 대상: 외부 거래소 API, Redis
 * 연계되는 DB/캐시/메시지큐: Postgres, Redis
-* 타 모듈 간 의존 관계: MetricsTracker와 체결 통계 공유
+* 타 모듈 간 의존 관계: metrics.py와 체결 통계 공유
 
 ## 7. 리소스 및 성능
 ### 7.1 리소스 소비

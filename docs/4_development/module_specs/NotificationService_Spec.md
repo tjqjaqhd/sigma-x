@@ -42,13 +42,13 @@ Alertmanager에서 전달된 경보를 Slack 또는 Telegram으로 전송한다.
 * 주요 예외 유형: 네트워크 오류, 인증 실패
 * 발생 조건: Slack API 응답 오류 등
 * 대응 방식: 재시도 후 실패 시 로컬 로그 저장
-* 로깅/알림: 실패 기록을 MetricsTracker에도 전송
+* 로깅/알림: 실패 기록을 metrics.py에도 전송
 
 ## 6. 연관 모듈 및 외부 시스템
 * 상위 호출자: Alertmanager, 각 모듈의 오류 핸들러
 * 하위 호출 대상: Slack API, Telegram API
 * 연계되는 DB/캐시/메시지큐: 없음
-* 타 모듈 간 의존 관계: MetricsTracker와 통합
+* 타 모듈 간 의존 관계: metrics.py와 통합
 
 ## 7. 리소스 및 성능
 ### 7.1 리소스 소비
