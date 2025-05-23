@@ -9,6 +9,8 @@ import asyncio
 import logging
 from typing import Any, Dict, Optional
 
+import aiohttp
+
 
 class MetricsTracker:
     """메트릭을 수집해 주기적으로 푸시한다."""
@@ -33,8 +35,19 @@ class MetricsTracker:
 
     async def push_metrics(self) -> None:
         """모은 메트릭을 Pushgateway로 전송한다."""
-        self.logger.debug("메트릭 푸시: %s", self.metrics)
-        self.metrics.clear()
+        if not self.metrics:
+            return
+        body = "\n".join(f"{k} {v}" for k, v in self.metrics.items()) + "\n"
+        url = f"{self.pushgateway_url}/metrics/job/sigma"
+        try:
+            async with aiohttp.ClientSession() as session:
+                async with session.post(url, data=body) as resp:
+                    resp.raise_for_status()
+            self.logger.debug("메트릭 전송 성공: %s", body)
+        except Exception as exc:  # pragma: no cover - 네트워크 오류
+            self.logger.warning("메트릭 전송 실패: %s", exc)
+        finally:
+            self.metrics.clear()
 
     async def _loop(self) -> None:
         while True:
@@ -53,4 +66,3 @@ class MetricsTracker:
             except asyncio.CancelledError:  # pragma: no cover - 종료 처리
                 pass
             self._task = None
-

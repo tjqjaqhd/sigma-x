@@ -9,6 +9,8 @@ import logging
 import time
 from typing import Any, Dict, Optional
 
+import aioredis
+
 
 class Cache:
     def __init__(
@@ -25,7 +27,15 @@ class Cache:
 
     async def initialize(self) -> None:
         """외부 캐시 초기화 훅."""
-        pass
+        if isinstance(self.redis, str):
+            self.redis = await aioredis.from_url(self.redis, decode_responses=True)
+        if self.redis is not None:
+            try:
+                await self.redis.ping()
+                self.logger.debug("Redis 캐시 연결 완료")
+            except Exception as exc:  # pragma: no cover - 네트워크 오류
+                self.logger.warning("Redis 연결 실패: %s", exc)
+                self.redis = None
 
     def set(self, key: str, value: Any, ttl: Optional[int] = None) -> None:
         ttl = ttl or self.default_ttl
@@ -46,4 +56,3 @@ class Cache:
             if self._expiry[k] < now:
                 self._expiry.pop(k, None)
                 self._store.pop(k, None)
-

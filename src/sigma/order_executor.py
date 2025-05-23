@@ -17,7 +17,7 @@ class DummyRedis:
     async def publish(
         self, channel: str, message: str
     ) -> None:  # pragma: no cover - 외부 의존성 대체
-        pass
+        print(f"{channel}: {message}")
 
 
 class OrderExecutor:
