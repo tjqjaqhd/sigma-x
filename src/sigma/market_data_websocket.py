@@ -1,11 +1,12 @@
 """실시간 시세 WebSocket 수집 모듈.
 
-`docs/4_development/module_specs/interfaces/MarketDataWebSocket_Spec.md` 사양을 따른다.
+사양은
+`docs/4_development/module_specs/interfaces/MarketDataWebSocket_Spec.md`
+를 따른다.
 """
 
 from __future__ import annotations
 
-import asyncio
 import json
 import logging
 from typing import Iterable, Optional
@@ -14,8 +15,12 @@ import websockets
 
 
 class DummyRedis:
-    async def publish(self, channel: str, message: str) -> None:  # pragma: no cover
-        print(f"{channel}: {message}")
+    def __init__(self, logger: logging.Logger | None = None) -> None:
+        self.logger = logger or logging.getLogger(__name__)
+
+    async def publish(self, channel: str, message: str) -> None:
+        """디버그 로그로 메시지를 기록한다."""  # pragma: no cover
+        self.logger.debug("%s: %s", channel, message)
 
 
 class MarketDataWebSocket:
@@ -26,8 +31,8 @@ class MarketDataWebSocket:
     ) -> None:
         self.url = url
         self.symbols = list(symbols)
-        self.redis = redis or DummyRedis()
         self.logger = logger or logging.getLogger(__name__)
+        self.redis = redis or DummyRedis(logger=self.logger)
         self.ws: Optional[websockets.WebSocketClientProtocol] = None
 
     async def connect(self) -> None:
@@ -37,7 +42,10 @@ class MarketDataWebSocket:
     async def subscribe(self) -> None:
         assert self.ws
         if "upbit" in self.url:
-            payload = [{"ticket": "sigma"}, {"type": "ticker", "codes": self.symbols}]
+            payload = [
+                {"ticket": "sigma"},
+                {"type": "ticker", "codes": self.symbols},
+            ]
         else:
             streams = [f"{s.lower()}@ticker" for s in self.symbols]
             payload = {"method": "SUBSCRIBE", "params": streams, "id": 1}
