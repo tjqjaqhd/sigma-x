@@ -18,7 +18,7 @@ class DummyRedis:
         print(f"{channel}: {message}")
 
 
-class MarketWs:
+class MarketDataWebSocket:
     """거래소 WebSocket을 연결하고 틱 데이터를 Redis로 전달한다."""
 
     def __init__(
