@@ -15,7 +15,9 @@ from typing import Any, Coroutine, Iterable, Set
 class EventLoop:
     """asyncio 기반 간단한 태스크 스케줄러."""
 
-    def __init__(self, max_tasks: int = 100, logger: logging.Logger | None = None) -> None:
+    def __init__(
+        self, max_tasks: int = 100, logger: logging.Logger | None = None
+    ) -> None:
         self.max_tasks = max_tasks
         self.logger = logger or logging.getLogger(__name__)
         self._tasks: Set[asyncio.Task[Any]] = set()
@@ -34,7 +36,9 @@ class EventLoop:
         """등록된 태스크가 모두 끝날 때까지 실행한다."""
         self._running = True
         while self._running and self._tasks:
-            done, _ = await asyncio.wait(self._tasks, return_when=asyncio.FIRST_COMPLETED)
+            done, _ = await asyncio.wait(
+                self._tasks, return_when=asyncio.FIRST_COMPLETED
+            )
             for task in done:
                 if exc := task.exception():
                     self.logger.exception("태스크 예외: %s", exc)
@@ -47,10 +51,20 @@ class EventLoop:
         await asyncio.gather(*self._tasks, return_exceptions=True)
         self._tasks.clear()
 
+    async def run(self, mode: str, config: dict) -> None:
+        """설정에 등록된 태스크를 실행한다."""
+        tasks = config.get("tasks", [])
+        for coro in tasks:
+            self.spawn(coro)
+        self.logger.info("EventLoop 시작: %s", mode)
+        try:
+            await self.start()
+        finally:
+            await self.stop()
+
 
 def create_tasks(loop: EventLoop, coros: Iterable[Coroutine[Any, Any, Any]]) -> None:
     """여러 코루틴을 일괄 등록한다."""
 
     for coro in coros:
         loop.spawn(coro)
-

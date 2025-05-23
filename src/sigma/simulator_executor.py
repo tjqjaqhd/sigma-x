@@ -15,7 +15,7 @@ from typing import Any, Dict
 
 class DummyRedis:
     async def publish(self, channel: str, message: str) -> None:  # pragma: no cover
-        pass
+        print(f"{channel}: {message}")
 
 
 class SimulatorExecutor:

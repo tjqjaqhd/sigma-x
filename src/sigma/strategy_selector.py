@@ -15,6 +15,7 @@ class StrategySelector:
         self.manager = manager
         self.current_strategy: str | None = None
         self.logger = logger or logging.getLogger(__name__)
+        self.strategy_params: Dict[str, Any] = {}
 
     async def select_strategy(self, strategy_id: str, params: Dict[str, Any]) -> None:
         """새 전략을 적용한다."""
@@ -25,4 +26,6 @@ class StrategySelector:
         await self.manager.initialize()
 
     async def update_params(self, params: Dict[str, Any]) -> None:
-        self.logger.debug("전략 파라미터 업데이트: %s", params)
+        self.strategy_params.update(params)
+        self.logger.debug("전략 파라미터 업데이트: %s", self.strategy_params)
+        await self.manager.initialize()
