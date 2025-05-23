@@ -209,7 +209,7 @@
 | 44 | **ReportRepository** | ALL | 리포트 저장소 |
 | 45 | **DashboardAPI** | ALL | 실적 및 상태 조회 API |
 
-자세한 모듈별 사양은 `docs/4_development/module_specs/` 디렉터리를 참조하세요.
+자세한 모듈별 사양은 `docs/4_development/module_specs/` 이하 레이어별 하위 디렉터리를 참조하세요.
 ---
 
 ## 5. Data Flow & Sequence (high-level)
