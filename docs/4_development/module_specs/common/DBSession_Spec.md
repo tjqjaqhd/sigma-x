@@ -15,7 +15,7 @@ PostgreSQL 데이터베이스와의 연결 세션을 생성하고 관리한다. 
 * 포함된 클래스/함수: `SessionManager`, `get_session`
 * 주요 메서드: `init_engine()`, `session_scope()`
 * 외부 API 제공 여부: 없음
-* 소스 파일 위치: `sigma/db/session.py`
+* 소스 파일 위치: `sigma/infrastructure/db/session.py`
 
 ## 3. 인터페이스 명세
 ### 3.1 입력

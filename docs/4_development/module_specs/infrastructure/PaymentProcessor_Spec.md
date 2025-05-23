@@ -16,7 +16,7 @@
 * 포함된 클래스/함수: `PaymentProcessor`, `request_withdrawal`, `confirm_deposit`
 * 주요 메서드: `process_payment()`, `verify_balance()`
 * 외부 API 제공 여부: 없음
-* 소스 파일 위치: `sigma/payment_processor.py`
+* 소스 파일 위치: `sigma/infrastructure/payment_processor.py`
 
 ## 3. 인터페이스 명세
 ### 3.1 입력

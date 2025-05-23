@@ -16,7 +16,7 @@
 * 포함된 클래스/함수: `RabbitMQQueue`, `publish_task`, `consume_task`
 * 주요 메서드: `send()`, `listen()`
 * 외부 API 제공 여부: 없음
-* 소스 파일 위치: `sigma/rabbitmq_queue.py`
+* 소스 파일 위치: `sigma/infrastructure/rabbitmq_queue.py`
 
 ## 3. 인터페이스 명세
 ### 3.1 입력

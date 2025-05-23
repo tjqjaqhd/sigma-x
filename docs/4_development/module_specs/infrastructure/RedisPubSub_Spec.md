@@ -17,7 +17,7 @@ Redis 서버와의 Pub/Sub 인터페이스를 래핑하여 메시지 퍼블리�
 * 포함된 클래스/함수: `RedisPubSub`, `publish`, `subscribe`
 * 주요 메서드: `connect()`, `close()`
 * 외부 API 제공 여부: 없음
-* 소스 파일 위치: `sigma/redis_pubsub.py`
+* 소스 파일 위치: `sigma/infrastructure/redis_pubsub.py`
 
 ## 3. 인터페이스 명세
 ### 3.1 입력
