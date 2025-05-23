@@ -1,8 +1,46 @@
-"""strategy_manager module skeleton.
+"""StrategyManager 모듈.
 
-See docs/4_development/module_specs for specification.
+플러그인 방식의 전략을 로딩하고 실행한다. 자세한 사양은
+``docs/4_development/module_specs`` 참조.
 """
 
+from __future__ import annotations
+
+import asyncio
+import logging
+from typing import Any, Awaitable, Callable, Dict, Optional
+
+
+StrategyFunc = Callable[[Dict[str, Any]], Awaitable[Optional[Dict[str, Any]]]]
+
+
 class StrategyManager:
-    def __init__(self):
+    """전략 플러그인 로딩 및 실행 담당."""
+
+    def __init__(self, logger=None) -> None:
+        self.strategies: Dict[str, StrategyFunc] = {}
+        self.logger = logger or logging.getLogger(__name__)
+
+    def register_strategy(self, name: str, func: StrategyFunc) -> None:
+        self.logger.debug("전략 등록: %s", name)
+        self.strategies[name] = func
+
+    async def initialize(self) -> None:
+        """전략 초기화 훅."""
         pass
+
+    async def execute(self, tick: Dict[str, Any]) -> Optional[Dict[str, Any]]:
+        """등록된 전략을 순차 실행해 첫 주문 초안을 반환한다."""
+        for name, func in self.strategies.items():
+            try:
+                order = await func(tick)
+                if order:
+                    self.logger.debug("%s 전략 주문 생성: %s", name, order)
+                    return order
+            except Exception as exc:  # pragma: no cover - 전략 오류는 로깅
+                self.logger.exception("전략 %s 실행 오류: %s", name, exc)
+        return None
+
+    async def shutdown(self) -> None:
+        """정리 작업 수행."""
+        self.strategies.clear()
