@@ -43,7 +43,7 @@
 
 ## 6. 연관 모듈 및 외부 시스템
 * 상위 호출자: 사용자 CLI
-* 하위 호출 대상: config_loader, db/session, event_loop 등
+* 하위 호출 대상: config_loader, infrastructure/db/session, event_loop 등
 * 연계되는 DB/캐시/메시지큐: Redis, PostgreSQL
 * 타 모듈 간 의존 관계: 초기화 흐름의 시작점
 

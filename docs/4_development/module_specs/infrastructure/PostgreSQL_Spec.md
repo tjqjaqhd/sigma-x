@@ -16,7 +16,7 @@
 * 포함된 클래스/함수: `PostgresClient`, `init_db`, `close_db`
 * 주요 메서드: `execute_query()`, `fetch_all()`
 * 외부 API 제공 여부: 없음
-* 소스 파일 위치: `sigma/db/postgres.py`
+* 소스 파일 위치: `sigma/infrastructure/db/postgres.py`
 
 ## 3. 인터페이스 명세
 ### 3.1 입력
@@ -46,10 +46,10 @@
 * 로깅/알림: logging_service, 필요 시 NotificationService 호출
 
 ## 6. 연관 모듈 및 외부 시스템
-* 상위 호출자: db/session.py
+* 상위 호출자: infrastructure/db/session.py
 * 하위 호출 대상: 실제 PostgreSQL 서버
 * 연계되는 DB/캐시/메시지큐: 해당 없음
-* 타 모듈 간 의존 관계: ORM 모델(db/models.py)과 밀접
+* 타 모듈 간 의존 관계: ORM 모델(infrastructure/db/models.py)과 밀접
 
 ## 7. 리소스 및 성능
 ### 7.1 리소스 소비

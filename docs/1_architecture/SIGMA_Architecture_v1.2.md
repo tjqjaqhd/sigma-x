@@ -63,8 +63,8 @@
   subgraph Common
     direction TB
     configLoader["config_loader.py"]
-    dbSession["db/session.py"]
-    dbModels["db/models.py"]
+    dbSession["infrastructure/db/session.py"]
+    dbModels["infrastructure/db/models.py"]
     logger["logger.py"]
     pluginLoader["plugin_loader.py"]
     metrics["metrics.py"]
@@ -188,8 +188,8 @@
 | 23 | **CommentaryModule** | ALL | 코멘터리 생성 |
 | 24 | **SystemStatus** | ALL | 서비스 상태 모니터링 |
 | 25 | **config_loader.py** | ALL | 설정 파일 로드 |
-| 26 | **db/session.py** | ALL | DB 세션 관리 |
-| 27 | **db/models.py** | ALL | ORM 모델 정의 |
+| 26 | **infrastructure/db/session.py** | ALL | DB 세션 관리 |
+| 27 | **infrastructure/db/models.py** | ALL | ORM 모델 정의 |
 | 28 | **logger.py** | ALL | 로깅 설정 |
 | 29 | **plugin_loader.py** | ALL | 플러그인 로드 |
 | 30 | **metrics.py** | ALL | 지표 수집 모듈 |

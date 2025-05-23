@@ -16,7 +16,7 @@
 * 포함된 클래스/함수: `ReportRepository`, `save_report`, `load_report`
 * 주요 메서드: `write_csv()`, `read_csv()`, `archive()`
 * 외부 API 제공 여부: 없음
-* 소스 파일 위치: `sigma/report_repository.py`
+* 소스 파일 위치: `sigma/infrastructure/report_repository.py`
 
 ## 3. 인터페이스 명세
 ### 3.1 입력
