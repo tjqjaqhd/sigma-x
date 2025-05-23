@@ -23,3 +23,13 @@ SIGMA 아키텍처의 레이어별로 모듈 사양서를 구분했습니다.
 - `RedisPubsub`
 - `RabbitmqQueue`
 - `PaymentProcessor`
+- `MLModule`
+- `PluginLoader`
+- `PerformanceReporter`
+- `CommentaryModule`
+- `NewsHandler`
+- `HistoricalLoader`
+- `FastAPI_InitApp`
+- `RunBot_Main`
+- `Redis_SubscribePriceUpdate`
+- `WebSocket_Endpoint`
