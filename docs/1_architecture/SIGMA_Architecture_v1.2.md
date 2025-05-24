@@ -23,140 +23,47 @@
 
 ## 3. High-Level Diagram (Mermaid)
 
-​flowchart TB
+상세한 시스템 플로우차트는 별도 문서를 참조하세요: **[flowchart.md](./flowchart.md)**
 
-  %% Interfaces Layer
-  subgraph Interfaces
-    direction TB
-    main["run_bot.py:main"]
-    backtestCLI["backtest.py CLI"]
-    wsReceive["WebSocket.receive_prices"]
-    wsSubscribe["Redis.subscribe_price_update"]
-    fastApi["FastAPI.initApp"]
-    wsEndpoint["/ws endpoint"]
-    reactDashboard["ReactDashboard.useWebSocket"]
-    restApi["REST /api/orders,/api/pnl"]
-  end
+```mermaid
+graph TB
+    subgraph "🌐 Interface Layer"
+        A[CLI/API Entry Points]
+        B[WebSocket/REST APIs]
+        C[Dashboard UI]
+    end
 
-  %% Core Layer
-  subgraph Core
-    direction TB
-    tradingBot["TradingBot"]
-    strategyManager["StrategyManager"]
-    riskManager["RiskManager"]
-    orderExecutor["OrderExecutor"]
-    simulatorExecutor["SimulatorExecutor"]
-    strategySelector["StrategySelector"]
-    optimizationModule["OptimizationModule"]
-    trendScanner["TrendScanner"]
-    performanceReporter["PerformanceReporter"]
-    mlModule["MLModule"]
-    strategyTester["StrategyTester"]
-    newsHandler["NewsHandler"]
-    anomalyDetector["AnomalyDetector"]
-    dataCleaner["DataCleaner"]
-    commentaryModule["CommentaryModule"]
-    systemStatus["SystemStatus"]
-  end
+    subgraph "⚡ Core Logic Layer"
+        D[Trading Engine]
+        E[Strategy Management]
+        F[Risk & Execution]
+    end
 
-  %% Common Layer
-  subgraph Common
-    direction TB
-    configLoader["config_loader.py"]
-    dbSession["infrastructure/db/session.py"]
-    dbModels["infrastructure/db/models.py"]
-    logger["logger.py"]
-    pluginLoader["plugin_loader.py"]
-    metrics["metrics.py"]
-    userPrefs["user_prefs.py"]
-    healthCheck["health_check.py"]
-    cache["cache.py"]
-    additionalSetup["additional_setup.py"]
-    notificationService["notification_service.py"]
-    apiService["api_service.py"]
-    eventLoop["event_loop.py"]
-    sessionManager["session_manager.py"]
-    loggingService["logging_service.py"]
-    redisPub["Redis Pub/Sub"]
-    rabbitMQ["RabbitMQ Queue"]
-    postgreSQL["PostgreSQL"]
-    paymentProcessor["PaymentProcessor"]
-    reportRepo["ReportRepository"]
-  end
+    subgraph "🛠️ Common Layer"
+        G[Configuration & Logging]
+        H[Data & Cache]
+        I[Monitoring & Alerts]
+    end
 
-  %% Initialization flow
-  main --> configLoader
-  configLoader --> dbSession
-  dbSession --> dbModels
-  dbModels --> logger
-  logger --> pluginLoader
-  pluginLoader --> metrics
-  metrics --> userPrefs
-  userPrefs --> healthCheck
-  healthCheck --> cache
-  cache --> additionalSetup
-  additionalSetup --> notificationService
-  notificationService --> apiService
-  apiService --> eventLoop
-  eventLoop --> sessionManager
-  sessionManager --> loggingService
+    subgraph "🏗️ Infrastructure"
+        J[Redis/PostgreSQL]
+        K[Message Queues]
+    end
 
-  %% RealTimeLoop flow
-  wsReceive --> redisPub
-  redisPub --> tradingBot
-  tradingBot --> strategyManager
-  strategyManager --> riskManager
-  riskManager --> orderExecutor
-  riskManager --> simulatorExecutor
-  orderExecutor --> redisPub
-  simulatorExecutor --> redisPub
+    A --> D
+    B --> E
+    C --> F
+    D --> G
+    E --> H
+    F --> I
+    G --> J
+    H --> K
+```
 
-  tradingBot --> loggingService
-  tradingBot --> metrics
-  strategyManager --> pluginLoader
-  strategyManager --> configLoader
-  riskManager --> postgreSQL
-  orderExecutor --> paymentProcessor
-  orderExecutor --> postgreSQL
-  simulatorExecutor --> postgreSQL
-  tradingBot --> notificationService
-
-  %% Scheduler flow
-  strategySelector --> strategyManager
-  strategySelector --> optimizationModule
-  optimizationModule --> strategyManager
-  dataCleaner --> postgreSQL
-  healthCheck --> notificationService
-  healthCheck --> metrics
-  trendScanner --> redisPub
-  trendScanner --> postgreSQL
-  performanceReporter --> postgreSQL
-  performanceReporter --> reportRepo
-  mlModule --> strategyManager
-  strategySelector --> rabbitMQ
-
-  %% Simulation flow
-  backtestCLI --> strategyManager
-  strategyManager --> simulatorExecutor
-  simulatorExecutor --> postgreSQL
-  simulatorExecutor --> strategyTester
-  strategyTester --> strategyManager
-  strategyManager --> commentaryModule
-  strategyManager --> reportRepo
-
-  %% Dashboard flow
-  fastApi --> wsEndpoint
-  wsEndpoint --> wsSubscribe
-  wsSubscribe --> reactDashboard
-  fastApi --> strategyManager
-  fastApi --> loggingService
-  fastApi --> restApi
-  restApi --> orderExecutor
-  restApi --> systemStatus
-  systemStatus --> apiService
-  systemStatus --> loggingService
-  systemStatus --> metrics
-
+**주요 특징:**
+- **45개 모듈**이 4개 레이어로 구성
+- **이벤트 기반 비동기 처리** (Redis Pub/Sub)
+- **LIVE/SIM/BACKTEST** 모드에서 동일 코드 경로 사용
 ---
 
 ## 4. Component Catalog
@@ -213,7 +120,7 @@
 ---
 
 ## 5. Data Flow & Sequence (high-level)
-1. **DataSource**  
+1. **DataSource**
    LIVE → MarketDataWebSocket, BACKTEST → HistoricalDataLoader
 2. `market.tick` → Redis → **TradingBot**
 3. TradingBot → StrategyManager → RiskManager → (OrderExecutor | SimulatorExecutor)
