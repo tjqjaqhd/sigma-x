@@ -4,7 +4,7 @@ import os
 import sys
 from pathlib import Path
 
-ARCH_PATH = Path("docs/1_architecture/SIGMA_Architecture_v1.2.md")
+ARCH_PATH = Path("docs/1_architecture/SIGMA_Architecture_v1.4.md")
 SPEC_ROOT = Path("docs/4_development/module_specs")
 SRC_ROOT = Path("src/sigma")
 
