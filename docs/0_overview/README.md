@@ -9,3 +9,4 @@
 - `4_development/` : 개발 규칙과 플러그인, **모듈별 사양서**
 - `5_testing/` : 테스트 및 성능 검증 기준
 - [`../requirements/Server_Spec.md`](../requirements/Server_Spec.md) : 서버 기본 사양
+- [`Step_by_Step_Guide.md`](Step_by_Step_Guide.md) : 기획부터 운영까지 전 과정을 설명한 상세 가이드
