@@ -42,7 +42,7 @@
 * 주요 예외 유형: DB 연결 실패, 값 오류
 * 발생 조건: Postgres 다운, 입력 데이터 누락
 * 대응 방식: 재시도 후 실패 시 주문 거부
-* 로깅/알림: `logger.py` 기록, NotificationService에 전송
+* 로깅/알림: `logging_service.py` 사용 (`logger.py`는 deprecated) 기록, NotificationService에 전송
 
 ## 6. 연관 모듈 및 외부 시스템
 * 상위 호출자: StrategyManager 또는 TradingBot

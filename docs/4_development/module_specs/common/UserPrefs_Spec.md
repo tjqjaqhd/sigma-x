@@ -42,7 +42,7 @@
 * 주요 예외 유형: 키 오류, DB 실패
 * 발생 조건: 존재하지 않는 설정 키, DB 연결 오류
 * 대응 방식: 기본값 사용 또는 재시도
-* 로깅/알림: `logger.py`, 필요 시 NotificationService
+* 로깅/알림: `logging_service.py` 사용 (`logger.py`는 deprecated), 필요 시 NotificationService
 
 ## 6. 연관 모듈 및 외부 시스템
 * 상위 호출자: TradingBot, DashboardAPI

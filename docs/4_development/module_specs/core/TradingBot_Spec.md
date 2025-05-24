@@ -42,7 +42,7 @@
 * 주요 예외 유형: 네트워크 지연, 데이터 포맷 오류
 * 발생 조건: Redis 연결 끊김, JSON 파싱 실패 등
 * 대응 방식: 재시도 로직, 오류 로그 후 해당 틱 무시
-* 로깅/알림: `logger.py` 사용, 심각 오류 시 NotificationService 호출
+* 로깅/알림: `logging_service.py` 사용 (`logger.py`는 deprecated), 심각 오류 시 NotificationService 호출
 
 ## 6. 연관 모듈 및 외부 시스템
 * 상위 호출자: MarketDataWebSocket, HistoricalDataLoader

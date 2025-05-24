@@ -46,7 +46,7 @@ FastAPI 기반의 REST 및 WebSocket 서버로 포지션, 실적, 시스템 상�
 * 주요 예외 유형: 인증 실패, 데이터 조회 오류
 * 발생 조건: 잘못된 토큰, Redis 연결 끊김
 * 대응 방식: 401/500 오류 반환 및 로그
-* 로깅/알림: `logger.py` 사용, 심각 오류 시 NotificationService 호출
+* 로깅/알림: `logging_service.py` 사용 (`logger.py`는 deprecated), 심각 오류 시 NotificationService 호출
 
 ## 6. 연관 모듈 및 외부 시스템
 * 상위 호출자: 사용자의 웹 브라우저
