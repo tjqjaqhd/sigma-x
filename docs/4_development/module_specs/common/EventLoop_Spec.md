@@ -16,7 +16,7 @@
 * 포함된 클래스/함수: `EventLoop`, `create_tasks`
 * 주요 메서드: `start()`, `stop()`, `spawn()`, `run()`
 * 외부 API 제공 여부: 없음
-* 소스 파일 위치: `sigma/event_loop.py`
+* 소스 파일 위치: `sigma/common/event_loop.py`
 
 ## 3. 인터페이스 명세
 ### 3.1 입력

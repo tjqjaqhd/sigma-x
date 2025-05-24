@@ -11,7 +11,7 @@ import asyncio
 import logging
 from typing import Any, Dict
 
-from .config_loader import ConfigLoader
+from sigma.common.config_loader import ConfigLoader
 
 
 async def run_backtest(config_path: str, start: str, end: str) -> Dict[str, Any]:

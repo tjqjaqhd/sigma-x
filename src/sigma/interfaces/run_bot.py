@@ -6,8 +6,8 @@ import argparse
 import asyncio
 from sigma.common.logging_service import get_logger
 
-from .config_loader import ConfigLoader
-from .event_loop import EventLoop
+from sigma.common.config_loader import ConfigLoader
+from sigma.common.event_loop import EventLoop
 
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
