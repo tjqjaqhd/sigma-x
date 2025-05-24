@@ -65,7 +65,6 @@
     configLoader["config_loader.py"]
     dbSession["infrastructure/db/session.py"]
     dbModels["infrastructure/db/models.py"]
-    logger["logger.py"]
     pluginLoader["plugin_loader.py"]
     metrics["metrics.py"]
     userPrefs["user_prefs.py"]
@@ -88,8 +87,8 @@
   main --> configLoader
   configLoader --> dbSession
   dbSession --> dbModels
-  dbModels --> logger
-  logger --> pluginLoader
+  dbModels --> loggingService
+  loggingService --> pluginLoader
   pluginLoader --> metrics
   metrics --> userPrefs
   userPrefs --> healthCheck
@@ -190,24 +189,23 @@
 | 25 | **config_loader.py** | ALL | 설정 파일 로드 |
 | 26 | **infrastructure/db/session.py** | ALL | DB 세션 관리 |
 | 27 | **infrastructure/db/models.py** | ALL | ORM 모델 정의 |
-| 28 | **logger.py** | ALL | 로깅 설정 |
-| 29 | **plugin_loader.py** | ALL | 플러그인 로드 |
-| 30 | **metrics.py** | ALL | 지표 수집 모듈 |
-| 31 | **user_prefs.py** | ALL | 사용자 설정 관리 |
-| 32 | **health_check.py** | ALL | 상태 점검 |
-| 33 | **cache.py** | ALL | 캐시 계층 |
-| 34 | **additional_setup.py** | ALL | 초기 추가 설정 |
-| 35 | **notification_service.py** | ALL | 알림 전송 |
-| 36 | **api_service.py** | ALL | API 서비스 공통 모듈 |
-| 37 | **event_loop.py** | ALL | 비동기 이벤트 루프 |
-| 38 | **session_manager.py** | ALL | 세션 관리 |
-| 39 | **logging_service.py** | ALL | 중앙 로그 수집 |
-| 40 | **Redis Pub/Sub** | ALL | 메시지 브로커 |
-| 41 | **RabbitMQ Queue** | ALL | 작업 큐 |
-| 42 | **PostgreSQL** | ALL | 영속 데이터베이스 |
-| 43 | **PaymentProcessor** | LIVE | 결제 처리 |
-| 44 | **ReportRepository** | ALL | 리포트 저장소 |
-| 45 | **DashboardAPI** | ALL | 실적 및 상태 조회 API |
+| 28 | **plugin_loader.py** | ALL | 플러그인 로드 |
+| 29 | **metrics.py** | ALL | 지표 수집 모듈 |
+| 30 | **user_prefs.py** | ALL | 사용자 설정 관리 |
+| 31 | **health_check.py** | ALL | 상태 점검 |
+| 32 | **cache.py** | ALL | 캐시 계층 |
+| 33 | **additional_setup.py** | ALL | 초기 추가 설정 |
+| 34 | **notification_service.py** | ALL | 알림 전송 |
+| 35 | **api_service.py** | ALL | API 서비스 공통 모듈 |
+| 36 | **event_loop.py** | ALL | 비동기 이벤트 루프 |
+| 37 | **session_manager.py** | ALL | 세션 관리 |
+| 38 | **logging_service.py** | ALL | 중앙 로그 수집 |
+| 39 | **Redis Pub/Sub** | ALL | 메시지 브로커 |
+| 40 | **RabbitMQ Queue** | ALL | 작업 큐 |
+| 41 | **PostgreSQL** | ALL | 영속 데이터베이스 |
+| 42 | **PaymentProcessor** | LIVE | 결제 처리 |
+| 43 | **ReportRepository** | ALL | 리포트 저장소 |
+| 44 | **DashboardAPI** | ALL | 실적 및 상태 조회 API |
 
 자세한 모듈별 사양은 `docs/4_development/module_specs/` 이하 레이어별 하위 디렉터리를 참조하세요.
 ---
