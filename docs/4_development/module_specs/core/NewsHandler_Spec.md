@@ -15,7 +15,7 @@
 * 포함된 클래스/함수: `NewsHandler`, `fetch_news`
 * 주요 메서드: `run()`, `broadcast()`
 * 외부 API 제공 여부: 없음
-* 소스 파일 위치: `sigma/news_handler.py`
+* 소스 파일 위치: `sigma/core/news_handler.py`
 
 ## 3. 인터페이스 명세
 ### 3.1 입력

@@ -16,7 +16,7 @@
 * 포함된 클래스/함수: `ConfigLoader`, `load_yaml`, `get`
 * 주요 메서드: `load()`, `reload()`, `get(key)`
 * 외부 API 제공 여부: 없음
-* 소스 파일 위치: `sigma/config_loader.py`
+* 소스 파일 위치: `sigma/common/config_loader.py`
 
 ## 3. 인터페이스 명세
 ### 3.1 입력

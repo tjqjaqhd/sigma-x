@@ -15,7 +15,7 @@
 * 포함된 클래스/함수: `SystemStatus`, `check_resources`
 * 주요 메서드: `start()`, `report_status()`
 * 외부 API 제공 여부: REST `/status`
-* 소스 파일 위치: `sigma/system_status.py`
+* 소스 파일 위치: `sigma/core/system_status.py`
 
 ## 3. 인터페이스 명세
 ### 3.1 입력
