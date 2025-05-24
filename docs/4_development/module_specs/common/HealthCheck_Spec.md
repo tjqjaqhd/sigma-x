@@ -16,7 +16,7 @@
 * 포함된 클래스/함수: `HealthChecker`, `check_redis`, `check_db`
 * 주요 메서드: `run_checks()`
 * 외부 API 제공 여부: 없음
-* 소스 파일 위치: `sigma/health_check.py`
+* 소스 파일 위치: `sigma/common/health_check.py`
 
 ## 3. 인터페이스 명세
 ### 3.1 입력

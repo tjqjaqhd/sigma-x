@@ -15,7 +15,7 @@
 * 포함된 클래스/함수: `UserPrefs`, `load_prefs`, `save_prefs`
 * 주요 메서드: `get(key)`, `set(key, value)`
 * 외부 API 제공 여부: 없음
-* 소스 파일 위치: `sigma/user_prefs.py`
+* 소스 파일 위치: `sigma/common/user_prefs.py`
 
 ## 3. 인터페이스 명세
 ### 3.1 입력

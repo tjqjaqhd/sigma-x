@@ -15,7 +15,7 @@
 * 포함된 클래스/함수: `StrategyManager`, `load_plugins`, `run_strategy`
 * 주요 메서드: `initialize()`, `execute()`, `shutdown()`
 * 외부 API 제공 여부: 없음
-* 소스 파일 위치: `sigma/strategy_manager.py`
+* 소스 파일 위치: `sigma/core/strategy_manager.py`
 
 ## 3. 인터페이스 명세
 ### 3.1 입력

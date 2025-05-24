@@ -16,7 +16,7 @@
 * 포함된 클래스/함수: `LoggingService`, `setup_logger`, `get_logger`
 * 주요 메서드: `get_logger`, `set_level`
 * 외부 API 제공 여부: 없음
-* 소스 파일 위치: `sigma/logging_service.py`
+* 소스 파일 위치: `sigma/common/logging_service.py`
 * 예시: `logger = get_logger("order")`
 * [DEPRECATED] logger.py는 더 이상 사용하지 않음. logging_service.py만 사용
 

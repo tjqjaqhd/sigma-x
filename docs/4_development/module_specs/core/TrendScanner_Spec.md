@@ -15,7 +15,7 @@
 * 포함된 클래스/함수: `TrendScanner`, `scan_market`
 * 주요 메서드: `start()`, `publish_signal()`
 * 외부 API 제공 여부: 없음
-* 소스 파일 위치: `sigma/trend_scanner.py`
+* 소스 파일 위치: `sigma/core/trend_scanner.py`
 
 ## 3. 인터페이스 명세
 ### 3.1 입력

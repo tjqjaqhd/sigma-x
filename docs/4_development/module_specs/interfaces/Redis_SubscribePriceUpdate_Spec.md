@@ -16,7 +16,7 @@ Redis Pub/Sub의 `price_update` 채널을 구독하여 실시간 가격 정보�
 * 포함된 함수: `subscribe_price_update`
 * 주요 메서드: `start()`
 * 외부 API 제공 여부: 없음
-* 소스 파일 위치: `sigma/redis_subscriber.py`
+* 소스 파일 위치: `sigma/interfaces/redis_subscriber.py`
 
 ## 3. 인터페이스 명세
 ### 3.1 입력

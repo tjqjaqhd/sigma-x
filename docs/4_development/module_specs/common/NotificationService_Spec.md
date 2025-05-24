@@ -15,7 +15,7 @@ Alertmanager에서 전달된 경보를 Slack 또는 Telegram으로 전송한다.
 * 포함된 클래스/함수: `NotificationService`, `send_slack`, `send_telegram`
 * 주요 메서드: `notify()`, `alert_listener()`
 * 외부 API 제공 여부: 없음
-* 소스 파일 위치: `sigma/notification_service.py`
+* 소스 파일 위치: `sigma/common/notification_service.py`
 
 ## 3. 인터페이스 명세
 ### 3.1 입력

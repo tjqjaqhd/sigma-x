@@ -15,7 +15,7 @@
 * 포함된 클래스/함수: `SessionManager`, `load_state`, `save_state`
 * 주요 메서드: `get_balance()`, `update_position()`
 * 외부 API 제공 여부: 없음
-* 소스 파일 위치: `sigma/session_manager.py`
+* 소스 파일 위치: `sigma/common/session_manager.py`
 
 ## 3. 인터페이스 명세
 ### 3.1 입력

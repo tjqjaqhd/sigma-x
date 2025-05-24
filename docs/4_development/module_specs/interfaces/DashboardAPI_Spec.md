@@ -15,7 +15,7 @@ FastAPI 기반의 REST 및 WebSocket 서버로 포지션, 실적, 시스템 상�
 * 포함된 클래스/함수: `create_app`, `ws_endpoint`, `rest_endpoints`
 * 주요 메서드: `get_positions()`, `get_pnl()`, `ws_handler()`
 * 외부 API 제공 여부: REST/WS
-* 소스 파일 위치: `sigma/dashboard_api.py`
+* 소스 파일 위치: `sigma/interfaces/dashboard_api.py`
 
 ## 3. 인터페이스 명세
 ### 3.1 입력

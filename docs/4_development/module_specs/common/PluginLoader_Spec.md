@@ -16,7 +16,7 @@
 * 포함된 클래스/함수: `PluginLoader`, `load_module`
 * 주요 메서드: `load_strategy()`, `load_executor()`
 * 외부 API 제공 여부: 없음
-* 소스 파일 위치: `sigma/plugin_loader.py`
+* 소스 파일 위치: `sigma/common/plugin_loader.py`
 
 ## 3. 인터페이스 명세
 ### 3.1 입력

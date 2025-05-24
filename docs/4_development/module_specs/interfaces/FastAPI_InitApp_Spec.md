@@ -16,7 +16,7 @@ FastAPI 애플리케이션을 생성하고 모든 라우터와 미들웨어를 �
 * 포함된 함수: `init_app`, `register_routes`
 * 주요 메서드: `init_app(config: Config) -> FastAPI`
 * 외부 API 제공 여부: FastAPI 인스턴스 반환
-* 소스 파일 위치: `sigma/fastapi_app.py`
+* 소스 파일 위치: `sigma/interfaces/fastapi_app.py`
 
 ## 3. 인터페이스 명세
 ### 3.1 입력
