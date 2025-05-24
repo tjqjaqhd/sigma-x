@@ -15,7 +15,7 @@
 * 포함된 클래스/함수: `SimulatorExecutor`, `match_order`
 * 주요 메서드: `execute_order()`, `publish_fill()`
 * 외부 API 제공 여부: 없음
-* 소스 파일 위치: `sigma/simulator_executor.py`
+* 소스 파일 위치: `sigma/core/simulator_executor.py`
 
 ## 3. 인터페이스 명세
 ### 3.1 입력

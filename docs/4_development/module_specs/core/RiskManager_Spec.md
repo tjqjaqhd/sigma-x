@@ -15,7 +15,7 @@
 * 포함된 클래스/함수: `RiskManager`, `check_margin`, `check_limits`
 * 주요 메서드: `validate_order()`, `record_rejection()`
 * 외부 API 제공 여부: 없음
-* 소스 파일 위치: `sigma/risk_manager.py`
+* 소스 파일 위치: `sigma/core/risk_manager.py`
 
 ## 3. 인터페이스 명세
 ### 3.1 입력

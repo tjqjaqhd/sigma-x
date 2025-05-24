@@ -15,7 +15,7 @@
 * 포함된 클래스/함수: `OrderExecutor`, `send_order`, `handle_fill`
 * 주요 메서드: `execute()`, `listen_fills()`
 * 외부 API 제공 여부: 없음
-* 소스 파일 위치: `sigma/order_executor.py`
+* 소스 파일 위치: `sigma/core/order_executor.py`
 
 ## 3. 인터페이스 명세
 ### 3.1 입력

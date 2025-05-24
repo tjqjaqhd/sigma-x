@@ -15,7 +15,7 @@
 * 포함된 함수: `main`, `parse_args`, `run_backtest`
 * 주요 메서드: `main()`
 * 외부 API 제공 여부: 없음
-* 소스 파일 위치: `sigma/backtest.py`
+* 소스 파일 위치: `sigma/interfaces/backtest.py`
 
 ## 3. 인터페이스 명세
 ### 3.1 입력

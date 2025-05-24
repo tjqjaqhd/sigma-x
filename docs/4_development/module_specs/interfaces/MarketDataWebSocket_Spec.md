@@ -15,7 +15,7 @@
 * 포함된 클래스/함수: `WebSocketClient`, `UpbitStream`, `BinanceStream`
 * 주요 메서드: `connect()`, `subscribe()`, `forward_tick()`
 * 외부 API 제공 여부: 없음
-* 소스 파일 위치: `sigma/market_data_websocket.py`
+* 소스 파일 위치: `sigma/interfaces/market_data_websocket.py`
 
 ## 3. 인터페이스 명세
 ### 3.1 입력

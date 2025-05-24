@@ -15,7 +15,7 @@
 * 포함된 클래스/함수: `AnomalyDetector`, `detect_from_metrics`
 * 주요 메서드: `scan()`, `notify()`
 * 외부 API 제공 여부: 없음
-* 소스 파일 위치: `sigma/anomaly_detector.py`
+* 소스 파일 위치: `sigma/core/anomaly_detector.py`
 
 ## 3. 인터페이스 명세
 ### 3.1 입력

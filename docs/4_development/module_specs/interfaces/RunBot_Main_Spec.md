@@ -17,7 +17,7 @@
 * 포함된 함수: `main`, `parse_args`
 * 주요 처리: CLI 인자 파싱, 설정 로드, 각 모듈 초기화 호출
 * 외부 API 제공 여부: 없음
-* 소스 파일 위치: `sigma/run_bot.py`
+* 소스 파일 위치: `sigma/interfaces/run_bot.py`
 
 ## 3. 인터페이스 명세
 ### 3.1 입력
