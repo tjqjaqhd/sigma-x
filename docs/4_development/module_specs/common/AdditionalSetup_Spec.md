@@ -44,7 +44,7 @@
 * 주요 예외 유형: 환경 변수 누락, 파일 시스템 오류
 * 발생 조건: 필수 토큰 누락, 임시 디렉터리 생성 실패
 * 대응 방식: 오류 로그 후 프로세스 중단
-* 로깅/알림: `logger.py` 사용, 실패 시 NotificationService 통보
+* 로깅/알림: `logging_service.py` 사용 (`logger.py`는 deprecated), 실패 시 NotificationService 통보
 
 ## 6. 연관 모듈 및 외부 시스템
 * 상위 호출자: Cache 초기화 후 `run_bot.py:main`

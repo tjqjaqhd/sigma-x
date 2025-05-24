@@ -48,7 +48,7 @@ mode: live
 * 주요 예외 유형: 파일 접근 오류, 포맷 오류, 검증 실패
 * 발생 조건: 경로 미존재, YAML 파싱 실패, 스키마 불일치
 * 대응 방식: 기본값 로드 후 경고 로그 기록
-* 로깅/알림: `logger.py` 사용, 치명적 오류 시 NotificationService 호출
+* 로깅/알림: `logging_service.py` 사용 (`logger.py`는 deprecated), 치명적 오류 시 NotificationService 호출
 
 ## 6. 연관 모듈 및 외부 시스템
 * 상위 호출자: `run_bot.py:main`

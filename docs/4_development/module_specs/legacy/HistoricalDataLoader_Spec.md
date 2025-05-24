@@ -42,7 +42,7 @@
 * 주요 예외 유형: 파일 없음, 파싱 오류
 * 발생 조건: 잘못된 경로, 형식 불일치
 * 대응 방식: 오류 로그 후 프로세스 종료 또는 다음 파일 시도
-* 로깅/알림: `logger.py`, 실패 시 NotificationService 호출
+* 로깅/알림: `logging_service.py` 사용 (`logger.py`는 deprecated), 실패 시 NotificationService 호출
 
 ## 6. 연관 모듈 및 외부 시스템
 * 상위 호출자: SimulatorExecutor

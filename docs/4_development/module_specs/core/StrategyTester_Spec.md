@@ -42,7 +42,7 @@
 * 주요 예외 유형: 데이터 부족, 전략 오류
 * 발생 조건: 입력 데이터 불완전, 실행 중 예외
 * 대응 방식: 실패 원인 기록 후 기본값 반환
-* 로깅/알림: `logger.py` 사용
+* 로깅/알림: `logging_service.py` 사용 (`logger.py`는 deprecated)
 
 ## 6. 연관 모듈 및 외부 시스템
 * 상위 호출자: OptimizationModule, 개발자 CLI

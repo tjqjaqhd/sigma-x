@@ -42,7 +42,7 @@
 * 주요 예외 유형: 네트워크 끊김, 메시지 파싱 오류
 * 발생 조건: WebSocket 연결 종료, JSON 오류
 * 대응 방식: 지수 백오프 재연결, 오류 로깅 후 무시
-* 로깅/알림: `logger.py`, 심각 시 NotificationService 사용
+* 로깅/알림: `logging_service.py` 사용 (`logger.py`는 deprecated), 심각 시 NotificationService 사용
 
 ## 6. 연관 모듈 및 외부 시스템
 * 상위 호출자: 시스템 초기화 시 자동 실행

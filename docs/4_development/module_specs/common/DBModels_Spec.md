@@ -42,7 +42,7 @@ SQLAlchemy ORM 모델 정의를 통합 관리한다. 주문, 체결, 전략 결�
 * 주요 예외 유형: 무결성 오류, 스키마 불일치
 * 발생 조건: 중복 키 삽입 등
 * 대응 방식: 트랜잭션 롤백 및 오류 로깅
-* 로깅/알림: `logger.py` 사용
+* 로깅/알림: `logging_service.py` 사용 (`logger.py`는 deprecated)
 
 ## 6. 연관 모듈 및 외부 시스템
 * 상위 호출자: DBSession

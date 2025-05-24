@@ -42,7 +42,7 @@
 * 주요 예외 유형: 입력 오류
 * 발생 조건: 잘못된 가격, 수량
 * 대응 방식: 주문 거부 이벤트 반환
-* 로깅/알림: `logger.py`, 필요 시 NotificationService
+* 로깅/알림: `logging_service.py` 사용 (`logger.py`는 deprecated), 필요 시 NotificationService
 
 ## 6. 연관 모듈 및 외부 시스템
 * 상위 호출자: RiskManager, HistoricalDataLoader

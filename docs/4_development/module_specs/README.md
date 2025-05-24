@@ -54,4 +54,4 @@ SIGMA 아키텍처의 레이어별로 모듈 사양서를 구분했습니다.
 - `OrderExecutor`
 - `TrendScanner`
 
-[DEPRECATED] logger.py는 더 이상 사용하지 않음. logging_service.py만 사용
+[DEPRECATED] `logger.py`는 더 이상 사용하지 않으며 `logging_service.py`로 대체되었습니다.
