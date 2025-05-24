@@ -1,4 +1,4 @@
-# SIGMA Architecture v1.4
+# SIGMA Architecture v1.2
 
 ## 1. Purpose & Scope
 
@@ -267,7 +267,5 @@
 | v1.0     | 2025-05-21 | Baseline (거래 5 모듈)                                      |
 | v1.1     | 2025-05-22 | Metrics·Notification·Dashboard 추가                       |
 | v1.2 | 2025-05-22 | SimulatorExecutor · HistoricalDataLoader 통합, 다이어그램/표 갱신 |
-| **v1.3** | 2025-05-23 | 3번 다이어그램 기반 전체 항목 개편 |
-| **v1.4** | 2025-05-23 | DashboardAPI 모듈 추가 |
 
 ---
