@@ -15,3 +15,7 @@ pip install -r requirements.txt
 ```bash
 pytest
 ```
+
+## 시스템 명세
+`specs/sigma_system.yaml` 파일은 컨테이너와 컴포넌트, 그리고 데이터 흐름을 YAML 형식으로 기술합니다.
+자세한 구조 설명은 `docs/sigma_yaml_structure.md` 문서를 참고하세요.
