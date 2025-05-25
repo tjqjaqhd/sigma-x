@@ -45,6 +45,7 @@ Bot 서비스 구성은 [`c4_bot.mmd`](c4_bot.mmd) 파일에서 확인할 수 �
   - Task Queue (RabbitMQ)
   - Analytics (Python)
   - API (FastAPI)
+    - `/health`, `/trade`, `/ws` 엔드포인트 제공
   - Bot (Python)
 - 컨테이너 간의 상호작용과 데이터 흐름을 표현
 

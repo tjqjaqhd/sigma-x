@@ -1,12 +1,42 @@
+import asyncio
 import sys
 from pathlib import Path
 
+import pytest
+
 ROOT_DIR = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(ROOT_DIR))  # noqa: E402
+SRC_DIR = ROOT_DIR / "src"
+if str(SRC_DIR) in sys.path:
+    sys.path.remove(str(SRC_DIR))
+sys.path.insert(0, str(ROOT_DIR))
+sys.path.append(str(SRC_DIR))
 
-from src.redis import Redis  # noqa: E402
+import fakeredis.aioredis
+
+from src.redis import Redis
 
 
-def test_redis_run():
-    obj = Redis()
-    assert obj.run() is None
+@pytest.mark.asyncio
+async def test_redis_basic():
+    fake = fakeredis.aioredis.FakeRedis()
+    store = Redis()
+    store.client = fake
+
+    await store.set("foo", "bar")
+    assert await store.get("foo") == "bar"
+
+    messages = []
+
+    async def reader():
+        async for msg in store.subscribe("chan"):
+            messages.append(msg)
+            if len(messages) >= 2:
+                break
+
+    task = asyncio.create_task(reader())
+    await asyncio.sleep(0.1)
+    await store.publish("chan", "1")
+    await store.publish("chan", "2")
+    await task
+
+    assert messages == ["1", "2"]
