@@ -22,6 +22,7 @@ pytest
 
 ## 다이어그램 생성
 `scripts/generate_diagrams.py`를 실행하면 YAML 명세를 바탕으로 `docs/sigma_system_diagram.mmd` 파일이 생성됩니다.
+`--split` 옵션을 주면 각 컨테이너별로 `<이름>_diagram.mmd` 파일이 별도로 저장됩니다.
 `docs/scripts/gen_diagrams.sh` 스크립트는 mermaid-cli(mmdc)와 graphviz(dot)를 이용해
 `docs` 디렉터리의 모든 `.mmd`, `.dot` 파일을 일괄적으로 SVG로 변환합니다.
 CI 환경에서도 자동으로 실행되므로, 로컬에서도 아래와 같이 실행해 최신 다이어그램을 확인할 수 있습니다.
