@@ -14,6 +14,7 @@ pytz
 loguru
 apscheduler
 PyYAML
+pika==1.3.2
 
 # --- 테스트 / 품질 / 정적 분석 ---
 pytest

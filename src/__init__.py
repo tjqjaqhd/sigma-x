@@ -1,7 +1,7 @@
 from .redis_client import Redis
 from .data_collector import DataCollector
 from .trade_executor import TradeExecutor
-from .rabbitmq_client import RabbitMQ
+from .rabbitmq_client import RabbitMQClient as RabbitMQ
 from .api_server import APIServer
 from .historical_data_loader import HistoricalDataLoader
 from .strategy_tester import StrategyTester
