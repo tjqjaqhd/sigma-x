@@ -1,4 +1,3 @@
-import asyncio
 import sys
 from pathlib import Path
 
@@ -7,11 +6,11 @@ import pytest
 ROOT_DIR = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT_DIR))
 
-from src.data_collector import DataCollector
+from src.data_collector import DataCollector  # noqa: E402
 
 
 @pytest.mark.asyncio
-async def test_data_collector_run(fake_redis, mocker):
+async def test_data_collector_run(fake_rabbitmq, mocker):
     messages = ["1", "2", "3"]
 
     class FakeWebSocket:
@@ -33,7 +32,13 @@ async def test_data_collector_run(fake_redis, mocker):
 
     mocker.patch("websockets.connect", return_value=FakeWebSocket(messages))
 
-    collector = DataCollector(redis_client=fake_redis)
+    collector = DataCollector(rabbitmq_client=fake_rabbitmq)
     await collector.run(limit=len(messages))
 
-    assert fake_redis.channels["ticks"] == messages
+    results = []
+    async for msg in fake_rabbitmq.consume("ticks"):
+        results.append(msg)
+        if len(results) >= len(messages):
+            break
+
+    assert results == messages

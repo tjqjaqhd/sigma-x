@@ -4,11 +4,11 @@
 
 | 이름 | 타입 | 이미지 | 설명 |
 | ---- | ---- | ------ | ---- |
-| data_collector | service | docker.io/sigma/data_collector:latest | 비동기 WebSocket 연결을 통해 시세 데이터를 수신하고 Redis 채널로 발행합니다. 예시:<br>```python
+| data_collector | service | docker.io/sigma/data_collector:latest | 비동기 WebSocket 연결로 시세 데이터를 수신한 뒤 RabbitMQ 큐에 넣습니다. 예시:<br>```python
 collector = DataCollector()
 await collector.run()
 ``` |
-| trade_executor | service | docker.io/sigma/trade_executor:latest | Redis 채널을 구독해 이동평균 교차 전략을 실행하고 주문 결과를 저장합니다. 예시:<br>```python
+| trade_executor | service | docker.io/sigma/trade_executor:latest | RabbitMQ 큐에서 데이터를 가져와 이동평균 교차 전략을 실행하고 주문 결과를 Redis에 저장합니다. 예시:<br>```python
 executor = TradeExecutor()
 await executor.run()
 ``` |

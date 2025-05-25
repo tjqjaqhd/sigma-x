@@ -53,6 +53,27 @@ class FakeRedis:
         return None
 
 
+class FakeRabbitMQ:
+    def __init__(self) -> None:
+        self.queue: asyncio.Queue = asyncio.Queue()
+
+    async def publish(self, queue: str, message: str) -> None:
+        await self.queue.put(message)
+
+    async def consume(self, queue: str):
+        while True:
+            msg = await self.queue.get()
+            yield msg
+
+    async def close(self) -> None:
+        return None
+
+
 @pytest.fixture
 def fake_redis():
     return FakeRedis()
+
+
+@pytest.fixture
+def fake_rabbitmq():
+    return FakeRabbitMQ()
