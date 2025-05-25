@@ -6,7 +6,7 @@ nav:
   - 아키텍처:
       - C4 아키텍처: 1_architecture/c4_architecture.md
       - SIGMA 아키텍처: 1_architecture/SIGMA_Architecture_v1.4.md
-      - 배포 뷰: 1_architecture/deployment_view.mmd
+      - 배포 뷰: 1_architecture/deployment_view.md
   - 컴포넌트 설명: components.md
 markdown_extensions:
   - tables
