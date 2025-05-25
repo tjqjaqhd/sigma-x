@@ -8,7 +8,7 @@ import base64
 import hashlib
 import hmac
 import json
-from time import time
+import time
 from pydantic import BaseModel
 from fastapi import (
     FastAPI,
@@ -26,8 +26,19 @@ class LoginInput(BaseModel):
     password: str
 
 
+class UpdateStrategyInput(BaseModel):
+    """전략 업데이트 요청 모델."""
+
+    name: str
+
+
 class APIServer:
-    """FastAPI 기반 REST/WS 서버."""
+    """FastAPI 기반 REST/WS 서버.
+
+    `token_expire_seconds` 값은 발급된 액세스 토큰의 유효 기간을 초 단위로
+    정의합니다. 값이 작을수록 토큰이 빨리 만료되며, 0 이하로 설정하면 토큰이
+    즉시 만료됩니다.
+    """
 
     def __init__(
         self,
@@ -62,9 +73,7 @@ class APIServer:
         data["exp"] = int(time.time()) + self.token_expire_seconds
         payload = json.dumps(data, separators=(",", ":"), sort_keys=True).encode()
         payload_b64 = base64.urlsafe_b64encode(payload).decode().rstrip("=")
-        signature = hmac.new(
-            self.secret_key.encode(), payload_b64.encode(), hashlib.sha256
-        ).digest()
+        signature = hmac.new(self.secret_key.encode(), payload_b64.encode(), hashlib.sha256).digest()
         sig_b64 = base64.urlsafe_b64encode(signature).decode().rstrip("=")
         return f"{payload_b64}.{sig_b64}"
 
@@ -74,9 +83,7 @@ class APIServer:
         async def get_current_user(token: str = Depends(oauth2_scheme)):
             try:
                 payload_b64, sig_b64 = token.split(".")
-                expected_sig = hmac.new(
-                    self.secret_key.encode(), payload_b64.encode(), hashlib.sha256
-                ).digest()
+                expected_sig = hmac.new(self.secret_key.encode(), payload_b64.encode(), hashlib.sha256).digest()
                 if not hmac.compare_digest(
                     base64.urlsafe_b64encode(expected_sig).decode().rstrip("="),
                     sig_b64,
@@ -121,9 +128,7 @@ class APIServer:
             user = self.users.get(data.username)
             if not user or user["password"] != data.password:
                 raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
-            token = self._create_access_token(
-                {"sub": data.username, "role": user["role"]}
-            )
+            token = self._create_access_token({"sub": data.username, "role": user["role"]})
             return {"access_token": token, "token_type": "bearer"}
 
         @self.app.websocket("/ws")
@@ -195,9 +200,7 @@ class APIServer:
             if self.redis is None:
                 import redis.asyncio as redis
 
-                self.redis = redis.from_url(
-                    os.getenv("SIGMA_REDIS_URL", "redis://localhost")
-                )
+                self.redis = redis.from_url(os.getenv("SIGMA_REDIS_URL", "redis://localhost"))
 
         @self.app.on_event("shutdown")
         async def shutdown() -> None:
