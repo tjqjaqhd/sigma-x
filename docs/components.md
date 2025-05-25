@@ -12,4 +12,8 @@ await collector.run()
 executor = TradeExecutor()
 await executor.run()
 ```` |
+| api_server | service | docker.io/sigma/api_server:latest | FastAPI 기반 REST/WS 인터페이스를 제공하여 시스템 상태 확인과 주문 조회, 실시간 데이터 구독 기능을 지원합니다.  예시: <br> ````python
+server = APIServer()
+server.run()
+```` |
 | redis | database | docker.io/library/redis:7 | 애플리케이션용 Redis 인터페이스.  키-값 저장소인 Redis와의 연결을 관리하며 데이터 읽기와 쓰기를 담당합니다.  예시: <br> ````python<br>store = Redis()<br>store.run()<br>```` |
