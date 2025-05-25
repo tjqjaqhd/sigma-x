@@ -27,3 +27,11 @@ pytest
 /usr/bin/python3 scripts/generate_diagrams.py
 ```
 
+## 스캐폴드 생성
+`scripts/scaffold.py` 스크립트는 `specs/sigma_system.yaml` 파일을 읽어
+`src/`와 `tests/` 디렉터리에 기본 모듈과 `pytest` 테스트 템플릿을 만듭니다.
+
+```bash
+/usr/bin/python3 scripts/scaffold.py
+```
+
