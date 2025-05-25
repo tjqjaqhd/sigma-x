@@ -14,15 +14,15 @@ class MyStrategy(BaseStrategy):
         return "HOLD"
 ```
 
-## 2. TradeExecutor에 주입
-`TradeExecutor` 생성 시 `strategy` 인자로 전달해 사용합니다.
+## 2. 전략 등록 및 교체
+작성한 파일을 `src/strategies/` 디렉터리에 두면 `StrategyManager`가 자동으로 인식합니다.
+실행 중에는 다음과 같이 전략을 교체할 수 있습니다.
 
 ```python
-from src.trade_executor import TradeExecutor
-from src.my_strategy import MyStrategy
+from src.strategy_manager import StrategyManager
 
-executor = TradeExecutor(strategy=MyStrategy())
-await executor.run()
+manager = StrategyManager()
+manager.change_strategy("my_strategy")
 ```
 
 ## 3. 테스트 추가

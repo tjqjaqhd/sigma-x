@@ -6,6 +6,9 @@ classDiagram
     class TradeExecutor {
         +run(limit)
     }
+    class StrategyManager {
+        +change_strategy(name)
+    }
     class MovingAverageStrategy {
         +process(price)
     }
@@ -30,7 +33,8 @@ classDiagram
 
     DataCollector --> RabbitMQ : publish
     TradeExecutor --> RabbitMQ : consume
-    TradeExecutor --> MovingAverageStrategy : use
+    TradeExecutor --> StrategyManager : use
+    StrategyManager --> MovingAverageStrategy : manage
     TradeExecutor --> RiskManager : use
     TradeExecutor --> OrderExecutor : use
     OrderExecutor --> SimulatorExecutor : delegate

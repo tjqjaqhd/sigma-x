@@ -12,23 +12,10 @@ class BaseStrategy(ABC):
         raise NotImplementedError
 
 
-class MovingAverageStrategy(BaseStrategy):
-    """단순 이동평균 교차 전략."""
+# 기본 제공 전략은 strategies 패키지에서 불러와 재노출한다.
+try:
+    from .strategies.moving_average import MovingAverageStrategy
+except Exception:  # pragma: no cover - fallback if plugins missing
+    MovingAverageStrategy = None  # type: ignore
 
-    def __init__(self, short_window: int = 3, long_window: int = 5) -> None:
-        self.short_window = short_window
-        self.long_window = long_window
-        self.prices: list[float] = []
-
-    async def process(self, price: float) -> str:
-        self.prices.append(price)
-        if len(self.prices) > self.long_window:
-            self.prices.pop(0)
-        if len(self.prices) >= self.long_window:
-            short_ma = sum(self.prices[-self.short_window :]) / self.short_window
-            long_ma = sum(self.prices) / self.long_window
-            if short_ma > long_ma:
-                return "BUY"
-            if short_ma < long_ma:
-                return "SELL"
-        return "HOLD"
+__all__ = ["BaseStrategy", "MovingAverageStrategy"]
