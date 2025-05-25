@@ -26,6 +26,34 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
+    - name: Detect YAML changes
+      id: yaml
+      run: |
+        if git diff --name-only HEAD^ | grep -E '\.ya?ml$'; then
+          echo "changed=true" >> $GITHUB_OUTPUT
+        else
+          echo "changed=false" >> $GITHUB_OUTPUT
+        fi
+
+    - name: Generate diagrams
+      if: steps.yaml.outputs.changed == 'true'
+      run: |
+        python scripts/generate_diagrams.py
+
+    - name: Run scaffold
+      if: steps.yaml.outputs.changed == 'true'
+      run: |
+        python scripts/scaffold.py
+
+    - name: Generate docs
+      if: steps.yaml.outputs.changed == 'true'
+      run: |
+        python scripts/generate_docs.py
+
+    - name: Check generated files committed
+      if: steps.yaml.outputs.changed == 'true'
+      run: git diff --exit-code
+
     - name: Run tests
       run: |
         pytest
