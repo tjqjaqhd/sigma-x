@@ -14,6 +14,11 @@ def load_docstring(module_path: Path) -> str:
         return ""
     module = importlib.util.module_from_spec(spec)
     sys.modules[module_path.stem] = module
+    src_root = Path(__file__).resolve().parents[1] / "src"
+    if str(src_root) not in sys.path:
+        sys.path.insert(0, str(src_root))
+    if module_path.parent.name == "src":
+        module.__package__ = "src"
     spec.loader.exec_module(module)
     # 우선 모듈 독스트링을 사용하고, 클래스가 존재하면 첫 번째 클래스 독스트링 사용
     doc = inspect.getdoc(module) or ""

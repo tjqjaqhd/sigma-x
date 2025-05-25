@@ -52,6 +52,7 @@ class TradeExecutor:
                     strat.long_window = self.long_window
             except Exception as e:
                 import logging
+
                 logging.error("Failed to change strategy or set strategy parameters: %s", e)
         self.risk = risk_manager or RiskManager()
         self.symbol = symbol or os.getenv("SIGMA_SYMBOL", "BTCUSDT")

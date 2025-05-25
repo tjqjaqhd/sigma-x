@@ -7,6 +7,9 @@ from .historical_data_loader import HistoricalDataLoader
 from .strategy_tester import StrategyTester
 from .simulator_executor import SimulatorExecutor
 from .performance_reporter import PerformanceReporter
+from .report_repository import ReportRepository
+from .strategy_selector import StrategySelector
+from .sigma_scheduler import SigmaScheduler
 from .risk_manager import RiskManager
 from .order_executor import OrderExecutor
 from .strategy import BaseStrategy, MovingAverageStrategy
@@ -22,6 +25,9 @@ __all__ = [
     "StrategyTester",
     "SimulatorExecutor",
     "PerformanceReporter",
+    "ReportRepository",
+    "StrategySelector",
+    "SigmaScheduler",
     "RiskManager",
     "OrderExecutor",
     "BaseStrategy",
