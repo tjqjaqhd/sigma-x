@@ -11,11 +11,10 @@ from src.notification_service import send_alert  # noqa: E402
 @pytest.mark.asyncio
 async def test_send_alert(mocker):
     async def fake_post(url, json):
-        fake_post.called = True
         assert json == {"text": "hi"}
         return None
 
-    fake_post.called = False
+    spy = mocker.spy(fake_post, "__call__")
     mocker.patch("httpx.AsyncClient.post", side_effect=fake_post)
     await send_alert("hi", webhook_url="http://example.com")
-    assert fake_post.called
+    spy.assert_called_once_with("http://example.com", {"text": "hi"})
