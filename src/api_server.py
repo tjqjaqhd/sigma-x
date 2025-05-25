@@ -66,6 +66,7 @@ class APIServer:
                 except asyncio.CancelledError:
                     pass
                 await pubsub.unsubscribe(self.channel)
+                await pubsub.close()
                 await websocket.close()
 
     def run(self, *args, **kwargs) -> None:
