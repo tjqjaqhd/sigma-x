@@ -35,3 +35,13 @@ pytest
 /usr/bin/python3 scripts/scaffold.py
 ```
 
+## 문서 생성
+`scripts/generate_docs.py` 스크립트를 실행하면 YAML 명세와 코드 정보를 이용해
+`docs/` 폴더의 Markdown 문서를 갱신합니다. 이후 `mkdocs build` 명령을 실행하면
+정적 사이트가 `site/` 디렉터리에 생성됩니다.
+
+```bash
+/usr/bin/python3 scripts/generate_docs.py
+mkdocs build
+```
+

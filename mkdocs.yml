@@ -1,0 +1,11 @@
+site_name: SIGMA-X 문서
+nav:
+  - 홈: index.md
+  - 시스템 명세: sigma_yaml_structure.md
+  - 시스템 다이어그램: sigma_system_diagram.mmd
+  - 아키텍처:
+      - C4 아키텍처: 1_architecture/c4_architecture.md
+      - SIGMA 아키텍처: 1_architecture/SIGMA_Architecture_v1.2.md
+  - 컴포넌트 설명: components.md
+markdown_extensions:
+  - tables
