@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Iterable
+from typing import AsyncIterator
 
 
 class SimulatorExecutor:
@@ -19,6 +19,6 @@ class SimulatorExecutor:
                 self.db.add(Order(side=signal, price=price))
                 self.db.commit()
 
-    async def run(self, stream: Iterable[tuple[str, float]]) -> None:
-        for signal, price in stream:
+    async def run(self, stream: AsyncIterator[tuple[str, float]]) -> None:
+        async for signal, price in stream:
             await self.execute(signal, price)
