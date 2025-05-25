@@ -38,6 +38,15 @@ class TradeExecutor:
         self.prices: list[float] = []
         self.db = db_session
 
+    async def _save_order(self, signal: str, price: float) -> None:
+        """주문 결과를 Redis와 데이터베이스에 기록한다."""
+        await self.redis.rpush(self.order_key, signal)
+        if self.db is not None:
+            from .database import Order
+
+            self.db.add(Order(side=signal, price=price))
+            self.db.commit()
+
     async def process_price(self, price: float) -> str:
         """새 가격을 처리해 매매 신호를 계산한다.
 
@@ -85,12 +94,7 @@ class TradeExecutor:
                 price = float(message)
                 signal = await self.process_price(price)
                 if len(self.prices) >= self.long_window:
-                    await self.redis.rpush(self.order_key, signal)
-                    if self.db is not None:
-                        from .database import Order
-
-                        self.db.add(Order(side=signal, price=price))
-                        self.db.commit()
+                    await self._save_order(signal, price)
 
                 processed += 1
                 if limit and processed >= limit:
@@ -105,12 +109,7 @@ class TradeExecutor:
                     price = float(message["data"])
                     signal = await self.process_price(price)
                     if len(self.prices) >= self.long_window:
-                        await self.redis.rpush(self.order_key, signal)
-                        if self.db is not None:
-                            from .database import Order
-
-                            self.db.add(Order(side=signal))
-                            self.db.commit()
+                        await self._save_order(signal, price)
 
                     processed += 1
                     if limit and processed >= limit:

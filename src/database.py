@@ -32,4 +32,6 @@ def init_db(url: str | None = None) -> Session:
     db_url = url or DATABASE_URL
     eng = create_engine(db_url)
     Base.metadata.create_all(eng)
-    return sessionmaker(bind=eng)()
+    global SessionLocal
+    SessionLocal = sessionmaker(bind=eng)
+    return SessionLocal()
