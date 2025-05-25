@@ -8,7 +8,27 @@ pip install -r requirements.txt
 ```
 
 ## 사용 방법
-현재 기본 코드베이스는 템플릿 형태로 제공되며, 각 모듈은 사용자의 전략에 맞게 확장할 수 있습니다. 구체적인 사용 예시는 추후 문서를 통해 제공될 예정입니다.
+기본적으로 `DataCollector`와 `TradeExecutor`는 비동기로 동작합니다. 아래와 같이 실행해 볼 수 있습니다.
+
+```python
+import asyncio
+from src.data_collector import DataCollector
+from src.trade_executor import TradeExecutor
+
+
+async def main():
+    collector = DataCollector()
+    executor = TradeExecutor()
+    await asyncio.gather(
+        collector.run(limit=5),
+        executor.run(limit=5),
+    )
+
+
+asyncio.run(main())
+```
+
+모듈은 사용자의 전략에 맞게 자유롭게 확장할 수 있습니다.
 
 ## 빌드 및 테스트
 별도의 빌드 단계는 없으며 다음 명령으로 테스트를 실행할 수 있습니다.
