@@ -1,0 +1,19 @@
+```mermaid
+C4Component
+title SIGMA-X Analytics/Backtest
+
+Container_Boundary(backtest, "Analytics/Backtest") {
+    Component(loader, "HistoricalDataLoader", "Loads historical data")
+    Component(tester, "StrategyTester", "Runs strategy")
+    Component(simexec, "SimulatorExecutor", "Simulated execution")
+    Component(report, "PerformanceReporter", "Generates reports")
+}
+
+ContainerDb(db, "Database", "Stores results")
+
+Rel(loader, db, "Read data")
+Rel(tester, loader, "Uses data")
+Rel(tester, simexec, "Sim orders")
+Rel(simexec, report, "Exec results")
+Rel(report, db, "Write results")
+```
