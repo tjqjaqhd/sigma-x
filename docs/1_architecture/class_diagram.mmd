@@ -13,8 +13,12 @@ classDiagram
     }
     class Redis {
     }
+    class RabbitMQ {
+    }
 
-    DataCollector --> Redis : publish
-    TradeExecutor --> Redis : read/write
+    DataCollector --> RabbitMQ : publish
+    TradeExecutor --> RabbitMQ : consume
+    TradeExecutor --> Redis : write
     APIServer --> Redis : read/write
 ```
+

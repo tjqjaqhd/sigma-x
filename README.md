@@ -8,7 +8,7 @@ pip install -r requirements.txt
 ```
 
 ## 사용 방법
-기본적으로 `DataCollector`와 `TradeExecutor`는 비동기로 동작합니다. 아래와 같이 실행해 볼 수 있습니다.
+`DataCollector`는 수집한 데이터를 RabbitMQ 큐에 전달하고 `TradeExecutor`는 해당 큐를 소비하여 주문을 실행합니다. 아래와 같이 실행해 볼 수 있습니다.
 
 ```python
 import asyncio
