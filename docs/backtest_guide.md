@@ -26,13 +26,13 @@ asyncio.run(main())
 ```
 
 - `limit` 값은 처리할 메시지 수를 제한합니다.
-- 시세 데이터는 RabbitMQ 큐를 거쳐 처리되며, 결과 주문 내역은 Redis 리스트 `orders`에 저장됩니다.
+- 시세 데이터는 RabbitMQ 큐를 거쳐 처리되며, 결과 주문 내역은 PostgreSQL `orders` 테이블에도 기록됩니다.
 
 ## 3. 결과 분석
-Redis에 저장된 데이터를 조회해 전략 성과를 확인합니다.
+데이터베이스에 저장된 주문 기록을 조회해 전략 성과를 확인합니다.
 
 ```bash
-redis-cli LRANGE orders 0 -1
+psql -c 'SELECT * FROM orders;'
 ```
 
 자세한 구조는 [백테스트 흐름](1_architecture/c3_backtest.md)을 참고하십시오.

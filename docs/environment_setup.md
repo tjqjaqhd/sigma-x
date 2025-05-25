@@ -10,11 +10,18 @@ services:
     image: redis:7
     ports:
       - "6379:6379"
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_PASSWORD: example
+    ports:
+      - "5432:5432"
   api:
     build: .
     command: python -m src.api_server
     environment:
       SIGMA_REDIS_URL: redis://redis:6379
+      SIGMA_DB_URL: postgresql://postgres:example@db:5432/postgres
     ports:
       - "8000:8000"
 ```

@@ -15,10 +15,12 @@ deploymentDiagram
             component "data_collector" as DC
             component "trade_executor" as TE
             database "redis" as Redis
+            database "postgres" as Postgres
         }
     }
     DC --> Redis
     TE --> Redis
+    TE --> Postgres
 ```
 
 ## 서버 사양
