@@ -53,6 +53,8 @@ class APIServer:
         alert_channel: str = "alerts",
         token_expire_seconds: int = 900,
         strategy_manager=None,
+        db_session=None,
+        scheduler=None,
     ) -> None:
         self.app = FastAPI()
         self.redis = redis_client
@@ -69,6 +71,8 @@ class APIServer:
         from .strategy_manager import StrategyManager
 
         self.strategy_manager = strategy_manager or StrategyManager()
+        self.db = db_session
+        self.scheduler = scheduler
         self.oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/token")
         self._setup_routes()
         self._setup_events()
@@ -78,7 +82,9 @@ class APIServer:
         data["exp"] = int(time.time()) + self.token_expire_seconds
         payload = json.dumps(data, separators=(",", ":"), sort_keys=True).encode()
         payload_b64 = base64.urlsafe_b64encode(payload).decode().rstrip("=")
-        signature = hmac.new(self.secret_key.encode(), payload_b64.encode(), hashlib.sha256).digest()
+        signature = hmac.new(
+            self.secret_key.encode(), payload_b64.encode(), hashlib.sha256
+        ).digest()
         sig_b64 = base64.urlsafe_b64encode(signature).decode().rstrip("=")
         return f"{payload_b64}.{sig_b64}"
 
@@ -88,7 +94,9 @@ class APIServer:
         async def get_current_user(token: str = Depends(oauth2_scheme)):
             try:
                 payload_b64, sig_b64 = token.split(".")
-                expected_sig = hmac.new(self.secret_key.encode(), payload_b64.encode(), hashlib.sha256).digest()
+                expected_sig = hmac.new(
+                    self.secret_key.encode(), payload_b64.encode(), hashlib.sha256
+                ).digest()
                 if not hmac.compare_digest(
                     base64.urlsafe_b64encode(expected_sig).decode().rstrip("="),
                     sig_b64,
@@ -126,6 +134,36 @@ class APIServer:
             decoded = [d.decode() if isinstance(d, bytes) else d for d in data]
             return {"orders": decoded}
 
+        @self.app.get("/pnl", dependencies=[Depends(require_admin)])
+        async def pnl() -> dict[str, float]:
+            from sqlalchemy import func
+            from .database import BacktestResult
+
+            with self.session_scope() as session:
+                profit = session.query(func.sum(BacktestResult.profit)).scalar() or 0.0
+                return {"pnl": float(profit)}
+
+        from fastapi import Body
+        from contextlib import contextmanager
+        from .database import SessionLocal, init_db
+
+        @contextmanager
+        def session_scope(self):
+            """Provide a transactional scope around a series of operations."""
+            if self.db is None:
+                init_db()
+                session = SessionLocal()
+                close = True
+            else:
+                session = self.db
+                close = False
+            try:
+                profit = session.query(func.sum(BacktestResult.profit)).scalar() or 0.0
+                return {"pnl": float(profit)}
+            finally:
+                if close:
+                    session.close()
+
         from fastapi import Body
 
         @self.app.post("/token")
@@ -133,7 +171,9 @@ class APIServer:
             user = self.users.get(data.username)
             if not user or user["password"] != data.password:
                 raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
-            token = self._create_access_token({"sub": data.username, "role": user["role"]})
+            token = self._create_access_token(
+                {"sub": data.username, "role": user["role"]}
+            )
             return {"access_token": token, "token_type": "bearer"}
 
         @self.app.websocket("/ws")
@@ -179,26 +219,61 @@ class APIServer:
             return {"strategies": self.strategy_manager.available()}
 
         @self.app.post("/strategies", dependencies=[Depends(require_admin)])
-        async def update_strategy(data: UpdateStrategyInput = Body(...)) -> dict[str, str]:
+        async def update_strategy(
+            data: UpdateStrategyInput = Body(...),
+        ) -> dict[str, str]:
             from .strategy_manager import StrategyLoadError
 
             try:
                 self.strategy_manager.change_strategy(data.name)
             except StrategyLoadError as exc:
                 logging.exception("Invalid strategy %s: %s", data.name, exc)
-                raise HTTPException(status_code=400, detail=f"invalid strategy: {data.name}")
+                raise HTTPException(
+                    status_code=400, detail=f"invalid strategy: {data.name}"
+                )
             except Exception as exc:
                 logging.exception("Unexpected error changing strategy: %s", exc)
                 raise HTTPException(status_code=400, detail="strategy update failed")
-            return {"status": "updated", "name": data.name}
+            current = self.strategy_manager.current().__class__.__name__
+            return {"status": "updated", "name": current}
 
         @self.app.get("/system/tasks", dependencies=[Depends(require_admin)])
         async def system_tasks() -> dict[str, list[str]]:
-            return {"tasks": []}
+            tasks: list[str] = []
+            if self.scheduler is not None:
+                tasks.extend([j.id for j in self.scheduler.get_jobs()])
+            return {"tasks": tasks}
 
         @self.app.get("/backtests", dependencies=[Depends(require_admin)])
-        async def backtests() -> dict[str, list[str]]:
-            return {"results": []}
+        async def backtests(limit: int = 10, offset: int = 0) -> dict[str, list[dict]]:
+            from .database import BacktestResult, SessionLocal, init_db
+
+            if self.db is None:
+                init_db()
+                session = SessionLocal()
+                close = True
+            else:
+                session = self.db
+                close = False
+            try:
+                q = (
+                    session.query(BacktestResult)
+                    .order_by(BacktestResult.id.desc())
+                    .offset(offset)
+                    .limit(limit)
+                )
+                results = [
+                    {
+                        "id": r.id,
+                        "profit": r.profit,
+                        "created_at": r.created_at.isoformat(),
+                    }
+                    for r in q
+                ]
+                return {"results": results}
+            finally:
+                if close:
+                    session.close()
 
         @self.app.post("/notify", dependencies=[Depends(require_admin)])
         async def notify(message: str) -> dict[str, str]:
@@ -215,7 +290,9 @@ class APIServer:
             if self.redis is None:
                 import redis.asyncio as redis
 
-                self.redis = redis.from_url(os.getenv("SIGMA_REDIS_URL", "redis://localhost"))
+                self.redis = redis.from_url(
+                    os.getenv("SIGMA_REDIS_URL", "redis://localhost")
+                )
 
         @self.app.on_event("shutdown")
         async def shutdown() -> None:

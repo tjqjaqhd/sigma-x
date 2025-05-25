@@ -29,7 +29,8 @@
 
 - `/token` 엔드포인트에서 관리자 계정으로 토큰을 발급받으면 아래 API를 사용할 수 있습니다. 발급된 토큰은 기본적으로 15분 후 만료되며, 필요하다면 `APIServer` 생성 시 `token_expire_seconds` 값으로 조정할 수 있습니다. 만료된 토큰은 `/token` 엔드포인트를 통해 갱신해야 합니다.
 
- - `/strategies` : `StrategyManager`가 인식한 전략 목록을 확인하고 실행 중인 전략을 교체합니다. 잘못된 전략 이름을 전달하면 `invalid strategy: <이름>` 형식의 메시지와 함께 400 오류가 반환됩니다.
+- `/strategies` : `StrategyManager`가 인식한 전략 목록을 확인하고 실행 중인 전략을 교체합니다. 잘못된 전략 이름을 전달하면 `invalid strategy: <이름>` 형식의 메시지와 함께 400 오류가 반환됩니다.
 - `/system/tasks` : 실행 중인 작업 확인
-- `/backtests` : 백테스트 결과 조회
+- `/backtests` : `limit`과 `offset` 파라미터로 최근 백테스트 결과를 조회합니다.
+- `/pnl` : 데이터베이스에 기록된 손익 합계를 반환합니다.
 - `/notify` : 실시간 알림 전송. `message` 파라미터는 쿼리 문자열로 전달됩니다 (예: `/notify?message=Hello`). 전송된 알림은 WebSocket 구독자에게도 전달됩니다.
