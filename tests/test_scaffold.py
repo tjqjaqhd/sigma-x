@@ -21,3 +21,12 @@ def test_scaffold(tmp_path, monkeypatch):
             test_file = tmp_path / "tests" / f"test_{comp['name']}.py"
             assert module_file.exists()
             assert test_file.exists()
+
+            camel_name = "".join(part.capitalize() for part in comp["name"].split("_"))
+            content = module_file.read_text()
+            assert f"class {camel_name}" in content
+            if comp.get("description"):
+                assert comp["description"] in content
+
+            test_content = test_file.read_text()
+            assert f"from src.{comp['name']} import {camel_name}" in test_content
