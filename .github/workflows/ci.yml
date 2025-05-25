@@ -1,32 +1,68 @@
+name: CI  # 워크플로 이름
+
+# ───────────────────────────────────────────
+# 1) 언제 실행할지 정의 ─ push / PR / 수동
+# ───────────────────────────────────────────
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:        # Actions 탭에서 “Run workflow” 버튼
+
+# (선택) 같은 브랜치 중복 빌드 자동 취소 → VPS·CI 시간 절약
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read            # 불필요한 쓰기 권한 제거
+
+# ───────────────────────────────────────────
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
+    # 0) 소스 체크아웃 ---------------------------------------
     - name: Checkout code
       uses: actions/checkout@v3
       with:
         fetch-depth: 0
 
+    # 1) Python 설정 + 캐시 ---------------------------------
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
-        python-version: '3.x'
+        python-version: '3.12'   # 정확한 버전 지정 권장
+        cache: pip               # pip 캐시로 설치 속도 향상
 
+    # 2) Node 설정 (mermaid-cli용) ---------------------------
+    - name: Set up Node
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+
+    # 3) 시스템 패키지 --------------------------------------
     - name: Install Graphviz
       run: sudo apt-get update && sudo apt-get install -y graphviz
 
+    # 4) Python 의존성 --------------------------------------
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install -r requirements.txt
+        pip install -r requirements.txt -r requirements-dev.txt
+        # 만약 pre-commit이 requirements에 없으면 아래 한 줄 추가
+        # pip install pre-commit
 
+    # 5) pre-commit 전체 훅 실행 -----------------------------
     - name: Run pre-commit
-      run: |
-        pre-commit run --all-files --show-diff-on-failure
+      run: pre-commit run --all-files --show-diff-on-failure
 
+    # 6) 스펙(YAML) 변경 감지 -------------------------------
     - name: Detect spec changes
-      id: yaml
+      id: specs                           # ← id를 yaml → specs 로 변경
       run: |
         if [ "$GITHUB_EVENT_NAME" = "pull_request" ]; then
           base="${{ github.event.pull_request.base.sha }}"
@@ -39,34 +75,32 @@ jobs:
           echo "changed=false" >> "$GITHUB_OUTPUT"
         fi
 
+    # 7) mermaid-cli 설치 -----------------------------------
     - name: Install mermaid-cli
-      run: |
-        npm install -g @mermaid-js/mermaid-cli
+      run: npm install -g @mermaid-js/mermaid-cli
 
+    # 8) 다이어그램·문서·스캐폴드 생성 (스펙 변경 시만) ------
     - name: Generate diagrams
-      if: steps.yaml.outputs.changed == 'true'
-      run: |
-        python scripts/generate_diagrams.py
+      if: steps.specs.outputs.changed == 'true'
+      run: python scripts/generate_diagrams.py
 
     - name: Build diagram images
-      run: |
-        bash docs/scripts/gen_diagrams.sh
+      if: steps.specs.outputs.changed == 'true'
+      run: bash docs/scripts/gen_diagrams.sh
 
     - name: Run scaffold
-      if: steps.yaml.outputs.changed == 'true'
-      run: |
-        python scripts/scaffold.py
+      if: steps.specs.outputs.changed == 'true'
+      run: python scripts/scaffold.py
 
     - name: Generate docs
-      if: steps.yaml.outputs.changed == 'true'
-      run: |
-        python scripts/generate_docs.py
+      if: steps.specs.outputs.changed == 'true'
+      run: python scripts/generate_docs.py
 
+    # 9) 생성 결과가 커밋에 반영됐는지 체크 ------------------
     - name: Check generated files committed
-      if: steps.yaml.outputs.changed == 'true'
+      if: steps.specs.outputs.changed == 'true'
       run: git diff --exit-code
 
+    # 10) 테스트 실행 ---------------------------------------
     - name: Run tests
-      run: |
-        pytest
-
+      run: pytest
