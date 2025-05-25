@@ -1,0 +1,27 @@
+# 배포 뷰 및 NFR
+
+본 시스템은 다음과 같은 NFR(비기능 요구사항)을 충족하도록 설계되었습니다.
+
+- **신뢰성**: 단일 VPS에서 모든 서비스가 동작하므로 서비스 모니터링과 장애 복구가 중요합니다.
+- **보안성**: 외부 접근을 최소화하고 필요 시 VPN 또는 방화벽 정책을 적용합니다.
+- **유지보수성**: 컨테이너 기반 배포를 통해 서비스의 버전 관리와 롤백을 쉽게 수행합니다.
+
+## 배포 구성 다이어그램
+
+```mermaid
+deploymentDiagram
+    node "Naver Cloud VPC" {
+        node "sigma (Ubuntu 24.04, 4 vCPU, 16GB RAM)" {
+            component "data_collector" as DC
+            component "trade_executor" as TE
+            database "redis" as Redis
+            queue "rabbitmq" as MQ
+        }
+    }
+    DC --> Redis
+    TE --> Redis
+    DC --> MQ
+    TE --> MQ
+```
+
+해당 서버는 100GB SSD 스토리지를 사용하며, 하이퍼바이저는 KVM 기반입니다. 공인 IP는 223.130.139.218이며 VPC 내부에서는 10.0.1.6 주소로 통신합니다.
