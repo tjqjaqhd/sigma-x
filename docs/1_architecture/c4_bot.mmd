@@ -1,0 +1,21 @@
+```mermaid
+C4Component
+title SIGMA-X Bot Components
+
+Container_Boundary(bot, "Bot") {
+    Component(strat, "Strategy (ID 1)", "Runs strategies")
+    Component(risk, "Risk (ID 2)", "Validates risk")
+    Component(exec, "Exec (ID 3)", "Executes orders")
+    Component(sim, "Sim (ID 4)", "Simulates trades")
+}
+
+ContainerDb(db, "Database", "Stores trading data")
+ContainerDb(redis, "Redis", "Handles pub/sub messaging")
+
+Rel(strat, risk, "Validate")
+Rel(risk, exec, "If ok")
+Rel(sim, strat, "Sim input")
+Rel(sim, db, "Save results")
+linkStyle 0,1 stroke:#000,stroke-width:3px;
+linkStyle 2,3 stroke-dasharray: 5 5;
+```
