@@ -43,7 +43,7 @@ class AnalyticsWorker:
         """Connect to RabbitMQ with retry logic"""
         logger.info(f"Using RabbitMQ URL: {self.rabbitmq_url}")
         parsed_url = urlparse(self.rabbitmq_url)
-        host = parsed_url.hostname
+        host = parsed_url.hostname or "rabbitmq"
         port = parsed_url.port or 5672
         username = parsed_url.username or 'guest'
         password = parsed_url.password or 'guest'
