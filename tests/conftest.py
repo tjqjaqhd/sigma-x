@@ -24,6 +24,9 @@ class FakePubSub:
             data = await self.queue.get()
             yield {"type": "message", "data": data}
 
+    async def close(self) -> None:
+        return None
+
 
 class FakeRedis:
     def __init__(self) -> None:
@@ -45,6 +48,9 @@ class FakeRedis:
     async def lrange(self, key: str, start: int, end: int):
         end = None if end == -1 else end + 1
         return self.lists.get(key, [])[start:end]
+
+    async def close(self) -> None:
+        return None
 
 
 @pytest.fixture

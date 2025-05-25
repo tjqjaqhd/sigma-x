@@ -6,10 +6,11 @@ repos:
       - id: end-of-file-fixer
       - id: check-yaml
   - repo: https://github.com/psf/black
-    rev: 23.3.0
+    rev: 24.3.0
     hooks:
       - id: black
   - repo: https://github.com/PyCQA/flake8
     rev: 6.1.0
     hooks:
       - id: flake8
+
