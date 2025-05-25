@@ -26,20 +26,19 @@ async def test_backtest_pipeline(tmp_path):
     engine = create_engine(f"sqlite:///{tmp_path}/t.db")
     Base.metadata.create_all(engine)
     Session = sessionmaker(bind=engine)
-    session = Session()
+    with Session() as session:
+        loader = HistoricalDataLoader(str(csv))
+        tester = StrategyTester(short_window=2, long_window=3)
+        simulator = SimulatorExecutor(db_session=session)
+        reporter = PerformanceReporter(db_session=session)
 
-    loader = HistoricalDataLoader(str(csv))
-    tester = StrategyTester(short_window=2, long_window=3)
-    simulator = SimulatorExecutor(db_session=session)
-    reporter = PerformanceReporter(db_session=session)
+        async for signal, price in tester.run(loader.load()):
+            await simulator.execute(signal, price)
 
-    async for signal, price in tester.run(loader.load()):
-        await simulator.execute(signal, price)
+        profit = reporter.report(simulator.orders)
 
-    profit = reporter.report(simulator.orders)
+        orders = session.query(Order).all()
+        result = session.query(BacktestResult).one()
 
-    orders = session.query(Order).all()
-    result = session.query(BacktestResult).one()
-
-    assert len(orders) == len(simulator.orders)
-    assert result.profit == pytest.approx(profit)
+        assert len(orders) == len(simulator.orders)
+        assert result.profit == pytest.approx(profit)
