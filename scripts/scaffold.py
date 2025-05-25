@@ -5,7 +5,7 @@ import argparse
 import subprocess
 from pathlib import Path
 
-import yaml
+from scripts.utils import load_yaml
 
 
 def snake_to_camel(name: str) -> str:
@@ -56,8 +56,7 @@ def format_files(*paths: Path) -> None:
 
 
 def generate(spec_path: Path) -> None:
-    with spec_path.open() as f:
-        spec = yaml.safe_load(f)
+    spec = load_yaml(spec_path)
 
     for container in spec.get("containers", []):
         for comp in container.get("components", []):

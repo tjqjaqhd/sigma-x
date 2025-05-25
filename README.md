@@ -21,10 +21,20 @@ pytest
 자세한 구조 설명은 `docs/sigma_yaml_structure.md` 문서를 참고하세요.
 
 ## 다이어그램 생성
-`scripts/generate_diagrams.py` 스크립트를 실행하면 YAML 명세를 바탕으로 Mermaid 문법의 다이어그램 파일이 `docs/sigma_system_diagram.mmd`에 저장됩니다.
+`scripts/generate_diagrams.py`를 실행하면 YAML 명세를 바탕으로 `docs/sigma_system_diagram.mmd` 파일이 생성됩니다.
+이후 `docs/scripts/gen_diagrams.sh` 스크립트를 사용하여 모든 `.mmd`, `.dot` 파일을 SVG로 변환할 수 있습니다.
+
+필요 패키지 설치 예시:
 
 ```bash
-/usr/bin/python3 scripts/generate_diagrams.py
+sudo npm install -g @mermaid-js/mermaid-cli
+sudo apt-get install -y graphviz
+```
+
+실행 방법:
+
+```bash
+bash docs/scripts/gen_diagrams.sh
 ```
 
 ## 스캐폴드 생성

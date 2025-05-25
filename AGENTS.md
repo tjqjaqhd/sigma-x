@@ -25,6 +25,8 @@ sudo apt update && sudo apt install -y \
 ########################################
 sudo apt install -y nodejs npm
 sudo npm install -g markdownlint-cli jsonlint prettier
+sudo npm install -g @mermaid-js/mermaid-cli
+sudo apt install -y graphviz
 
 ########################################
 # 4) 선택적 개발 도구 (권장)
@@ -42,3 +44,4 @@ npm install -g pyright # 타입 검사용 (JS/Python 모두 대응)
 - 3.pre-commit 와 ci는 현제 상황에 맞게 수정하세요
 - 4.파일이나 문서를 수정하면 항상 연관문서들을 최신으로 업데이트 하세요
 - 5.추가로 앞으로 작업에 필요하고 유용한 의존성이 있다면requirements.txt에 추가하세요
+- 6.`docs/scripts/gen_diagrams.sh` 스크립트로 모든 다이어그램을 갱신하세요
