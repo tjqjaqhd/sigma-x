@@ -8,9 +8,8 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
 
 class FakePubSub:
-    def __init__(self, redis, channel: str):
+    def __init__(self, redis):
         self.redis = redis
-        self.channel = channel
         self.queue: asyncio.Queue = asyncio.Queue()
 
     async def subscribe(self, channel: str) -> None:
