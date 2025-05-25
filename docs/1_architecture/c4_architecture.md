@@ -6,13 +6,14 @@
 C4Context
 title SIGMA-X System Context
 
-Person(trader, "Trader", "Uses the trading system")
-Person(admin, "Administrator", "Manages the system")
+Person(trader, "Trader (ID 1)", "Uses the trading system")
+Person(admin, "Administrator (ID 2)", "Manages the system")
 
-System(sigma, "SIGMA-X", "An automated trading system")
+System(sigma, "SIGMA-X (ID 3)", "An automated trading system")
 
 Rel(trader, sigma, "Trade & view")
 Rel(admin, sigma, "Manage system")
+linkStyle 0,1 stroke:#000,stroke-width:3px;
 ```
 
 ## 2. 컨테이너 다이어그램 (C2)
@@ -25,12 +26,12 @@ Person(trader, "Trader", "Uses the trading system")
 Person(admin, "Administrator", "Manages the system")
 
 System_Boundary(sigma, "SIGMA-X") {
-    Container(db, "Database", "PostgreSQL", "Stores trading data")
-    Container(redis, "Redis", "Redis", "Handles pub/sub messaging")
-    Container(mq, "Task Queue", "RabbitMQ", "Background job queue")
-    Container(analytics, "Analytics", "Python", "Backtesting and analysis")
-    Container(api, "API", "FastAPI", "Handles REST/WS")
-    Container(bot, "Bot", "Python", "Executes strategies")
+    Container(db, "Database (ID 1)", "PostgreSQL", "Stores trading data")
+    Container(redis, "Redis (ID 2)", "Redis", "Handles pub/sub messaging")
+    Container(mq, "Task Queue (ID 3)", "RabbitMQ", "Background job queue")
+    Container(analytics, "Analytics (ID 4)", "Python", "Backtesting and analysis")
+    Container(api, "API (ID 5)", "FastAPI", "Handles REST/WS")
+    Container(bot, "Bot (ID 6)", "Python", "Executes strategies")
 }
 
 Rel(trader, api, "Trade & view")
@@ -42,6 +43,8 @@ Rel(bot, redis, "Publish result")
 Rel(analytics, db, "Reads data")
 Rel(analytics, mq, "Sends job")
 Rel(mq, analytics, "Returns result")
+linkStyle 0,1,2,3,4,5 stroke:#000,stroke-width:3px;
+linkStyle 6,7,8 stroke-dasharray: 5 5;
 ```
 
 ## 3. API 컴포넌트 다이어그램 (C3)
@@ -51,10 +54,10 @@ C4Component
 title SIGMA-X API Components
 
 Container_Boundary(api, "API") {
-    Component(rest, "REST", "Handles HTTP REST")
-    Component(ws, "WS", "WebSocket handling")
-    Component(auth, "Auth", "Authentication layer")
-    Component(health, "Health", "Health monitoring")
+    Component(rest, "REST (ID 1)", "Handles HTTP REST")
+    Component(ws, "WS (ID 2)", "WebSocket handling")
+    Component(auth, "Auth (ID 3)", "Authentication layer")
+    Component(health, "Health (ID 4)", "Health monitoring")
 }
 
 Person(trader, "Trader", "Uses the trading system")
@@ -65,6 +68,7 @@ Rel(rest, auth, "Auth check")
 Rel(rest, ws, "WebSocket start")
 Rel(rest, health, "Health check")
 Rel(ws, redis, "Subscribes")
+linkStyle 0,1,2,3,4 stroke:#000,stroke-width:3px;
 ```
 
 ## 4. Bot 컴포넌트 다이어그램 (C4)
@@ -74,10 +78,10 @@ C4Component
 title SIGMA-X Bot Components
 
 Container_Boundary(bot, "Bot") {
-    Component(strat, "Strategy", "Runs strategies")
-    Component(risk, "Risk", "Validates risk")
-    Component(exec, "Exec", "Executes orders")
-    Component(sim, "Sim", "Simulates trades")
+    Component(strat, "Strategy (ID 1)", "Runs strategies")
+    Component(risk, "Risk (ID 2)", "Validates risk")
+    Component(exec, "Exec (ID 3)", "Executes orders")
+    Component(sim, "Sim (ID 4)", "Simulates trades")
 }
 
 ContainerDb(db, "Database", "Stores trading data")
@@ -87,6 +91,8 @@ Rel(strat, risk, "Validate")
 Rel(risk, exec, "If ok")
 Rel(sim, strat, "Sim input")
 Rel(sim, db, "Save results")
+linkStyle 0,1 stroke:#000,stroke-width:3px;
+linkStyle 2,3 stroke-dasharray: 5 5;
 ```
 
 ## 다이어그램 설명
