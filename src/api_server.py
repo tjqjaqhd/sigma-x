@@ -8,7 +8,7 @@ import base64
 import hashlib
 import hmac
 import json
-import time
+from time import time
 from pydantic import BaseModel
 from fastapi import (
     FastAPI,
