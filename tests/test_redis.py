@@ -7,9 +7,9 @@ import pytest
 ROOT_DIR = Path(__file__).resolve().parents[1]
 SRC_DIR = ROOT_DIR / "src"
 if str(SRC_DIR) in sys.path:
-    sys.path.remove(str(SRC_DIR))
-sys.path.insert(0, str(ROOT_DIR))
-sys.path.append(str(SRC_DIR))
+    sys.path.remove(str(SRC_DIR))  # Remove SRC_DIR to avoid conflicts with other modules during resolution.
+sys.path.insert(0, str(ROOT_DIR))  # Prioritize ROOT_DIR for module resolution to ensure local imports are used first.
+sys.path.append(str(SRC_DIR))  # Add SRC_DIR back to allow access to source files, but with lower priority.
 
 import fakeredis.aioredis
 
