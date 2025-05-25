@@ -5,7 +5,8 @@ from typing import Optional
 
 from .order_executor import OrderExecutor
 from .risk_manager import RiskManager
-from .strategy import BaseStrategy, MovingAverageStrategy
+from .strategy import BaseStrategy
+from .strategy_manager import StrategyManager
 
 
 class TradeExecutor:
@@ -20,6 +21,7 @@ class TradeExecutor:
         queue: str | None = None,
         order_key: str | None = None,
         strategy: BaseStrategy | None = None,
+        strategy_manager: StrategyManager | None = None,
         risk_manager: RiskManager | None = None,
         order_executor: OrderExecutor | None = None,
         short_window: int | None = None,
@@ -35,7 +37,22 @@ class TradeExecutor:
         self.order_key = order_key or os.getenv("SIGMA_ORDER_KEY", "orders")
         self.short_window = short_window or int(os.getenv("SIGMA_SHORT_WINDOW", "3"))
         self.long_window = long_window or int(os.getenv("SIGMA_LONG_WINDOW", "5"))
-        self.strategy = strategy or MovingAverageStrategy(self.short_window, self.long_window)
+        self.strategy_manager = strategy_manager or StrategyManager()
+        if strategy is not None:
+            self.strategy_manager.register("custom", strategy)
+            self.strategy_manager.change_strategy("custom")
+        else:
+            # 기본 이동 평균 전략 파라미터 반영
+            try:
+                self.strategy_manager.change_strategy("moving_average")
+                strat = self.strategy_manager.current()
+                if hasattr(strat, "short_window"):
+                    strat.short_window = self.short_window
+                if hasattr(strat, "long_window"):
+                    strat.long_window = self.long_window
+            except Exception as e:
+                import logging
+                logging.error("Failed to change strategy or set strategy parameters: %s", e)
         self.risk = risk_manager or RiskManager()
         self.symbol = symbol or os.getenv("SIGMA_SYMBOL", "BTCUSDT")
         self.volume = volume or float(os.getenv("SIGMA_VOLUME", "0"))
@@ -58,7 +75,7 @@ class TradeExecutor:
         processed = 0
 
         async def handle(price: float) -> None:
-            signal = await self.strategy.process(price)
+            signal = await self.strategy_manager.current().process(price)
             if signal in ("BUY", "SELL") and self.risk.check(signal):
                 self.risk.apply(signal)
                 await self.order_executor.execute(

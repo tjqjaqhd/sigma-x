@@ -51,6 +51,7 @@ class APIServer:
         algorithm: str = "HS256",
         alert_channel: str = "alerts",
         token_expire_seconds: int = 900,
+        strategy_manager=None,
     ) -> None:
         self.app = FastAPI()
         self.redis = redis_client
@@ -64,6 +65,8 @@ class APIServer:
         self.secret_key = secret_key
         self.algorithm = algorithm
         self.token_expire_seconds = token_expire_seconds
+        from .strategy_manager import StrategyManager
+        self.strategy_manager = strategy_manager or StrategyManager()
         self.oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/token")
         self._setup_routes()
         self._setup_events()
@@ -171,10 +174,14 @@ class APIServer:
 
         @self.app.get("/strategies", dependencies=[Depends(require_admin)])
         async def strategies() -> dict[str, list[str]]:
-            return {"strategies": ["moving_average"]}
+            return {"strategies": self.strategy_manager.available()}
 
         @self.app.post("/strategies", dependencies=[Depends(require_admin)])
         async def update_strategy(data: UpdateStrategyInput = Body(...)) -> dict[str, str]:
+            try:
+                self.strategy_manager.change_strategy(data.name)
+            except Exception:
+                raise HTTPException(status_code=400, detail="invalid strategy")
             return {"status": "updated", "name": data.name}
 
         @self.app.get("/system/tasks", dependencies=[Depends(require_admin)])

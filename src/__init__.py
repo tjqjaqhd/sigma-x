@@ -10,6 +10,7 @@ from .performance_reporter import PerformanceReporter
 from .risk_manager import RiskManager
 from .order_executor import OrderExecutor
 from .strategy import BaseStrategy, MovingAverageStrategy
+from .strategy_manager import StrategyManager
 
 __all__ = [
     "Redis",
@@ -25,4 +26,5 @@ __all__ = [
     "OrderExecutor",
     "BaseStrategy",
     "MovingAverageStrategy",
+    "StrategyManager",
 ]
