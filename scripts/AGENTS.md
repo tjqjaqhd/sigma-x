@@ -21,3 +21,4 @@ def test_scaffold_help():
     import subprocess, sys
     r = subprocess.run([sys.executable, "scripts/scaffold.py", "--help"])
     assert r.returncode == 0
+-변경사항이 있으면 알맞게 고치세요
