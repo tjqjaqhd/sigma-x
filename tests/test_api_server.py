@@ -40,9 +40,9 @@ def test_admin_endpoints(fake_redis):
 
     res = client.get("/strategies", headers=headers)
     assert res.status_code == 200
-    res = client.post("/notify", params={"message": "ALERT"}, headers=headers)
-    assert res.status_code == 200
     with client.websocket_connect("/ws") as ws:
+        res = client.post("/notify", params={"message": "ALERT"}, headers=headers)
+        assert res.status_code == 200
         assert ws.receive_text() == "ALERT"
 
 
