@@ -26,6 +26,7 @@ pyright
 types-requests
 types-redis
 types-pyyaml
+PyYAML
 
 # 코드 포매터 및 린터
 black
@@ -40,3 +41,5 @@ pre-commit
 # 기타 유틸
 coverage
 tomli
+mkdocs
+mkdocs-material
