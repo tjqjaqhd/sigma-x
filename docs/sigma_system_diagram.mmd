@@ -7,7 +7,15 @@ subgraph main ["SIGMA-X 가동 환경"]
 end
     data_collector -->|redis| trade_executor
     trade_executor -->|redis| redis
+    trade_executor --> prometheus
 subgraph scheduler ["전략 교체 및 성과 리포트 스케줄러"]
     sigma_scheduler["sigma_scheduler (service)"]
 end
+subgraph observability ["관찰성"]
+    prometheus["Prometheus"]
+    grafana["Grafana"]
+    alertmanager["Alertmanager"]
+end
+    prometheus --> alertmanager
+    prometheus --> grafana
 ```

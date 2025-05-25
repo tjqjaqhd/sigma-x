@@ -15,5 +15,6 @@ nav:
       - 전략 추가: strategy_guide.md
       - 환경 설정: environment_setup.md
       - 운영 매뉴얼: admin_manual.md
+      - 관찰성: observability.md
 markdown_extensions:
   - tables

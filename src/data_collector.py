@@ -57,6 +57,9 @@ class DataCollector:
                             await self.rabbitmq.publish(self.queue, message)
                         else:
                             await self.redis.publish(self.channel, message)
+                        from .metrics import record_tick
+
+                        record_tick()
                         received += 1
                         if limit and received >= limit:
                             return
