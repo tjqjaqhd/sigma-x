@@ -1,0 +1,11 @@
+global:
+  scrape_interval: 15s
+scrape_configs:
+  - job_name: sigma
+    static_configs:
+      - targets: ['sigma-app:8000']
+    metrics_path: /metrics
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets: ['alertmanager:9093']

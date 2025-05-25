@@ -26,6 +26,10 @@ class OrderExecutor:
             self.db.commit()
 
     async def execute(self, signal: str, price: float, **kwargs) -> None:
+        from time import perf_counter
+        from .metrics import record_order_delay
+
+        start = perf_counter()
         if self.simulator is not None:
             await self.simulator.execute(signal, price)
         elif self.exchange_client is not None:
@@ -37,3 +41,5 @@ class OrderExecutor:
             await self._save_db(signal, price)
         if self.redis is not None:
             await self.redis.rpush(self.order_key, signal)
+        delay = perf_counter() - start
+        record_order_delay(delay)

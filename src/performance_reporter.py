@@ -32,4 +32,7 @@ class PerformanceReporter:
 
             self.db.add(BacktestResult(profit=profit))
             self.db.commit()
+        from .metrics import set_recent_profit
+
+        set_recent_profit(profit)
         return profit

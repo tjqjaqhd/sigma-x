@@ -55,6 +55,7 @@ class APIServer:
         strategy_manager=None,
         db_session=None,
         scheduler=None,
+        system_status=None,
     ) -> None:
         self.app = FastAPI()
         self.redis = redis_client
@@ -73,6 +74,7 @@ class APIServer:
         self.strategy_manager = strategy_manager or StrategyManager()
         self.db = db_session
         self.scheduler = scheduler
+        self.system_status = system_status
         self.oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/token")
         self._setup_routes()
         self._setup_events()
@@ -82,9 +84,7 @@ class APIServer:
         data["exp"] = int(time.time()) + self.token_expire_seconds
         payload = json.dumps(data, separators=(",", ":"), sort_keys=True).encode()
         payload_b64 = base64.urlsafe_b64encode(payload).decode().rstrip("=")
-        signature = hmac.new(
-            self.secret_key.encode(), payload_b64.encode(), hashlib.sha256
-        ).digest()
+        signature = hmac.new(self.secret_key.encode(), payload_b64.encode(), hashlib.sha256).digest()
         sig_b64 = base64.urlsafe_b64encode(signature).decode().rstrip("=")
         return f"{payload_b64}.{sig_b64}"
 
@@ -94,9 +94,7 @@ class APIServer:
         async def get_current_user(token: str = Depends(oauth2_scheme)):
             try:
                 payload_b64, sig_b64 = token.split(".")
-                expected_sig = hmac.new(
-                    self.secret_key.encode(), payload_b64.encode(), hashlib.sha256
-                ).digest()
+                expected_sig = hmac.new(self.secret_key.encode(), payload_b64.encode(), hashlib.sha256).digest()
                 if not hmac.compare_digest(
                     base64.urlsafe_b64encode(expected_sig).decode().rstrip("="),
                     sig_b64,
@@ -123,6 +121,12 @@ class APIServer:
         @self.app.get("/health")
         async def health() -> dict[str, str]:
             return {"status": "ok"}
+
+        @self.app.get("/metrics")
+        async def metrics() -> str:
+            from .metrics import metrics_text
+
+            return metrics_text()
 
         @self.app.get("/orders")
         async def orders() -> dict[str, list[str]]:
@@ -158,22 +162,19 @@ class APIServer:
                 session = self.db
                 close = False
             try:
-                profit = session.query(func.sum(BacktestResult.profit)).scalar() or 0.0
-                return {"pnl": float(profit)}
+                yield session
             finally:
                 if close:
                     session.close()
 
-        from fastapi import Body
+        self.session_scope = session_scope.__get__(self, APIServer)
 
         @self.app.post("/token")
         async def login(data: LoginInput = Body(...)) -> dict[str, str]:
             user = self.users.get(data.username)
             if not user or user["password"] != data.password:
                 raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
-            token = self._create_access_token(
-                {"sub": data.username, "role": user["role"]}
-            )
+            token = self._create_access_token({"sub": data.username, "role": user["role"]})
             return {"access_token": token, "token_type": "bearer"}
 
         @self.app.websocket("/ws")
@@ -228,9 +229,7 @@ class APIServer:
                 self.strategy_manager.change_strategy(data.name)
             except StrategyLoadError as exc:
                 logging.exception("Invalid strategy %s: %s", data.name, exc)
-                raise HTTPException(
-                    status_code=400, detail=f"invalid strategy: {data.name}"
-                )
+                raise HTTPException(status_code=400, detail=f"invalid strategy: {data.name}")
             except Exception as exc:
                 logging.exception("Unexpected error changing strategy: %s", exc)
                 raise HTTPException(status_code=400, detail="strategy update failed")
@@ -256,12 +255,7 @@ class APIServer:
                 session = self.db
                 close = False
             try:
-                q = (
-                    session.query(BacktestResult)
-                    .order_by(BacktestResult.id.desc())
-                    .offset(offset)
-                    .limit(limit)
-                )
+                q = session.query(BacktestResult).order_by(BacktestResult.id.desc()).offset(offset).limit(limit)
                 results = [
                     {
                         "id": r.id,
@@ -290,12 +284,14 @@ class APIServer:
             if self.redis is None:
                 import redis.asyncio as redis
 
-                self.redis = redis.from_url(
-                    os.getenv("SIGMA_REDIS_URL", "redis://localhost")
-                )
+                self.redis = redis.from_url(os.getenv("SIGMA_REDIS_URL", "redis://localhost"))
+            if getattr(self, "system_status", None) is not None:
+                await self.system_status.report("api_server", "running")
 
         @self.app.on_event("shutdown")
         async def shutdown() -> None:
+            if getattr(self, "system_status", None) is not None:
+                await self.system_status.report("api_server", "stopped")
             if self.redis is not None:
                 await self.redis.close()
                 self.redis = None

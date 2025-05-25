@@ -29,6 +29,22 @@ services:
     command: python -m src.sigma_scheduler
     environment:
       MODE: live
+  prometheus:
+    image: prom/prometheus
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"
+  grafana:
+    image: grafana/grafana
+    ports:
+      - "3000:3000"
+  alertmanager:
+    image: prom/alertmanager
+    volumes:
+      - ./alertmanager.yml:/etc/alertmanager/alertmanager.yml
+    ports:
+      - "9093:9093"
 ```
 
 프로젝트 루트에 위 파일을 저장한 뒤 다음 명령으로 서비스를 실행합니다.
@@ -36,6 +52,9 @@ services:
 ```bash
 docker compose up -d
 ```
+
+Prometheus와 Grafana는 각각 `http://localhost:9090`, `http://localhost:3000`에서
+접근할 수 있습니다. Alertmanager는 `http://localhost:9093` 포트를 사용합니다.
 
 로컬 환경에서 실행하려면 단순히 다음과 같이 실행할 수 있습니다.
 

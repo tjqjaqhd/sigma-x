@@ -50,3 +50,4 @@ freezegun            # datetime.now() 고정
 pyfakefs             # 가짜 파일시스템
 fakeredis            # redis 모의
 python-jose[cryptography]  # JWT 토큰 인증 (Auth 용)
+prometheus-client

@@ -33,6 +33,7 @@ class FakeRedis:
         self.channels: dict[str, list[str]] = {}
         self.subscribers: dict[str, list[asyncio.Queue]] = {}
         self.lists: dict[str, list[str]] = {}
+        self.hashes: dict[str, dict[str, str]] = {}
 
     async def publish(self, channel: str, message: str) -> None:
         self.channels.setdefault(channel, []).append(message)
@@ -48,6 +49,12 @@ class FakeRedis:
     async def lrange(self, key: str, start: int, end: int):
         end = None if end == -1 else end + 1
         return self.lists.get(key, [])[start:end]
+
+    async def hset(self, key: str, mapping: dict[str, str]) -> None:
+        self.hashes[key] = mapping
+
+    async def hgetall(self, key: str):
+        return self.hashes.get(key, {})
 
     async def close(self) -> None:
         return None

@@ -7,6 +7,7 @@ ROOT_DIR = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT_DIR))
 
 from src.api_server import APIServer  # noqa: E402
+from src.metrics import record_tick  # noqa: E402
 
 
 def test_rest_endpoints(fake_redis):
@@ -90,3 +91,12 @@ def test_pnl_and_backtests(fake_redis, tmp_path):
 
         res = client.get("/backtests?limit=1", headers=headers)
         assert len(res.json()["results"]) == 1
+
+
+def test_metrics_endpoint(fake_redis):
+    server = APIServer(redis_client=fake_redis)
+    client = TestClient(server.app)
+    record_tick()
+    res = client.get("/metrics")
+    assert res.status_code == 200
+    assert "ticks_processed_total" in res.text
