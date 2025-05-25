@@ -61,6 +61,10 @@ class APIServer:
                     await self.redis.publish(self.channel, text)
             finally:
                 sender_task.cancel()
+                try:
+                    await sender_task
+                except asyncio.CancelledError:
+                    pass
                 await pubsub.unsubscribe(self.channel)
                 await websocket.close()
 
