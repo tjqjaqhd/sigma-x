@@ -15,13 +15,10 @@ deploymentDiagram
             component "data_collector" as DC
             component "trade_executor" as TE
             database "redis" as Redis
-            queue "rabbitmq" as MQ
         }
     }
     DC --> Redis
     TE --> Redis
-    DC --> MQ
-    TE --> MQ
 ```
 
 ## 서버 사양

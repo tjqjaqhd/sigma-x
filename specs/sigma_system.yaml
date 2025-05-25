@@ -15,7 +15,7 @@ containers:
     flows:
       - from: data_collector
         to: trade_executor
-        channel: rabbitmq
+        channel: redis
         description: "시세 데이터를 실시간으로 전달"
       - from: trade_executor
         to: redis

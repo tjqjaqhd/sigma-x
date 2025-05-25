@@ -21,27 +21,33 @@ linkStyle 0,1 stroke:#000,stroke-width:3px;
 
 ## 2. 컨테이너 다이어그램 (C2)
 
-컨테이너 간 상호작용을 그린 다이어그램은
-[`c2_container.mmd`](c2_container.mmd) 파일에서 확인할 수 있습니다.
+컨테이너 간 상호작용을 그린 다이어그램입니다.
+
+![C2 컨테이너 다이어그램](c2_container.svg)
 
 ## 3. API 컴포넌트 다이어그램 (C3)
 
-API 내부 구조를 보여 주는 다이어그램은
-[`c3_api.mmd`](c3_api.mmd) 파일에서 확인할 수 있습니다.
+API 내부 구조를 보여 주는 다이어그램입니다.
+
+![API 컴포넌트 다이어그램](c3_api.svg)
 
 ## 4. Bot 컴포넌트 다이어그램 (C4)
 
-Bot 서비스 구성은 [`c4_bot.mmd`](c4_bot.mmd) 파일에서 확인할 수 있습니다.
+Bot 서비스 구성은 다음과 같습니다.
+
+![Bot 컴포넌트 다이어그램](c4_bot.svg)
 
 ## 5. Analytics/백테스트 다이어그램 (C3)
 
-백테스트와 분석 흐름을 나타낸 다이어그램은
-[`c3_backtest.mmd`](c3_backtest.mmd) 파일을 참고하세요.
+백테스트와 분석 흐름을 나타낸 다이어그램입니다.
+
+![백테스트 다이어그램](c3_backtest.svg)
 
 ## 6. 코드 수준 클래스 다이어그램
 
-주요 모듈의 의존성을 보여 주는 클래스 다이어그램은
-[`class_diagram.mmd`](class_diagram.mmd) 파일에 있습니다.
+주요 모듈의 의존성을 보여 주는 클래스 다이어그램입니다.
+
+![클래스 다이어그램](class_diagram.svg)
 
 ## 다이어그램 설명
 
@@ -55,7 +61,6 @@ Bot 서비스 구성은 [`c4_bot.mmd`](c4_bot.mmd) 파일에서 확인할 수 �
 - 6개의 주요 컨테이너:
   - Database (PostgreSQL)
   - Redis (Pub/Sub)
-  - Task Queue (RabbitMQ)
   - Analytics (Python)
   - API (FastAPI)
   - Bot (Python)
@@ -66,7 +71,7 @@ Bot 서비스 구성은 [`c4_bot.mmd`](c4_bot.mmd) 파일에서 확인할 수 �
 - 4개의 주요 컴포넌트:
   - REST (HTTP 처리)
   - WS (WebSocket 처리)
-  - Auth (인증)
+  - Auth (추후 추가 예정)
   - Health (상태 모니터링)
 - 컴포넌트 간의 상호작용과 외부 시스템과의 관계를 표현
 
