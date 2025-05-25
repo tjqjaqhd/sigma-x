@@ -1,6 +1,6 @@
 - 1.사용자의 기본 지시를 최대한 따라주세요
 - 2.########################################
-# 1) Python 개발환경 설치 (운영 + 개발)
+# 1) Python 가상환경 + requirements 설치
 ########################################
 python3 -m venv venv
 source venv/bin/activate
@@ -8,37 +8,23 @@ pip install --upgrade pip setuptools wheel
 pip install -r requirements.txt
 
 ########################################
-# 2) 시스템 도구 설치 (AI 보조 개발환경 최적화)
+# 2) 시스템 도구 설치 (필요한 것만)
 ########################################
 sudo apt update && sudo apt install -y \
-  xxd binutils diffutils procps file colordiff dhex \
-  time htop iotop strace zip unzip p7zip-full \
-  jq yq binwalk tree shellcheck python3-magic hyperfine \
-  lsof ncdu net-tools gdb entr ripgrep fd-find fzf \
-  bat btop duf git curl wget openssh-client
+  xxd binutils diffutils procps colordiff dhex \
+  htop iotop strace unzip p7zip-full jq yq binwalk tree \
+  shellcheck python3-magic hyperfine lsof ncdu net-tools gdb entr \
+  ripgrep fd-find fzf bat btop duf
 
-# fdfind → 'fd'로 symlink (Ubuntu만 해당)
-[ -x /usr/bin/fdfind ] && sudo ln -sf $(which fdfind) ~/.local/bin/fd
+# fd 심볼릭 링크 (Ubuntu용)
+[ -x /usr/bin/fdfind ] && mkdir -p ~/.local/bin && ln -sf $(which fdfind) ~/.local/bin/fd
 
 ########################################
-# 3) Node/NPM 기반 문서 도구 설치
+# 3) 문서 도구만 NPM 설치 (node/npm 이미 있으므로 OK)
 ########################################
-sudo apt install -y nodejs npm
 sudo npm install -g markdownlint-cli jsonlint prettier
 sudo npm install -g @mermaid-js/mermaid-cli
 sudo apt install -y graphviz
-
-########################################
-# 4) 선택적 개발 도구 (권장)
-########################################
-pip install pyright
-npm install -g pyright # 타입 검사용 (JS/Python 모두 대응)
-
-########################################
-# 5) poetry 기반 프로젝트 (사용 시)
-########################################
-# pip install poetry
-# poetry install --with dev,test
 
 이러한 도구들을 설치해뒀으니 사용하세요
 - 3.pre-commit 와 ci는 현제 상황에 맞게 수정하세요
