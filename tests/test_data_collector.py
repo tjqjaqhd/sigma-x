@@ -3,7 +3,6 @@ import sys
 from pathlib import Path
 
 import pytest
-import websockets
 
 ROOT_DIR = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT_DIR))
@@ -12,17 +11,29 @@ from src.data_collector import DataCollector
 
 
 @pytest.mark.asyncio
-async def test_data_collector_run(fake_redis):
+async def test_data_collector_run(fake_redis, mocker):
     messages = ["1", "2", "3"]
 
-    async def handler(ws):
-        for msg in messages:
-            await ws.send(msg)
-        await ws.close()
+    class FakeWebSocket:
+        def __init__(self, msgs):
+            self._msgs = msgs
 
-    server = await websockets.serve(handler, "localhost", 8765)
-    async with server:
-        collector = DataCollector(url="ws://localhost:8765", redis_client=fake_redis)
-        await collector.run(limit=len(messages))
+        async def __aenter__(self):
+            return self
+
+        async def __aexit__(self, exc_type, exc, tb):
+            return False
+
+        def __aiter__(self):
+            async def gen():
+                for m in self._msgs:
+                    yield m
+
+            return gen()
+
+    mocker.patch("websockets.connect", return_value=FakeWebSocket(messages))
+
+    collector = DataCollector(redis_client=fake_redis)
+    await collector.run(limit=len(messages))
 
     assert fake_redis.channels["ticks"] == messages

@@ -11,7 +11,10 @@ from src.trade_executor import TradeExecutor
 
 
 @pytest.mark.asyncio
-async def test_trade_executor_run(fake_redis):
+async def test_trade_executor_run(fake_redis, mocker):
+    pubsub = fake_redis.pubsub()
+    mocker.patch.object(fake_redis, "pubsub", return_value=pubsub)
+
     executor = TradeExecutor(redis_client=fake_redis, short_window=2, long_window=3)
 
     async def feed():

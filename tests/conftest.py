@@ -37,7 +37,7 @@ class FakeRedis:
             await q.put(message)
 
     def pubsub(self) -> FakePubSub:
-        return FakePubSub(self, "")
+        return FakePubSub(self)
 
     async def rpush(self, key: str, value: str) -> None:
         self.lists.setdefault(key, []).append(value)
