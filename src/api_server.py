@@ -8,6 +8,7 @@ import base64
 import hashlib
 import hmac
 import json
+from time import time
 from pydantic import BaseModel
 from fastapi import (
     FastAPI,
@@ -38,6 +39,7 @@ class APIServer:
         secret_key: str = "secret",
         algorithm: str = "HS256",
         alert_channel: str = "alerts",
+        token_expire_seconds: int = 900,
     ) -> None:
         self.app = FastAPI()
         self.redis = redis_client
@@ -50,11 +52,14 @@ class APIServer:
         }
         self.secret_key = secret_key
         self.algorithm = algorithm
+        self.token_expire_seconds = token_expire_seconds
         self.oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/token")
         self._setup_routes()
         self._setup_events()
 
     def _create_access_token(self, data: dict) -> str:
+        data = data.copy()
+        data["exp"] = int(time.time()) + self.token_expire_seconds
         payload = json.dumps(data, separators=(",", ":"), sort_keys=True).encode()
         payload_b64 = base64.urlsafe_b64encode(payload).decode().rstrip("=")
         signature = hmac.new(
@@ -79,6 +84,9 @@ class APIServer:
                     raise ValueError
                 payload_json = base64.urlsafe_b64decode(payload_b64 + "=").decode()
                 data = json.loads(payload_json)
+                exp = data.get("exp")
+                if exp is None or time.time() > exp:
+                    raise ValueError
                 username = data.get("sub")
                 role = data.get("role")
                 if username is None or role is None:

@@ -44,3 +44,16 @@ def test_admin_endpoints(fake_redis):
     assert res.status_code == 200
     with client.websocket_connect("/ws") as ws:
         assert ws.receive_text() == "ALERT"
+
+
+def test_expired_token(fake_redis):
+    server = APIServer(redis_client=fake_redis, token_expire_seconds=-1)
+    client = TestClient(server.app)
+
+    res = client.post("/token", json={"username": "admin", "password": "admin"})
+    assert res.status_code == 200
+    token = res.json()["access_token"]
+    headers = {"Authorization": f"Bearer {token}"}
+
+    res = client.get("/strategies", headers=headers)
+    assert res.status_code == 401
