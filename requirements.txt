@@ -12,6 +12,7 @@ redis
 pytz
 loguru
 apscheduler
+PyYAML
 
 # --- 테스트 / 품질 / 정적 분석 ---
 pytest
@@ -20,25 +21,22 @@ pytest-cov
 pytest-mock
 faker
 
-# 타입 체커 및 타입 힌트 호환 패키지
 mypy
 pyright
 types-requests
 types-redis
 types-pyyaml
-PyYAML
 
-# 코드 포매터 및 린터
 black
 isort
 flake8
 pylint
 bandit
 
-# pre-commit 훅 관리자
+# --- pre-commit 및 CI 툴 ---
 pre-commit
 
-# 기타 유틸
+# --- 문서 및 유틸 ---
 coverage
 tomli
 mkdocs
