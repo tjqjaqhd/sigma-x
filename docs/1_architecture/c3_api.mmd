@@ -1,0 +1,21 @@
+```mermaid
+C4Component
+title SIGMA-X API Components
+
+Container_Boundary(api, "API") {
+    Component(rest, "REST (ID 1)", "Handles HTTP REST")
+    Component(ws, "WS (ID 2)", "WebSocket handling")
+    Component(auth, "Auth (ID 3)", "Authentication layer")
+    Component(health, "Health (ID 4)", "Health monitoring")
+}
+
+Person(trader, "Trader", "Uses the trading system")
+ContainerDb(redis, "Redis", "Handles pub/sub messaging")
+
+Rel(trader, rest, "Makes requests")
+Rel(rest, auth, "Auth check")
+Rel(rest, ws, "WebSocket start")
+Rel(rest, health, "Health check")
+Rel(ws, redis, "Subscribes")
+linkStyle 0,1,2,3,4 stroke:#000,stroke-width:3px;
+```

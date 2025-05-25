@@ -1,0 +1,28 @@
+```mermaid
+C4Container
+title SIGMA-X Container
+
+Person(trader, "Trader", "Uses the trading system")
+Person(admin, "Administrator", "Manages the system")
+
+System_Boundary(sigma, "SIGMA-X") {
+    Container(db, "Database (ID 1)", "PostgreSQL", "Stores trading data")
+    Container(redis, "Redis (ID 2)", "Redis", "Handles pub/sub messaging")
+    Container(mq, "Task Queue (ID 3)", "RabbitMQ", "Background job queue")
+    Container(analytics, "Analytics (ID 4)", "Python", "Backtesting and analysis")
+    Container(api, "API (ID 5)", "FastAPI", "Handles REST/WS")
+    Container(bot, "Bot (ID 6)", "Python", "Executes strategies")
+}
+
+Rel(trader, api, "Trade & view")
+Rel(admin, api, "Manage system")
+Rel(api, redis, "Publishes")
+Rel(api, bot, "Sends jobs")
+Rel(bot, db, "RW trades")
+Rel(bot, redis, "Publish result")
+Rel(analytics, db, "Reads data")
+Rel(analytics, mq, "Sends job")
+Rel(mq, analytics, "Returns result")
+linkStyle 0,1,2,3,4,5 stroke:#000,stroke-width:3px;
+linkStyle 6,7,8 stroke-dasharray: 5 5;
+```

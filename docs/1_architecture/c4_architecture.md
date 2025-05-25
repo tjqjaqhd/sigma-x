@@ -18,82 +18,17 @@ linkStyle 0,1 stroke:#000,stroke-width:3px;
 
 ## 2. 컨테이너 다이어그램 (C2)
 
-```mermaid
-C4Container
-title SIGMA-X Container
-
-Person(trader, "Trader", "Uses the trading system")
-Person(admin, "Administrator", "Manages the system")
-
-System_Boundary(sigma, "SIGMA-X") {
-    Container(db, "Database (ID 1)", "PostgreSQL", "Stores trading data")
-    Container(redis, "Redis (ID 2)", "Redis", "Handles pub/sub messaging")
-    Container(mq, "Task Queue (ID 3)", "RabbitMQ", "Background job queue")
-    Container(analytics, "Analytics (ID 4)", "Python", "Backtesting and analysis")
-    Container(api, "API (ID 5)", "FastAPI", "Handles REST/WS")
-    Container(bot, "Bot (ID 6)", "Python", "Executes strategies")
-}
-
-Rel(trader, api, "Trade & view")
-Rel(admin, api, "Manage system")
-Rel(api, redis, "Publishes")
-Rel(api, bot, "Sends jobs")
-Rel(bot, db, "RW trades")
-Rel(bot, redis, "Publish result")
-Rel(analytics, db, "Reads data")
-Rel(analytics, mq, "Sends job")
-Rel(mq, analytics, "Returns result")
-linkStyle 0,1,2,3,4,5 stroke:#000,stroke-width:3px;
-linkStyle 6,7,8 stroke-dasharray: 5 5;
-```
+컨테이너 간 상호작용을 그린 다이어그램은
+[`c2_container.mmd`](c2_container.mmd) 파일에서 확인할 수 있습니다.
 
 ## 3. API 컴포넌트 다이어그램 (C3)
 
-```mermaid
-C4Component
-title SIGMA-X API Components
-
-Container_Boundary(api, "API") {
-    Component(rest, "REST (ID 1)", "Handles HTTP REST")
-    Component(ws, "WS (ID 2)", "WebSocket handling")
-    Component(auth, "Auth (ID 3)", "Authentication layer")
-    Component(health, "Health (ID 4)", "Health monitoring")
-}
-
-Person(trader, "Trader", "Uses the trading system")
-ContainerDb(redis, "Redis", "Handles pub/sub messaging")
-
-Rel(trader, rest, "Makes requests")
-Rel(rest, auth, "Auth check")
-Rel(rest, ws, "WebSocket start")
-Rel(rest, health, "Health check")
-Rel(ws, redis, "Subscribes")
-linkStyle 0,1,2,3,4 stroke:#000,stroke-width:3px;
-```
+API 내부 구조를 보여 주는 다이어그램은
+[`c3_api.mmd`](c3_api.mmd) 파일에서 확인할 수 있습니다.
 
 ## 4. Bot 컴포넌트 다이어그램 (C4)
 
-```mermaid
-C4Component
-title SIGMA-X Bot Components
-
-Container_Boundary(bot, "Bot") {
-    Component(strat, "Strategy (ID 1)", "Runs strategies")
-    Component(risk, "Risk (ID 2)", "Validates risk")
-    Component(exec, "Exec (ID 3)", "Executes orders")
-    Component(sim, "Sim (ID 4)", "Simulates trades")
-}
-
-ContainerDb(db, "Database", "Stores trading data")
-ContainerDb(redis, "Redis", "Handles pub/sub messaging")
-
-Rel(strat, risk, "Validate")
-Rel(risk, exec, "If ok")
-Rel(sim, strat, "Sim input")
-Rel(sim, db, "Save results")
-linkStyle 0,1 stroke:#000,stroke-width:3px;
-linkStyle 2,3 stroke-dasharray: 5 5;
-```
+Bot 서비스 구성은 [`c4_bot.mmd`](c4_bot.mmd) 파일에서 확인할 수 있습니다.
 
 ## 다이어그램 설명
 
