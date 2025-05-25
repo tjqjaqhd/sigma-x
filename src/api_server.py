@@ -137,8 +137,19 @@ class APIServer:
         @self.app.get("/pnl", dependencies=[Depends(require_admin)])
         async def pnl() -> dict[str, float]:
             from sqlalchemy import func
-            from .database import BacktestResult, SessionLocal, init_db
+            from .database import BacktestResult
 
+            with self.session_scope() as session:
+                profit = session.query(func.sum(BacktestResult.profit)).scalar() or 0.0
+                return {"pnl": float(profit)}
+
+        from fastapi import Body
+        from contextlib import contextmanager
+        from .database import SessionLocal, init_db
+
+        @contextmanager
+        def session_scope(self):
+            """Provide a transactional scope around a series of operations."""
             if self.db is None:
                 init_db()
                 session = SessionLocal()
