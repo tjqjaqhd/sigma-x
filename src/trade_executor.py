@@ -89,7 +89,7 @@ class TradeExecutor:
                     if self.db is not None:
                         from .database import Order
 
-                        self.db.add(Order(side=signal))
+                        self.db.add(Order(side=signal, price=price))
                         self.db.commit()
 
                 processed += 1
