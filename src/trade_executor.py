@@ -30,6 +30,22 @@ class TradeExecutor:
         self.prices: list[float] = []
 
     async def process_price(self, price: float) -> str:
+        """
+        Process a new price and determine a trading signal based on moving averages.
+
+        Args:
+            price (float): The latest price to process.
+
+        Returns:
+            str: A trading signal, which can be "BUY", "SELL", or "HOLD".
+
+        Decision logic:
+            - Maintains a list of recent prices up to the long window size.
+            - Calculates the short and long moving averages when enough data is available.
+            - Returns "BUY" if the short moving average exceeds the long moving average.
+            - Returns "SELL" if the short moving average is below the long moving average.
+            - Returns "HOLD" otherwise.
+        """
         self.prices.append(price)
         if len(self.prices) > self.long_window:
             self.prices.pop(0)
