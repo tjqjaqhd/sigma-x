@@ -19,15 +19,14 @@ PyYAML
 pytest
 pytest-asyncio
 pytest-cov
+pytest-timeout       # 비동기 테스트 타임아웃 제어
 pytest-mock
 faker
-
 mypy
 pyright
 types-requests
 types-redis
 types-pyyaml
-
 black
 isort
 flake8
@@ -44,11 +43,10 @@ mkdocs
 mkdocs-material
 
 # --- 테스트 보강용 모의(Mock) 도구 ---
-pytest-httpx  # httpx 기반 mock
-aioresponses  # aiohttp mock
-responses  # requests 기반 mock
-freezegun  # datetime.now() 고정
-pyfakefs  # 가짜 파일시스템
-pytest-mock  # mock patch 지원 (이미 있음)
-fakeredis  # 가짜 Redis (이미 추가 예정)
-python-jose[cryptography]
+pytest-httpx         # httpx 비동기 모의
+aioresponses         # aiohttp 비동기 모의
+responses            # requests 모의 (httpx보다 하위 호환)
+freezegun            # datetime.now() 고정
+pyfakefs             # 가짜 파일시스템
+fakeredis            # redis 모의
+python-jose[cryptography]  # JWT 토큰 인증 (Auth 용)
