@@ -21,6 +21,10 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
+    - name: Run pre-commit
+      run: |
+        pre-commit run --all-files --show-diff-on-failure
+
     - name: Detect spec changes
       id: yaml
       run: |
@@ -65,3 +69,4 @@ jobs:
     - name: Run tests
       run: |
         pytest
+

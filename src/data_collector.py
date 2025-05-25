@@ -1,4 +1,5 @@
 import asyncio
+import os
 from typing import Optional
 
 import websockets
@@ -14,10 +15,26 @@ class DataCollector:
         >>> await collector.run()
     """
 
-    def __init__(self, url: str = "ws://localhost:8765", *, redis_client=None, channel: str = "ticks") -> None:
-        self.url = url
+    def __init__(
+        self,
+        url: str | None = None,
+        *,
+        redis_client=None,
+        channel: str = "ticks",
+    ) -> None:
+        self.url = url or os.getenv("SIGMA_WS_URL", "ws://localhost:8765")
         self.redis = redis_client
         self.channel = channel
+
+    async def __aenter__(self) -> "DataCollector":
+        return self
+
+    async def __aexit__(self, exc_type, exc, tb) -> None:
+        await self.close()
+
+    async def close(self) -> None:
+        """호환성을 위한 빈 메서드."""
+        return None
 
     async def run(self, limit: Optional[int] = None) -> None:
         """WebSocket에서 데이터를 읽어 Redis 채널로 발행한다."""

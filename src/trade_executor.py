@@ -1,4 +1,5 @@
 import asyncio
+import os
 from typing import Optional
 
 
@@ -16,17 +17,48 @@ class TradeExecutor:
         self,
         *,
         redis_client=None,
-        channel: str = "ticks",
-        order_key: str = "orders",
-        short_window: int = 3,
-        long_window: int = 5,
+        channel: str | None = None,
+        order_key: str | None = None,
+        short_window: int | None = None,
+        long_window: int | None = None,
     ) -> None:
         self.redis = redis_client
-        self.channel = channel
-        self.order_key = order_key
-        self.short_window = short_window
-        self.long_window = long_window
+        self.channel = channel or os.getenv("SIGMA_TICK_CHANNEL", "ticks")
+        self.order_key = order_key or os.getenv("SIGMA_ORDER_KEY", "orders")
+        self.short_window = short_window or int(os.getenv("SIGMA_SHORT_WINDOW", "3"))
+        self.long_window = long_window or int(os.getenv("SIGMA_LONG_WINDOW", "5"))
         self.prices: list[float] = []
+
+    async def process_price(self, price: float) -> str:
+        """
+        Process a new price and determine a trading signal based on moving averages.
+
+        Args:
+            price (float): The latest price to process.
+
+        Returns:
+            str: A trading signal, which can be "BUY", "SELL", or "HOLD".
+
+        Decision logic:
+            - Maintains a list of recent prices up to the long window size.
+            - Calculates the short and long moving averages when enough data is available.
+            - Returns "BUY" if the short moving average exceeds the long moving average.
+            - Returns "SELL" if the short moving average is below the long moving average.
+            - Returns "HOLD" otherwise.
+        """
+        self.prices.append(price)
+        if len(self.prices) > self.long_window:
+            self.prices.pop(0)
+
+        if len(self.prices) >= self.long_window:
+            short_ma = sum(self.prices[-self.short_window :]) / self.short_window
+            long_ma = sum(self.prices) / self.long_window
+            if short_ma > long_ma:
+                return "BUY"
+            if short_ma < long_ma:
+                return "SELL"
+            return "HOLD"
+        return "HOLD"
 
     async def run(self, limit: Optional[int] = None) -> None:
         """Redis 채널을 구독해 주문 로직을 수행한다."""
@@ -45,23 +77,14 @@ class TradeExecutor:
                 if message.get("type") != "message":
                     continue
                 price = float(message["data"])
-                self.prices.append(price)
-                if len(self.prices) > self.long_window:
-                    self.prices.pop(0)
-
+                signal = await self.process_price(price)
                 if len(self.prices) >= self.long_window:
-                    short_ma = sum(self.prices[-self.short_window :]) / self.short_window
-                    long_ma = sum(self.prices) / self.long_window
-                    if short_ma > long_ma:
-                        await self.redis.rpush(self.order_key, "BUY")
-                    elif short_ma < long_ma:
-                        await self.redis.rpush(self.order_key, "SELL")
-                    else:
-                        await self.redis.rpush(self.order_key, "HOLD")
+                    await self.redis.rpush(self.order_key, signal)
 
                 processed += 1
                 if limit and processed >= limit:
                     break
         finally:
             await pubsub.unsubscribe(self.channel)
+
 

@@ -24,6 +24,13 @@ class Redis:
         self.url = url
         self.client: redis.Redis | None = None
 
+    async def __aenter__(self) -> "Redis":
+        await self._connect()
+        return self
+
+    async def __aexit__(self, exc_type, exc, tb) -> None:
+        await self.close()
+
     async def _connect(self) -> redis.Redis:
         if redis is None:
             raise RuntimeError("redis library is not available")
@@ -50,6 +57,18 @@ class Redis:
         client = await self._connect()
         return await client.lrange(key, start, end)
 
+    async def close(self) -> None:
+        """Close the Redis connection and reset the client.
+
+        This method ensures that the Redis connection is properly closed
+        and the client instance is set to None, allowing for cleanup
+        and resource deallocation.
+        """
+        if self.client is not None:
+            await self.client.close()
+            self.client = None
+
     def run(self) -> None:
         """호환성을 위한 빈 메서드."""
         return None
+

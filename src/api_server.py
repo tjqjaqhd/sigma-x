@@ -10,13 +10,18 @@ class APIServer:
     """FastAPI 기반 REST/WS 서버."""
 
     def __init__(
-        self, *, redis_client=None, channel: str = "ticks", order_key: str = "orders"
+        self,
+        *,
+        redis_client=None,
+        channel: str = "ticks",
+        order_key: str = "orders",
     ) -> None:
         self.app = FastAPI()
         self.redis = redis_client
         self.channel = channel
         self.order_key = order_key
         self._setup_routes()
+        self._setup_events()
 
     def _setup_routes(self) -> None:
         @self.app.get("/health")
@@ -69,7 +74,22 @@ class APIServer:
                 await pubsub.close()
                 await websocket.close()
 
+    def _setup_events(self) -> None:
+        @self.app.on_event("startup")
+        async def startup() -> None:
+            if self.redis is None:
+                import redis.asyncio as redis
+
+                self.redis = redis.from_url(os.getenv("SIGMA_REDIS_URL", "redis://localhost"))
+
+        @self.app.on_event("shutdown")
+        async def shutdown() -> None:
+            if self.redis is not None:
+                await self.redis.close()
+                self.redis = None
+
     def run(self, *args, **kwargs) -> None:
         import uvicorn
 
         uvicorn.run(self.app, *args, **kwargs)
+
