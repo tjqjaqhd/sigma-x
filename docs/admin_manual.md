@@ -24,3 +24,12 @@
 시스템 전반 구조는 다음 다이어그램을 참고하십시오.
 
 ![시스템 다이어그램](sigma_system_diagram.svg)
+
+## 4. API 관리 기능
+
+`/token` 엔드포인트에서 관리자 계정으로 토큰을 발급받으면 아래 API를 사용할 수 있습니다.
+
+- `/strategies` : 등록된 전략 목록 조회 및 수정
+- `/system/tasks` : 실행 중인 작업 확인
+- `/backtests` : 백테스트 결과 조회
+- `/notify` : 실시간 알림 전송. `message` 파라미터는 쿼리 문자열로 전달됩니다 (예: `/notify?message=Hello`). 전송된 알림은 WebSocket 구독자에게도 전달됩니다.

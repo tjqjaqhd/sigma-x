@@ -51,3 +51,4 @@ freezegun  # datetime.now() 고정
 pyfakefs  # 가짜 파일시스템
 pytest-mock  # mock patch 지원 (이미 있음)
 fakeredis  # 가짜 Redis (이미 추가 예정)
+python-jose[cryptography]
