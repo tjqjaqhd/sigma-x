@@ -19,3 +19,11 @@ pytest
 ## 시스템 명세
 `specs/sigma_system.yaml` 파일은 컨테이너와 컴포넌트, 그리고 데이터 흐름을 YAML 형식으로 기술합니다.
 자세한 구조 설명은 `docs/sigma_yaml_structure.md` 문서를 참고하세요.
+
+## 다이어그램 생성
+`scripts/generate_diagrams.py` 스크립트를 실행하면 YAML 명세를 바탕으로 Mermaid 문법의 다이어그램 파일이 `docs/sigma_system_diagram.mmd`에 저장됩니다.
+
+```bash
+/usr/bin/python3 scripts/generate_diagrams.py
+```
+
