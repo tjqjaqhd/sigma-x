@@ -40,6 +40,11 @@ jobs:
       run: |
         python scripts/generate_diagrams.py
 
+    - name: Build diagram images
+      if: steps.yaml.outputs.changed == 'true'
+      run: |
+        bash docs/scripts/gen_diagrams.sh
+
     - name: Run scaffold
       if: steps.yaml.outputs.changed == 'true'
       run: |

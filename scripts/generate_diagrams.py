@@ -1,11 +1,11 @@
-import yaml
 from pathlib import Path
+
+from scripts.utils import load_yaml
 
 
 def main():
     spec_path = Path("specs/sigma_system.yaml")
-    with spec_path.open() as f:
-        spec = yaml.safe_load(f)
+    spec = load_yaml(spec_path)
 
     container = spec.get("containers", [])[0]
     lines = ["```mermaid", "flowchart TD"]

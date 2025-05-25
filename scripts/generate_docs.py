@@ -3,7 +3,7 @@ import importlib.util
 from pathlib import Path
 import sys
 
-import yaml
+from scripts.utils import load_yaml
 
 
 def load_docstring(module_path: Path) -> str:
@@ -26,8 +26,7 @@ def load_docstring(module_path: Path) -> str:
 
 
 def generate_component_docs(spec_path: Path, output_path: Path) -> None:
-    with spec_path.open() as f:
-        spec = yaml.safe_load(f)
+    spec = load_yaml(spec_path)
 
     lines = ["# 컴포넌트 설명", ""]
     for container in spec.get("containers", []):

@@ -1,7 +1,7 @@
 import sys
 from pathlib import Path
 
-import yaml
+from scripts.utils import load_yaml
 
 from scripts.scaffold import generate
 
@@ -9,8 +9,7 @@ from scripts.scaffold import generate
 def test_scaffold(tmp_path, monkeypatch):
     repo_root = Path(__file__).resolve().parents[1]
     spec_path = repo_root / "specs" / "example.yaml"
-    with spec_path.open() as f:
-        spec = yaml.safe_load(f)
+    spec = load_yaml(spec_path)
 
     monkeypatch.chdir(tmp_path)
     generate(spec_path)
