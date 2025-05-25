@@ -1,7 +1,9 @@
 import asyncio
 import json
 import logging
+import os
 from typing import Any, Dict
+from urllib.parse import urlparse
 
 import aio_pika
 from aio_pika.abc import AbstractConnection, AbstractChannel
@@ -17,10 +19,20 @@ logger = logging.getLogger(__name__)
 class AnalyticsWorker:
     def __init__(
         self,
-        rabbitmq_url: str = "amqp://guest:guest@localhost/",
+        rabbitmq_url: str = os.getenv("SIGMA_RABBITMQ_URL", "amqp://guest:guest@rabbitmq:5672/"),
         queue_name: str = "backtest",
     ):
         self.rabbitmq_url = rabbitmq_url
+        logger.info(f"Using RabbitMQ URL: {self.rabbitmq_url}")
+        
+        # Parse URL to get connection parameters
+        parsed = urlparse(self.rabbitmq_url)
+        self.rabbitmq_host = parsed.hostname or "rabbitmq"
+        self.rabbitmq_port = parsed.port or 5672
+        self.rabbitmq_user = parsed.username or "guest"
+        self.rabbitmq_password = parsed.password or "guest"
+        self.rabbitmq_vhost = parsed.path[1:] if parsed.path and parsed.path != "/" else "/"
+        
         self.queue_name = queue_name
         self.connection: AbstractConnection | None = None
         self.channel: AbstractChannel | None = None
@@ -28,13 +40,42 @@ class AnalyticsWorker:
         self.report_repo = ReportRepository()
 
     async def connect(self):
-        """RabbitMQ에 연결하고 큐를 설정합니다."""
-        self.connection = await aio_pika.connect_robust(self.rabbitmq_url)
-        self.channel = await self.connection.channel()
-        self.queue = await self.channel.declare_queue(
-            self.queue_name,
-            durable=True
-        )
+        """Connect to RabbitMQ with retry logic"""
+        logger.info(f"Using RabbitMQ URL: {self.rabbitmq_url}")
+        parsed_url = urlparse(self.rabbitmq_url)
+        host = parsed_url.hostname or "rabbitmq"
+        port = parsed_url.port or 5672
+        username = parsed_url.username or 'guest'
+        password = parsed_url.password or 'guest'
+        virtual_host = parsed_url.path[1:] or '/'
+        
+        logger.info(f"Connecting to RabbitMQ at {host}:{port} with vhost {virtual_host}")
+        
+        try:
+            self.connection = await aio_pika.connect_robust(
+                host=host,
+                port=port,
+                login=username,
+                password=password,
+                virtualhost=virtual_host,
+                timeout=30
+            )
+            logger.info("Successfully connected to RabbitMQ")
+            
+            # Create channel
+            self.channel = await self.connection.channel()
+            logger.info("Successfully created channel")
+            
+            # Declare queue
+            self.queue = await self.channel.declare_queue(
+                "analytics_tasks",
+                durable=True
+            )
+            logger.info("Successfully declared queue 'analytics_tasks'")
+            
+        except Exception as e:
+            logger.error(f"Failed to connect to RabbitMQ: {str(e)}")
+            raise
 
     async def process_task(self, task: Dict[str, Any]) -> None:
         """작업을 처리하고 결과를 저장합니다."""
