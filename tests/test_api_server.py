@@ -1,7 +1,6 @@
 import sys
 from pathlib import Path
 
-import pytest
 from fastapi.testclient import TestClient
 
 ROOT_DIR = Path(__file__).resolve().parents[1]
@@ -28,3 +27,20 @@ def test_websocket_echo(fake_redis):
     with client.websocket_connect("/ws") as ws:
         ws.send_text("hi")
         assert ws.receive_text() == "hi"
+
+
+def test_admin_endpoints(fake_redis):
+    server = APIServer(redis_client=fake_redis)
+    client = TestClient(server.app)
+
+    res = client.post("/token", json={"username": "admin", "password": "admin"})
+    assert res.status_code == 200
+    token = res.json()["access_token"]
+    headers = {"Authorization": f"Bearer {token}"}
+
+    res = client.get("/strategies", headers=headers)
+    assert res.status_code == 200
+    res = client.post("/notify", params={"message": "ALERT"}, headers=headers)
+    assert res.status_code == 200
+    with client.websocket_connect("/ws") as ws:
+        assert ws.receive_text() == "ALERT"
