@@ -52,12 +52,6 @@ def main() -> None:
     root = Path(__file__).resolve().parents[1]
     spec_path = root / "specs" / "sigma_system.yaml"
     docs_path = root / "docs" / "components.md"
-    # 다이어그램 갱신
-    diagrams_script = root / "scripts" / "generate_diagrams.py"
-    if diagrams_script.exists():
-        import subprocess
-
-        subprocess.run([sys.executable, str(diagrams_script)], check=True)
     generate_component_docs(spec_path, docs_path)
 
 
