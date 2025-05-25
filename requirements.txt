@@ -5,7 +5,7 @@ pydantic
 httpx
 aiohttp
 websockets
-aio-pika
+aio-pika==9.3.0
 sqlalchemy
 alembic
 psycopg2-binary

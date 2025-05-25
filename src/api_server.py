@@ -3,7 +3,7 @@ from __future__ import annotations
 import asyncio
 import os
 import logging
-from typing import Optional, Dict
+from typing import Optional, Dict, Any
 
 import base64
 import hashlib
@@ -18,8 +18,10 @@ from fastapi import (
     Depends,
     HTTPException,
     status,
+    Body,
 )
 from fastapi.security import OAuth2PasswordBearer
+import aio_pika
 
 
 class LoginInput(BaseModel):
@@ -31,6 +33,11 @@ class UpdateStrategyInput(BaseModel):
     """전략 업데이트 요청 모델."""
 
     name: str
+
+
+class BacktestRequest(BaseModel):
+    type: str
+    params: Dict[str, Any]
 
 
 class APIServer:
@@ -45,6 +52,7 @@ class APIServer:
         self,
         *,
         redis_client=None,
+        rabbitmq_url: str = "amqp://guest:guest@localhost/",
         channel: str = "ticks",
         order_key: str = "orders",
         users: Optional[Dict[str, Dict[str, str]]] = None,
@@ -59,6 +67,7 @@ class APIServer:
     ) -> None:
         self.app = FastAPI()
         self.redis = redis_client
+        self.rabbitmq_url = rabbitmq_url
         self.channel = channel
         self.order_key = order_key
         self.alert_channel = alert_channel
@@ -76,6 +85,8 @@ class APIServer:
         self.scheduler = scheduler
         self.system_status = system_status
         self.oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/token")
+        self.rabbitmq_connection = None
+        self.rabbitmq_channel = None
         self._setup_routes()
         self._setup_events()
 
@@ -87,6 +98,12 @@ class APIServer:
         signature = hmac.new(self.secret_key.encode(), payload_b64.encode(), hashlib.sha256).digest()
         sig_b64 = base64.urlsafe_b64encode(signature).decode().rstrip("=")
         return f"{payload_b64}.{sig_b64}"
+
+    async def _get_rabbitmq_channel(self):
+        if not self.rabbitmq_connection:
+            self.rabbitmq_connection = await aio_pika.connect_robust(self.rabbitmq_url)
+            self.rabbitmq_channel = await self.rabbitmq_connection.channel()
+        return self.rabbitmq_channel
 
     def _setup_routes(self) -> None:
         oauth2_scheme = self.oauth2_scheme
@@ -277,6 +294,49 @@ class APIServer:
                 self.redis = redis.from_url("redis://localhost")
             await self.redis.publish(self.alert_channel, message)
             return {"sent": message}
+
+        @self.app.post("/api/backtest")
+        async def create_backtest(request: BacktestRequest) -> Dict[str, str]:
+            """백테스트 작업을 생성하고 RabbitMQ에 발행합니다."""
+            try:
+                channel = await self._get_rabbitmq_channel()
+                queue = await channel.declare_queue("backtest", durable=True)
+                
+                message = aio_pika.Message(
+                    body=request.json().encode(),
+                    delivery_mode=aio_pika.DeliveryMode.PERSISTENT
+                )
+                
+                await channel.default_exchange.publish(
+                    message,
+                    routing_key="backtest"
+                )
+                
+                return {"status": "accepted", "message": "Backtest task queued successfully"}
+            except Exception as e:
+                raise HTTPException(
+                    status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                    detail=f"Failed to queue backtest task: {str(e)}"
+                )
+
+        @self.app.get("/api/backtests/{report_id}")
+        async def get_backtest_result(report_id: str) -> Dict[str, Any]:
+            """백테스트 결과를 조회합니다."""
+            try:
+                from .report_repository import ReportRepository
+                repo = ReportRepository()
+                result = repo.get_report(report_id)
+                if not result:
+                    raise HTTPException(
+                        status_code=status.HTTP_404_NOT_FOUND,
+                        detail="Report not found"
+                    )
+                return result
+            except Exception as e:
+                raise HTTPException(
+                    status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                    detail=f"Failed to retrieve backtest result: {str(e)}"
+                )
 
     def _setup_events(self) -> None:
         @self.app.on_event("startup")

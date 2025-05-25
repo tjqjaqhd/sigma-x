@@ -1,0 +1,37 @@
+version: "3.8"
+
+services:
+  sim-replay:
+    build: .
+    command: python -m src.sim_replay
+    environment:
+      MODE: sim
+      SIGMA_REDIS_URL: redis://redis:6379
+      SIGMA_RABBITMQ_URL: amqp://guest:guest@rabbitmq:5672/
+      SIGMA_DATABASE_URL: postgresql://postgres:postgres@postgres:5432/sigma
+    volumes:
+      - ./src:/app/src
+      - ./data:/app/data
+    depends_on:
+      - redis
+      - rabbitmq
+
+  sim-grafana:
+    image: grafana/grafana
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: admin
+      GF_USERS_ALLOW_SIGN_UP: "false"
+      GF_INSTALL_PLUGINS: "grafana-clock-panel,grafana-simple-json-datasource"
+      GF_PATHS_PROVISIONING: /etc/grafana/provisioning
+      GF_SERVER_HTTP_PORT: 3001
+    volumes:
+      - ./grafana/dev-provisioning:/etc/grafana/provisioning
+      - grafana_dev_data:/var/lib/grafana
+    ports:
+      - "3001:3001"
+    depends_on:
+      - prometheus
+
+volumes:
+  grafana_dev_data: 

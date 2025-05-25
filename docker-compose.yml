@@ -1,29 +1,129 @@
-version: "3"
+version: "3.8"
+
 services:
+  # 애플리케이션 서비스
   sigma-app:
     build: .
     command: python -m src.api_server
     environment:
+      MODE: ${MODE:-live}
       SIGMA_REDIS_URL: redis://redis:6379
+      SIGMA_RABBITMQ_URL: amqp://guest:guest@rabbitmq:5672/
+      SIGMA_DATABASE_URL: postgresql://postgres:postgres@postgres:5432/sigma
+      SIGMA_PROMETHEUS_MULTIPROC_DIR: /tmp
     ports:
       - "8000:8000"
+    volumes:
+      - ./src:/app/src
+      - /tmp
+    depends_on:
+      - redis
+      - rabbitmq
+      - postgres
+
+  sigma-scheduler:
+    build: .
+    command: python -m src.sigma_scheduler
+    environment:
+      MODE: ${MODE:-live}
+      SIGMA_REDIS_URL: redis://redis:6379
+      SIGMA_RABBITMQ_URL: amqp://guest:guest@rabbitmq:5672/
+      SIGMA_DATABASE_URL: postgresql://postgres:postgres@postgres:5432/sigma
+    volumes:
+      - ./src:/app/src
+    depends_on:
+      - redis
+      - rabbitmq
+      - postgres
+
+  analytics-worker:
+    build: .
+    command: python -m src.analytics_service
+    environment:
+      SIGMA_RABBITMQ_URL: amqp://guest:guest@rabbitmq:5672/
+      SIGMA_DATABASE_URL: postgresql://postgres:postgres@postgres:5432/sigma
+    volumes:
+      - ./src:/app/src
+    depends_on:
+      - rabbitmq
+      - postgres
+
+  # 데이터 저장소
   redis:
     image: redis:7
     ports:
       - "6379:6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes
+
+  postgres:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: sigma
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+
+  # Observability
   prometheus:
     image: prom/prometheus
     volumes:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
     ports:
       - "9090:9090"
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/usr/share/prometheus/console_libraries'
+      - '--web.console.templates=/usr/share/prometheus/consoles'
+
   grafana:
     image: grafana/grafana
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: admin
+      GF_USERS_ALLOW_SIGN_UP: "false"
+      GF_INSTALL_PLUGINS: "grafana-clock-panel,grafana-simple-json-datasource"
+      GF_PATHS_PROVISIONING: /etc/grafana/provisioning
+    volumes:
+      - ./grafana/provisioning:/etc/grafana/provisioning
+      - grafana_data:/var/lib/grafana
     ports:
       - "3000:3000"
+    depends_on:
+      - prometheus
+
   alertmanager:
     image: prom/alertmanager
     volumes:
       - ./alertmanager.yml:/etc/alertmanager/alertmanager.yml
+      - alertmanager_data:/alertmanager
     ports:
       - "9093:9093"
+    command:
+      - '--config.file=/etc/alertmanager/alertmanager.yml'
+      - '--storage.path=/alertmanager'
+
+volumes:
+  redis_data:
+  postgres_data:
+  rabbitmq_data:
+  prometheus_data:
+  grafana_data:
+  alertmanager_data:
