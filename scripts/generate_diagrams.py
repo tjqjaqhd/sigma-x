@@ -28,7 +28,8 @@ def generate(spec_path: Path, output: Path, split: bool = False) -> None:
     if split:
         out_dir = output.parent
         for container in containers:
-            out_file = out_dir / f"{container['name']}_diagram.mmd"
+            sanitized_name = sanitize_filename(container['name'])
+            out_file = out_dir / f"{sanitized_name}_diagram.mmd"
             sub_lines = ["```mermaid", "flowchart TD"]
             sub_lines.extend(_build_lines(container))
             sub_lines.append("```")
