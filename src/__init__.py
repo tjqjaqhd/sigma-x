@@ -7,6 +7,9 @@ from .historical_data_loader import HistoricalDataLoader
 from .strategy_tester import StrategyTester
 from .simulator_executor import SimulatorExecutor
 from .performance_reporter import PerformanceReporter
+from .risk_manager import RiskManager
+from .order_executor import OrderExecutor
+from .strategy import BaseStrategy, MovingAverageStrategy
 
 __all__ = [
     "Redis",
@@ -18,4 +21,8 @@ __all__ = [
     "StrategyTester",
     "SimulatorExecutor",
     "PerformanceReporter",
+    "RiskManager",
+    "OrderExecutor",
+    "BaseStrategy",
+    "MovingAverageStrategy",
 ]

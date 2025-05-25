@@ -5,7 +5,19 @@ classDiagram
     }
     class TradeExecutor {
         +run(limit)
-        +process_price(price)
+    }
+    class MovingAverageStrategy {
+        +process(price)
+    }
+    class RiskManager {
+        +check(signal)
+        +apply(signal)
+    }
+    class OrderExecutor {
+        +execute(signal, price)
+    }
+    class SimulatorExecutor {
+        +execute(signal, price)
     }
     class APIServer {
         +app FastAPI
@@ -18,7 +30,10 @@ classDiagram
 
     DataCollector --> RabbitMQ : publish
     TradeExecutor --> RabbitMQ : consume
-    TradeExecutor --> Redis : write
+    TradeExecutor --> MovingAverageStrategy : use
+    TradeExecutor --> RiskManager : use
+    TradeExecutor --> OrderExecutor : use
+    OrderExecutor --> SimulatorExecutor : delegate
+    OrderExecutor --> Redis : write
     APIServer --> Redis : read/write
 ```
-

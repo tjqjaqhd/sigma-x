@@ -8,7 +8,7 @@
 collector = DataCollector()
 await collector.run()
 ``` |
-| trade_executor | service | docker.io/sigma/trade_executor:latest | RabbitMQ 큐에서 데이터를 가져와 이동평균 교차 전략을 실행하고 주문 결과를 Redis에 저장합니다. 예시:<br>```python
+| trade_executor | service | docker.io/sigma/trade_executor:latest | RabbitMQ 큐에서 데이터를 가져와 전략(`MovingAverageStrategy` 등)을 실행하고 `RiskManager` 검증 후 `OrderExecutor`를 통해 주문을 처리합니다. 예시:<br>```python
 executor = TradeExecutor()
 await executor.run()
 ``` |
