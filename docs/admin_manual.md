@@ -32,4 +32,4 @@
 - `/strategies` : 등록된 전략 목록 조회 및 수정
 - `/system/tasks` : 실행 중인 작업 확인
 - `/backtests` : 백테스트 결과 조회
-- `/notify` : 실시간 알림 전송
+- `/notify` : 실시간 알림 전송. `message` 파라미터는 쿼리 문자열로 전달됩니다 (예: `/notify?message=Hello`). 전송된 알림은 WebSocket 구독자에게도 전달됩니다.
