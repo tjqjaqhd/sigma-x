@@ -10,5 +10,10 @@ nav:
       - 백테스트 흐름: 1_architecture/c3_backtest.md
       - 클래스 다이어그램: 1_architecture/class_diagram.md
   - 컴포넌트 설명: components.md
+  - 가이드:
+      - 백테스트 사용: backtest_guide.md
+      - 전략 추가: strategy_guide.md
+      - 환경 설정: environment_setup.md
+      - 운영 매뉴얼: admin_manual.md
 markdown_extensions:
   - tables
