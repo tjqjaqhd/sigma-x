@@ -4,7 +4,9 @@ subgraph main ["SIGMA-X 가동 환경"]
     data_collector["data_collector (service)"]
     trade_executor["trade_executor (service)"]
     redis["redis (database)"]
+    postgres["postgres (database)"]
 end
     data_collector -->|redis| trade_executor
     trade_executor -->|redis| redis
+    trade_executor -->|sqlalchemy| postgres
 ```

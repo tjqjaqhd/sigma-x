@@ -20,3 +20,4 @@ server.run()
 store = Redis()
 store.run()
 ``` |
+| postgres | database | docker.io/library/postgres:16 | 거래 내역과 백테스트 결과를 영구 보관하는 데이터베이스입니다. SQLAlchemy ORM을 통해 접근하며 초기 마이그레이션은 Alembic으로 관리합니다. |

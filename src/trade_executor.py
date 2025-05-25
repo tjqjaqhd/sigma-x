@@ -22,6 +22,7 @@ class TradeExecutor:
         order_key: str | None = None,
         short_window: int | None = None,
         long_window: int | None = None,
+        db_session=None,
     ) -> None:
         self.redis = redis_client
         self.rabbitmq = rabbitmq_client
@@ -35,6 +36,7 @@ class TradeExecutor:
             os.getenv("SIGMA_LONG_WINDOW", "5")
         )  # noqa: E501
         self.prices: list[float] = []
+        self.db = db_session
 
     async def process_price(self, price: float) -> str:
         """새 가격을 처리해 매매 신호를 계산한다.
@@ -84,6 +86,11 @@ class TradeExecutor:
                 signal = await self.process_price(price)
                 if len(self.prices) >= self.long_window:
                     await self.redis.rpush(self.order_key, signal)
+                    if self.db is not None:
+                        from .database import Order
+
+                        self.db.add(Order(side=signal, price=price))
+                        self.db.commit()
 
                 processed += 1
                 if limit and processed >= limit:
@@ -99,6 +106,11 @@ class TradeExecutor:
                     signal = await self.process_price(price)
                     if len(self.prices) >= self.long_window:
                         await self.redis.rpush(self.order_key, signal)
+                        if self.db is not None:
+                            from .database import Order
+
+                            self.db.add(Order(side=signal))
+                            self.db.commit()
 
                     processed += 1
                     if limit and processed >= limit:
