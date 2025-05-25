@@ -50,8 +50,9 @@ class TradeExecutor:
                     strat.short_window = self.short_window
                 if hasattr(strat, "long_window"):
                     strat.long_window = self.long_window
-            except Exception:
-                pass
+            except Exception as e:
+                import logging
+                logging.error("Failed to change strategy or set strategy parameters: %s", e)
         self.risk = risk_manager or RiskManager()
         self.symbol = symbol or os.getenv("SIGMA_SYMBOL", "BTCUSDT")
         self.volume = volume or float(os.getenv("SIGMA_VOLUME", "0"))
