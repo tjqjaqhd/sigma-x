@@ -12,7 +12,7 @@ SIGMA-X는 단일 VPS(4 vCPU / 16 GB)에서 동작하는 자동매매 시스템�
 
 1. **이벤트 기반 비동기 처리**
    - Redis Pub/Sub을 통한 실시간 이벤트 처리
-   - RabbitMQ를 통한 비동기 작업 큐잉
+   - (선택 사항) RabbitMQ 대신 현재는 Redis Pub/Sub으로 일원화
 
 2. **단일 책임 모듈**
    - 전략 실행 (Strategy)
@@ -43,7 +43,6 @@ SIGMA-X는 단일 VPS(4 vCPU / 16 GB)에서 동작하는 자동매매 시스템�
 |---------|----------|------|
 | Database | PostgreSQL | 거래 데이터 저장 |
 | Redis | Redis | Pub/Sub 메시징 |
-| Task Queue | RabbitMQ | 백그라운드 작업 큐 |
 | Analytics | Python | 백테스트 및 분석 |
 | API | FastAPI | REST/WebSocket 처리 |
 | Bot | Python | 전략 실행 |
@@ -93,7 +92,7 @@ SIGMA-X는 단일 VPS(4 vCPU / 16 GB)에서 동작하는 자동매매 시스템�
 | 계층 | 컨테이너 | 비고 |
 |-----|----------|------|
 | App | sigma-app | MODE=live/sim/backtest |
-| Data | redis, postgres, rabbitmq | Named volume db-data |
+| Data | redis, postgres | Named volume db-data |
 | Scheduler | sigma-scheduler | 전략 교체 및 리포트 cron |
 | Observability | prometheus, grafana, alertmanager | dev/prod 공통 |
 | Dev-only | sim_replay, sim_grafana | dev compose override |
