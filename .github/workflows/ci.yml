@@ -52,9 +52,7 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install -r requirements.txt -r requirements-dev.txt
-        # 만약 pre-commit이 requirements에 없으면 아래 한 줄 추가
-        # pip install pre-commit
+        pip install -r requirements.txt
 
     # 5) pre-commit 전체 훅 실행 -----------------------------
     - name: Run pre-commit
