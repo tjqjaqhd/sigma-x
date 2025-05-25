@@ -9,10 +9,13 @@ title SIGMA-X System Context
 Person(trader, "Trader (ID 1)", "Uses the trading system")
 Person(admin, "Administrator (ID 2)", "Manages the system")
 
-System(sigma, "SIGMA-X (ID 3)", "An automated trading system")
+System_Ext(exchange, "Exchange (ID 3)", "Market data & order execution")
+
+System(sigma, "SIGMA-X (ID 4)", "An automated trading system")
 
 Rel(trader, sigma, "Trade & view")
 Rel(admin, sigma, "Manage system")
+Rel(sigma, exchange, "Orders & market data")
 linkStyle 0,1 stroke:#000,stroke-width:3px;
 ```
 
@@ -29,6 +32,16 @@ API 내부 구조를 보여 주는 다이어그램은
 ## 4. Bot 컴포넌트 다이어그램 (C4)
 
 Bot 서비스 구성은 [`c4_bot.mmd`](c4_bot.mmd) 파일에서 확인할 수 있습니다.
+
+## 5. Analytics/백테스트 다이어그램 (C3)
+
+백테스트와 분석 흐름을 나타낸 다이어그램은
+[`c3_backtest.mmd`](c3_backtest.mmd) 파일을 참고하세요.
+
+## 6. 코드 수준 클래스 다이어그램
+
+주요 모듈의 의존성을 보여 주는 클래스 다이어그램은
+[`class_diagram.mmd`](class_diagram.mmd) 파일에 있습니다.
 
 ## 다이어그램 설명
 

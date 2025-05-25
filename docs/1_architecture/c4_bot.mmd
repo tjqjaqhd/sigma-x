@@ -9,11 +9,14 @@ Container_Boundary(bot, "Bot") {
     Component(sim, "Sim (ID 4)", "Simulates trades")
 }
 
+System_Ext(broker, "Order System", "External order processing")
+
 ContainerDb(db, "Database", "Stores trading data")
 ContainerDb(redis, "Redis", "Handles pub/sub messaging")
 
 Rel(strat, risk, "Validate")
 Rel(risk, exec, "If ok")
+Rel(exec, broker, "Send orders")
 Rel(sim, strat, "Sim input")
 Rel(sim, db, "Save results")
 ```

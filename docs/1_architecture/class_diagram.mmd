@@ -1,0 +1,20 @@
+```mermaid
+classDiagram
+    class DataCollector {
+        +run(limit)
+    }
+    class TradeExecutor {
+        +run(limit)
+        +process_price(price)
+    }
+    class APIServer {
+        +app FastAPI
+        +run()
+    }
+    class Redis {
+    }
+
+    DataCollector --> Redis : publish
+    TradeExecutor --> Redis : read/write
+    APIServer --> Redis : read/write
+```
