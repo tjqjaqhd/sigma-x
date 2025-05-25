@@ -80,7 +80,7 @@ class APIServer:
             if self.redis is None:
                 import redis.asyncio as redis
 
-                self.redis = redis.from_url("redis://localhost")
+                self.redis = redis.from_url(os.getenv("SIGMA_REDIS_URL", "redis://localhost"))
 
         @self.app.on_event("shutdown")
         async def shutdown() -> None:
