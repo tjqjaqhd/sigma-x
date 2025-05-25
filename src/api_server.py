@@ -106,6 +106,21 @@ class APIServer:
         return self.rabbitmq_channel
 
     def _setup_routes(self) -> None:
+        # Static files setup
+        from fastapi.staticfiles import StaticFiles
+        from fastapi.responses import FileResponse
+        import os
+        
+        # Mount static files
+        static_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "static")
+        if os.path.exists(static_path):
+            self.app.mount("/static", StaticFiles(directory=static_path), name="static")
+            
+            # Serve index.html at root
+            @self.app.get("/")
+            async def read_index():
+                return FileResponse(os.path.join(static_path, "index.html"))
+        
         oauth2_scheme = self.oauth2_scheme
 
         async def get_current_user(token: str = Depends(oauth2_scheme)):
@@ -139,6 +154,65 @@ class APIServer:
         async def health() -> dict[str, str]:
             return {"status": "ok"}
 
+        @self.app.get("/portfolio")
+        async def portfolio() -> dict[str, Any]:
+            """포트폴리오 정보를 조회합니다."""
+            # 샘플 포트폴리오 데이터
+            return {
+                "total_value": 100000.0,
+                "cash": 25000.0,
+                "positions": [
+                    {"symbol": "AAPL", "quantity": 100, "price": 150.0, "value": 15000.0},
+                    {"symbol": "GOOGL", "quantity": 50, "price": 120.0, "value": 6000.0},
+                    {"symbol": "MSFT", "quantity": 200, "price": 80.0, "value": 16000.0}
+                ],
+                "daily_pnl": 2500.0,
+                "total_pnl": 12500.0
+            }
+
+        @self.app.get("/trades")
+        async def trades() -> dict[str, Any]:
+            """최근 거래 내역을 조회합니다."""
+            return {
+                "trades": [
+                    {
+                        "id": "1",
+                        "timestamp": "2024-01-15T09:30:00",
+                        "symbol": "AAPL",
+                        "side": "BUY",
+                        "quantity": 100,
+                        "price": 150.0,
+                        "status": "FILLED"
+                    },
+                    {
+                        "id": "2", 
+                        "timestamp": "2024-01-15T10:15:00",
+                        "symbol": "GOOGL",
+                        "side": "SELL",
+                        "quantity": 25,
+                        "price": 120.0,
+                        "status": "FILLED"
+                    }
+                ]
+            }
+
+        @self.app.get("/analytics")
+        async def analytics() -> dict[str, Any]:
+            """분석 데이터를 조회합니다."""
+            return {
+                "performance": {
+                    "sharpe_ratio": 1.85,
+                    "max_drawdown": -0.15,
+                    "total_return": 0.125,
+                    "volatility": 0.18
+                },
+                "risk_metrics": {
+                    "var_95": -0.025,
+                    "beta": 1.02,
+                    "alpha": 0.03
+                }
+            }
+
         @self.app.get("/metrics")
         async def metrics() -> str:
             from .metrics import metrics_text
@@ -163,6 +237,44 @@ class APIServer:
             with self.session_scope() as session:
                 profit = session.query(func.sum(BacktestResult.profit)).scalar() or 0.0
                 return {"pnl": float(profit)}
+
+        @self.app.get("/backtests", dependencies=[Depends(require_admin)])
+        async def get_backtests() -> dict[str, list]:
+            """백테스트 결과 목록을 조회합니다."""
+            from .report_repository import ReportRepository
+            
+            with self.session_scope() as session:
+                repo = ReportRepository(db_session=session)
+                reports = repo.get_reports(limit=100)
+                return {"backtests": reports}
+
+        @self.app.post("/backtests", dependencies=[Depends(require_admin)])
+        async def queue_backtest(data: dict) -> dict[str, str]:
+            """백테스트 작업을 큐에 추가합니다."""
+            import json
+            
+            # 기본 작업 구조
+            task = {
+                "type": data.get("type", "strategy_test"),
+                "params": data.get("params", {})
+            }
+            
+            # RabbitMQ에 메시지 발행
+            try:
+                channel = await self._get_rabbitmq_channel()
+                queue = await channel.declare_queue("analytics_tasks", durable=True)
+                
+                await channel.default_exchange.publish(
+                    aio_pika.Message(
+                        json.dumps(task).encode(),
+                        delivery_mode=aio_pika.DeliveryMode.PERSISTENT
+                    ),
+                    routing_key="analytics_tasks"
+                )
+                
+                return {"message": "Backtest queued successfully", "task_id": str(hash(json.dumps(task)))}
+            except Exception as e:
+                raise HTTPException(status_code=500, detail=f"Failed to queue backtest: {str(e)}")
 
         from fastapi import Body
         from contextlib import contextmanager
@@ -360,3 +472,8 @@ class APIServer:
         import uvicorn
 
         uvicorn.run(self.app, *args, **kwargs)
+
+
+if __name__ == "__main__":
+    server = APIServer()
+    server.run(host="0.0.0.0", port=8000)

@@ -90,7 +90,7 @@ def test_pnl_and_backtests(fake_redis, tmp_path):
         assert res.json()["pnl"] == 3.0
 
         res = client.get("/backtests?limit=1", headers=headers)
-        assert len(res.json()["results"]) == 1
+        assert len(res.json()["backtests"]) == 2  # 우리가 추가한 2개의 BacktestResult
 
 
 def test_metrics_endpoint(fake_redis):

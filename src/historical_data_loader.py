@@ -1,6 +1,5 @@
 import os
 from typing import AsyncIterator, Dict, Any
-import pandas as pd
 
 
 class HistoricalDataLoader:
@@ -20,20 +19,27 @@ class HistoricalDataLoader:
                     continue
                 yield float(line)
 
-    async def run(self, **params: Dict[str, Any]) -> pd.DataFrame:
-        """과거 데이터를 로드하고 DataFrame으로 반환합니다."""
+    async def run(self, **params: Dict[str, Any]) -> Dict[str, Any]:
+        """과거 데이터를 로드하고 결과를 반환합니다."""
         symbol = params.get('symbol', 'BTC/USD')
         start_date = params.get('start_date', '2024-01-01')
         end_date = params.get('end_date', '2024-03-20')
         
         # 실제 구현에서는 여기서 데이터베이스나 API에서 데이터를 가져와야 합니다.
         # 현재는 간단한 예시 데이터를 생성합니다.
-        dates = pd.date_range(start=start_date, end=end_date, freq='1min')
-        prices = pd.Series(range(len(dates)), index=dates)
+        import datetime
         
-        df = pd.DataFrame({
-            'timestamp': dates,
-            'price': prices
-        })
+        # 간단한 시뮬레이션 데이터 생성
+        start = datetime.datetime.strptime(start_date, '%Y-%m-%d')
+        end = datetime.datetime.strptime(end_date, '%Y-%m-%d')
+        days = (end - start).days
         
-        return df
+        data = {
+            'symbol': symbol,
+            'start_date': start_date,
+            'end_date': end_date,
+            'total_days': days,
+            'sample_prices': [100.0 + i for i in range(min(10, days))]  # 샘플 가격 데이터
+        }
+        
+        return data
