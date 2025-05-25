@@ -1,23 +1,23 @@
 ```markdown
-# AGENT for specs
+# AGENT for scripts
 
 ## 목적
-시스템 전체 구조를 YAML로 정의하는 **단일 진실 공급원(SSoT)** 입니다.  
-여기서 코드·다이어그램·문서를 자동 생성합니다.
+스펙 → 코드/다이어그램/문서 자동화 유틸 모음입니다.  
+반복 작업을 CLI 한 줄로 처리해 생산성을 높입니다.
 
 ## 테스트 규칙
-- YAML 포맷 오류가 없어야 하며 외부 URL·시크릿 포함 금지  
-- 스펙 수정 후 `scripts/scaffold.py` 실행 → 새 코드 생성 확인  
-- CI 전 단계에서 `python -m py_compile` 로 **구문 검사**
+- 모든 스크립트는 **오프라인**에서 완전히 동작해야 함  
+- 의존 도구(mmdc, graphviz 등) 미설치 시 **친절한 오류 메시지** 출력  
+- 이미 존재하는 파일은 덮어쓰지 않도록 설계(데이터 손실 방지)
 
 ## 테스트 스타일
-- `pytest` 로 `yaml.safe_load` 성공 여부만 빠르게 검증  
-- 스펙으로 생성된 모듈 존재 여부(`Path("src")/f"{name}.py".exists()`) 확인  
-- 다이어그램 노드 수 = YAML 컴포넌트 수 테스트
+- `pytest` → 각 스크립트 `--help` 가 0 종료코드 반환  
+- `subprocess.run([...], check=True)` 로 자체 호출해 smoke-test  
+- 출력 파일 hash 비교로 재현성 확인
 
 ## 예시 도구
 ```python
-def test_yaml_valid():
-    import yaml, pathlib
-    for f in pathlib.Path("specs").glob("*.yaml"):
-        yaml.safe_load(f.read_text())
+def test_scaffold_help():
+    import subprocess, sys
+    r = subprocess.run([sys.executable, "scripts/scaffold.py", "--help"])
+    assert r.returncode == 0
