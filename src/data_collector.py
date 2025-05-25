@@ -36,6 +36,6 @@ class DataCollector:
                         received += 1
                         if limit and received >= limit:
                             return
-            except websockets.WebSocketException:
+            except (websockets.WebSocketException, OSError):
                 await asyncio.sleep(1)
 
