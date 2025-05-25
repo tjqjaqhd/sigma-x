@@ -15,7 +15,14 @@ fi
 
 find "$DOCS_DIR" -name '*.mmd' | while read -r file; do
   out="${file%.mmd}.svg"
-  mmdc -i "$file" -o "$out" -b transparent
+  if head -n 1 "$file" | grep -q '^```'; then
+    tmp=$(mktemp)
+    sed '1d;$d' "$file" > "$tmp"
+    mmdc -p "$SCRIPT_DIR/puppeteer-config.json" -i "$tmp" -o "$out" -b transparent
+    rm "$tmp"
+  else
+    mmdc -p "$SCRIPT_DIR/puppeteer-config.json" -i "$file" -o "$out" -b transparent
+  fi
   echo "Generated $out"
 done
 
