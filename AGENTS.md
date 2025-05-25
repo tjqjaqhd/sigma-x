@@ -31,3 +31,8 @@ sudo apt install -y graphviz
 - 4.파일이나 문서를 수정하면 항상 연관문서들을 최신으로 업데이트 하세요
 - 5.추가로 앞으로 작업에 필요하고 유용한 의존성이 있다면requirements.txt에 추가하세요
 - 6.`docs/scripts/gen_diagrams.sh` 스크립트로 모든 다이어그램을 갱신하세요
+  루트 디렉터리에서 아래 명령을 실행하면 `.mmd`와 `.dot` 파일이 모두 SVG로 변환됩니다.
+  ```bash
+  bash docs/scripts/gen_diagrams.sh
+  ```
+  CI에서도 이 스크립트가 자동으로 실행되므로 문서 수정 후 반드시 실행 결과를 커밋하세요.
