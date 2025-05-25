@@ -26,3 +26,4 @@ containers:
 
 예시는 `specs/sigma_system.yaml`에서 확인할 수 있습니다.
 `scripts/generate_diagrams.py`를 실행하면 이 YAML 파일로부터 Mermaid 다이어그램(`docs/sigma_system_diagram.mmd`)을 생성할 수 있습니다.
+추가로 `specs/example.yaml`에는 스캐폴드 동작을 확인할 수 있는 간단한 예제가 포함되어 있습니다.
