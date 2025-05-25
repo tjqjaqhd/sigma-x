@@ -45,3 +45,9 @@ pytest
 mkdocs build
 ```
 
+## CI 자동 실행
+`specs/` 디렉터리의 YAML 파일을 수정하면 GitHub Actions가 자동으로 세 가지 스크립트
+(`generate_diagrams.py`, `scaffold.py`, `generate_docs.py`)을 실행합니다. 실행 결과
+생성된 파일이 커밋에 반영되어 있지 않으면 워크플로우가 실패하므로, YAML 변경 시 해당
+파일들을 함께 커밋해야 합니다. 이후 모든 테스트가 실행되어 통과해야 합니다.
+
