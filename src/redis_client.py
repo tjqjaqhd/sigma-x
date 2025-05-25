@@ -58,6 +58,12 @@ class Redis:
         return await client.lrange(key, start, end)
 
     async def close(self) -> None:
+        """Close the Redis connection and reset the client.
+
+        This method ensures that the Redis connection is properly closed
+        and the client instance is set to None, allowing for cleanup
+        and resource deallocation.
+        """
         if self.client is not None:
             await self.client.close()
             self.client = None
