@@ -161,8 +161,8 @@ class APIServer:
             return {"strategies": ["moving_average"]}
 
         @self.app.post("/strategies", dependencies=[Depends(require_admin)])
-        async def update_strategy(name: str) -> dict[str, str]:
-            return {"status": "updated", "name": name}
+        async def update_strategy(data: UpdateStrategyInput = Body(...)) -> dict[str, str]:
+            return {"status": "updated", "name": data.name}
 
         @self.app.get("/system/tasks", dependencies=[Depends(require_admin)])
         async def system_tasks() -> dict[str, list[str]]:
