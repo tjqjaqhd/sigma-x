@@ -25,6 +25,8 @@ class TradeExecutor:
         short_window: int | None = None,
         long_window: int | None = None,
         db_session=None,
+        symbol: str | None = None,
+        volume: float | None = None,
     ) -> None:
         self.redis = redis_client
         self.rabbitmq = rabbitmq_client
@@ -35,6 +37,8 @@ class TradeExecutor:
         self.long_window = long_window or int(os.getenv("SIGMA_LONG_WINDOW", "5"))
         self.strategy = strategy or MovingAverageStrategy(self.short_window, self.long_window)
         self.risk = risk_manager or RiskManager()
+        self.symbol = symbol or os.getenv("SIGMA_SYMBOL", "BTCUSDT")
+        self.volume = volume or float(os.getenv("SIGMA_VOLUME", "0"))
         self.order_executor = order_executor or OrderExecutor(
             redis_client=self.redis,
             order_key=self.order_key,
@@ -57,7 +61,12 @@ class TradeExecutor:
             signal = await self.strategy.process(price)
             if signal in ("BUY", "SELL") and self.risk.check(signal):
                 self.risk.apply(signal)
-                await self.order_executor.execute(signal, price)
+                await self.order_executor.execute(
+                    signal,
+                    price,
+                    symbol=self.symbol,
+                    volume=self.volume,
+                )
 
         if self.rabbitmq is not None:
             async for message in self.rabbitmq.consume(self.queue):

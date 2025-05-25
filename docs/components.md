@@ -8,7 +8,7 @@
 collector = DataCollector()
 await collector.run()
 ``` |
-| trade_executor | service | docker.io/sigma/trade_executor:latest | RabbitMQ 큐에서 데이터를 가져와 전략(`MovingAverageStrategy` 등)을 실행하고 `RiskManager` 검증 후 `OrderExecutor`를 통해 주문을 처리합니다. 예시:<br>```python
+| trade_executor | service | docker.io/sigma/trade_executor:latest | RabbitMQ 큐에서 데이터를 가져와 전략(`MovingAverageStrategy` 등)을 실행하고 `RiskManager` 검증 후 `OrderExecutor`를 통해 주문을 처리합니다. 실거래 모드에서는 업비트와 바이낸스 선물 API(`exchange_client`)를 통해 직접 주문을 발행합니다. 예시:<br>```python
 executor = TradeExecutor()
 await executor.run()
 ``` |
