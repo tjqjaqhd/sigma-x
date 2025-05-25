@@ -28,7 +28,7 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
-    - name: Detect YAML changes
+    - name: Detect spec changes
       id: yaml
       run: |
         if [ "$GITHUB_EVENT_NAME" = "pull_request" ]; then
@@ -36,7 +36,7 @@ jobs:
         else
           base="${{ github.event.before }}"
         fi
-        if git diff --name-only "$base" "$GITHUB_SHA" | grep -E '\.ya?ml$'; then
+        if git diff --name-only "$base" "$GITHUB_SHA" | grep -E '^specs/.*\.ya?ml$'; then
           echo "changed=true" >> "$GITHUB_OUTPUT"
         else
           echo "changed=false" >> "$GITHUB_OUTPUT"
