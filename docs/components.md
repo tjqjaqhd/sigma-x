@@ -7,4 +7,3 @@
 | data_collector | service | docker.io/sigma/data_collector:latest | - |
 | trade_executor | service | docker.io/sigma/trade_executor:latest | - |
 | redis | database | docker.io/library/redis:7 | - |
-
