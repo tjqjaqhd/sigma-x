@@ -1,5 +1,3 @@
-import asyncio
-
 import pytest
 
 from src.order_executor import OrderExecutor
@@ -25,3 +23,17 @@ async def test_order_executor(fake_redis):
     await executor.execute("BUY", 10)
     assert fake_redis.lists["orders"] == ["BUY"]
     assert sim.orders[0]["side"] == "BUY"
+
+
+@pytest.mark.asyncio
+async def test_order_executor_exchange(fake_redis):
+    from aioresponses import aioresponses
+    from src.exchange_client import UpbitClient
+
+    client = UpbitClient("k", "s", base_url="https://api.test")
+    with aioresponses() as m:
+        m.post("https://api.test/v1/orders", payload={"uuid": "x"})
+        executor = OrderExecutor(redis_client=fake_redis, exchange_client=client)
+        await executor.execute("BUY", 10, symbol="KRW-BTC", volume=1)
+        assert fake_redis.lists["orders"] == ["BUY"]
+    await client.close()
