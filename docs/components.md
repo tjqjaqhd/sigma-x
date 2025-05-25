@@ -3,21 +3,13 @@
 ## 컨테이너: main - SIGMA-X 가동 환경
 
 | 이름 | 타입 | 이미지 | 설명 |
-| ---- | ---- | ------ | ---- |
-| data_collector | service | docker.io/sigma/data_collector:latest | 비동기 WebSocket 연결로 시세 데이터를 수신한 뒤 RabbitMQ 큐에 넣습니다. 예시:<br>```python
-collector = DataCollector()
-await collector.run()
-``` |
-| trade_executor | service | docker.io/sigma/trade_executor:latest | RabbitMQ 큐에서 데이터를 가져와 `StrategyManager`에 등록된 전략을 실행하고 `RiskManager` 검증 후 `OrderExecutor`를 통해 주문을 처리합니다. 실거래 모드에서는 업비트와 바이낸스 선물 API(`exchange_client`)를 통해 직접 주문을 발행합니다. 예시:<br>```python
-executor = TradeExecutor()
-await executor.run()
-``` |
-| api_server | service | docker.io/sigma/api_server:latest | FastAPI 기반 REST/WS 인터페이스를 제공하여 시스템 상태 확인과 주문 조회, 실시간 데이터 구독 기능을 지원합니다. 예시:<br>```python
-server = APIServer()
-server.run()
-``` |
-| redis | database | docker.io/library/redis:7 | 애플리케이션용 Redis 인터페이스. 키-값 저장소와의 연결을 관리하며 데이터 읽기와 쓰기를 담당합니다. 예시:<br>```python
-store = Redis()
-store.run()
-``` |
-| postgres | database | docker.io/library/postgres:16 | 거래 내역과 백테스트 결과를 영구 보관하는 데이터베이스입니다. SQLAlchemy ORM을 통해 접근하며 초기 마이그레이션은 Alembic으로 관리합니다. |
+| --- | --- | --- | --- |
+| data_collector | service | docker.io/sigma/data_collector:latest | 시세 데이터를 수집하는 모듈.  외부 거래소나 데이터 소스에서 시세 정보를 받아 Redis 채널로 전달합니다.  예시:     >>> collector = DataCollector()     >>> await collector.run() |
+| trade_executor | service | docker.io/sigma/trade_executor:latest | 추상 전략 클래스. |
+| redis | database | docker.io/library/redis:7 | - |
+
+## 컨테이너: scheduler - 전략 교체 및 성과 리포트 스케줄러
+
+| 이름 | 타입 | 이미지 | 설명 |
+| --- | --- | --- | --- |
+| sigma_scheduler | service | docker.io/sigma/sigma_scheduler:latest | StrategySelector를 실행하는 백그라운드 스케줄러. |

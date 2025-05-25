@@ -24,6 +24,11 @@ services:
       SIGMA_DB_URL: postgresql://postgres:example@db:5432/postgres
     ports:
       - "8000:8000"
+  scheduler:
+    build: .
+    command: python -m src.sigma_scheduler
+    environment:
+      MODE: live
 ```
 
 프로젝트 루트에 위 파일을 저장한 뒤 다음 명령으로 서비스를 실행합니다.

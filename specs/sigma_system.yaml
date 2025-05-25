@@ -21,3 +21,10 @@ containers:
         to: redis
         channel: redis
         description: "주문 내역 저장"
+
+  - name: scheduler
+    description: 전략 교체 및 성과 리포트 스케줄러
+    components:
+      - name: sigma_scheduler
+        type: service
+        image: docker.io/sigma/sigma_scheduler:latest
