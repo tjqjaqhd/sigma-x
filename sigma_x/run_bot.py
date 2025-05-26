@@ -66,22 +66,22 @@ async def run_backtest_mode(
         # 1. 과거 데이터 로드
         loader = HistoricalDataLoader()
         data = await loader.run(**params)
-        
+
         # 2. 전략 테스트
         tester = StrategyTester()
-        strategy_result = await tester.run(data=data, **params)
-        
+        strategy_result = tester.run(prices=data)  # AsyncIterator[float] 전달
+
         # 3. 시뮬레이션 실행
         simulator = SimulatorExecutor()
         sim_result = await simulator.run(strategy_result=strategy_result, **params)
-        
+
         # 4. 성과 리포트 생성
         reporter = PerformanceReporter()
-        report = await reporter.run(sim_result=sim_result, **params)
-        
-        logger.info(f"Backtest completed: {report}")
-        return report
-        
+        report = reporter.report(sim_result=sim_result, **params)  # report 메서드 호출
+
+        # 결과 출력
+        print(report)
+
     except Exception as e:
         logger.error(f"Error in backtest mode: {e}")
         raise
@@ -106,4 +106,4 @@ async def main() -> None:
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
-    asyncio.run(main()) 
+    asyncio.run(main())
