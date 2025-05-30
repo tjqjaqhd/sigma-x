@@ -59,5 +59,21 @@ def find_return_mismatches():
     return problems
 
 
+def find_docstring_mismatches():
+    problems = []
+    for path in SRC_DIR.rglob('*.py'):
+        tree = ast.parse(path.read_text())
+        for node in [n for n in ast.walk(tree) if isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef))]:
+            doc = ast.get_docstring(node)
+            returns = ast.unparse(node.returns) if node.returns else None
+            if doc and ("반환" in doc or "return" in doc.lower() or "리턴" in doc):
+                if returns in (None, "None"):
+                    problems.append((path.name, node.name, "docstring says returns but annotation is None"))
+    return problems
+
 def test_return_annotations_consistent():
     assert find_return_mismatches() == []
+
+
+def test_docstring_return_consistent():
+    assert find_docstring_mismatches() == []
