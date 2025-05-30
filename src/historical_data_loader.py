@@ -11,7 +11,7 @@ class HistoricalDataLoader:
     async def load(self) -> AsyncIterator[float]:
         """CSV 파일에서 가격을 비동기적으로 읽어 들인다."""
         if not os.path.exists(self.source):
-            return
+            raise FileNotFoundError(self.source)
         with open(self.source) as f:
             for line in f:
                 line = line.strip()

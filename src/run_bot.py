@@ -60,7 +60,7 @@ async def run_sim_mode(
 
 async def run_backtest_mode(
     params: dict,
-) -> None:
+) -> dict:
     """백테스트 모드로 실행합니다."""
     try:
         # 1. 과거 데이터 로드

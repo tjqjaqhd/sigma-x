@@ -1,7 +1,10 @@
 from .redis_client import Redis
 from .data_collector import DataCollector
 from .trade_executor import TradeExecutor
-from .rabbitmq_client import RabbitMQClient as RabbitMQ
+try:
+    from .rabbitmq_client import RabbitMQClient as RabbitMQ
+except Exception:  # pragma: no cover - optional dependency may be missing
+    RabbitMQ = None
 from .api_server import APIServer
 from .historical_data_loader import HistoricalDataLoader
 from .strategy_tester import StrategyTester

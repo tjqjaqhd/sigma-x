@@ -22,6 +22,7 @@ from fastapi import (
 )
 from fastapi.security import OAuth2PasswordBearer
 import aio_pika
+from aio_pika.abc import AbstractChannel
 
 
 class LoginInput(BaseModel):
@@ -99,7 +100,7 @@ class APIServer:
         sig_b64 = base64.urlsafe_b64encode(signature).decode().rstrip("=")
         return f"{payload_b64}.{sig_b64}"
 
-    async def _get_rabbitmq_channel(self):
+    async def _get_rabbitmq_channel(self) -> AbstractChannel:
         if not self.rabbitmq_connection:
             self.rabbitmq_connection = await aio_pika.connect_robust(self.rabbitmq_url)
             self.rabbitmq_channel = await self.rabbitmq_connection.channel()
