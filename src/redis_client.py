@@ -53,7 +53,7 @@ class Redis:
         client = await self._connect()
         await client.rpush(key, value)
 
-    async def lrange(self, key: str, start: int, end: int):
+    async def lrange(self, key: str, start: int, end: int) -> list:
         client = await self._connect()
         return await client.lrange(key, start, end)
 
