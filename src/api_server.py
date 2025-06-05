@@ -61,7 +61,7 @@ class APIServer:
         algorithm: str = "HS256",
         alert_channel: str = "alerts",
         token_expire_seconds: int = 900,
-        task_queue: str = os.getenv("SIGMA_ANALYTICS_QUEUE", "analytics_tasks"),
+        task_queue: Optional[str] = None,
         strategy_manager=None,
         db_session=None,
         scheduler=None,
