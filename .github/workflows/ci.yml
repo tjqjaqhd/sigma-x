@@ -26,13 +26,13 @@ jobs:
     steps:
     # 0) 소스 체크아웃 ---------------------------------------
     - name: Checkout code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         fetch-depth: 0
 
     # 1) Python 설정 + 캐시 ---------------------------------
     - name: Set up Python
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v5
       with:
         python-version: '3.12'   # 정확한 버전 지정 권장
         cache: pip               # pip 캐시로 설치 속도 향상
@@ -101,4 +101,9 @@ jobs:
 
     # 10) 테스트 실행 ---------------------------------------
     - name: Run tests
-      run: pytest
+      run: pytest --cov=src --cov-report=xml
+    - name: Upload coverage
+      uses: actions/upload-artifact@v4
+      with:
+        name: coverage
+        path: coverage.xml
