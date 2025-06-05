@@ -61,6 +61,7 @@ class APIServer:
         algorithm: str = "HS256",
         alert_channel: str = "alerts",
         token_expire_seconds: int = 900,
+        task_queue: Optional[str] = None,
         strategy_manager=None,
         db_session=None,
         scheduler=None,
@@ -72,6 +73,7 @@ class APIServer:
         self.channel = channel
         self.order_key = order_key
         self.alert_channel = alert_channel
+        self.task_queue = task_queue
         self.users = users or {
             "admin": {"password": "admin", "role": "admin"},
             "trader": {"password": "trader", "role": "trader"},
@@ -263,14 +265,14 @@ class APIServer:
             # RabbitMQ에 메시지 발행
             try:
                 channel = await self._get_rabbitmq_channel()
-                queue = await channel.declare_queue("analytics_tasks", durable=True)
+                queue = await channel.declare_queue(self.task_queue, durable=True)
                 
                 await channel.default_exchange.publish(
                     aio_pika.Message(
                         json.dumps(task).encode(),
                         delivery_mode=aio_pika.DeliveryMode.PERSISTENT
                     ),
-                    routing_key="analytics_tasks"
+                    routing_key=self.task_queue
                 )
                 
                 return {"message": "Backtest queued successfully", "task_id": str(hash(json.dumps(task)))}
@@ -413,7 +415,7 @@ class APIServer:
             """백테스트 작업을 생성하고 RabbitMQ에 발행합니다."""
             try:
                 channel = await self._get_rabbitmq_channel()
-                queue = await channel.declare_queue("backtest", durable=True)
+                queue = await channel.declare_queue(self.task_queue, durable=True)
                 
                 message = aio_pika.Message(
                     body=request.json().encode(),
@@ -422,7 +424,7 @@ class APIServer:
                 
                 await channel.default_exchange.publish(
                     message,
-                    routing_key="backtest"
+                    routing_key=self.task_queue
                 )
                 
                 return {"status": "accepted", "message": "Backtest task queued successfully"}

@@ -9,6 +9,7 @@ services:
       MODE: ${MODE:-live}
       SIGMA_REDIS_URL: redis://redis:6379
       SIGMA_RABBITMQ_URL: amqp://guest:guest@rabbitmq:5672/
+      SIGMA_ANALYTICS_QUEUE: analytics_tasks
       SIGMA_DATABASE_URL: postgresql://postgres:postgres@postgres:5432/sigma
       SIGMA_PROMETHEUS_MULTIPROC_DIR: /tmp
     ports:
@@ -41,6 +42,7 @@ services:
     command: python -m src.analytics_service
     environment:
       SIGMA_RABBITMQ_URL: amqp://guest:guest@rabbitmq:5672/
+      SIGMA_ANALYTICS_QUEUE: analytics_tasks
       SIGMA_DATABASE_URL: postgresql://postgres:postgres@postgres:5432/sigma
     volumes:
       - ./src:/app/src
