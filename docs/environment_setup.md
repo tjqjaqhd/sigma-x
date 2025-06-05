@@ -22,6 +22,7 @@ services:
     environment:
       SIGMA_REDIS_URL: redis://redis:6379
       SIGMA_DB_URL: postgresql://postgres:example@db:5432/postgres
+      SIGMA_ANALYTICS_QUEUE: analytics_tasks
     ports:
       - "8000:8000"
   scheduler:

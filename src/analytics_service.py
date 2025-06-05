@@ -20,7 +20,7 @@ class AnalyticsWorker:
     def __init__(
         self,
         rabbitmq_url: str = os.getenv("SIGMA_RABBITMQ_URL", "amqp://guest:guest@rabbitmq:5672/"),
-        queue_name: str = "backtest",
+        queue_name: str = os.getenv("SIGMA_ANALYTICS_QUEUE", "analytics_tasks"),
     ):
         self.rabbitmq_url = rabbitmq_url
         logger.info(f"Using RabbitMQ URL: {self.rabbitmq_url}")
@@ -68,10 +68,10 @@ class AnalyticsWorker:
             
             # Declare queue
             self.queue = await self.channel.declare_queue(
-                "analytics_tasks",
+                self.queue_name,
                 durable=True
             )
-            logger.info("Successfully declared queue 'analytics_tasks'")
+            logger.info(f"Successfully declared queue '{self.queue_name}'")
             
         except Exception as e:
             logger.error(f"Failed to connect to RabbitMQ: {str(e)}")

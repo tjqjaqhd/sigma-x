@@ -7,6 +7,9 @@ SIGMA-X는 단일 VPS 환경에서 동작하도록 설계된 자동매매 시스
 pip install -r requirements.txt
 ```
 
+## 환경 변수
+RabbitMQ 작업 큐 이름은 `SIGMA_ANALYTICS_QUEUE`로 지정합니다. 기본값은 `analytics_tasks`입니다.
+
 ## 사용 방법
 `DataCollector`는 수집한 데이터를 RabbitMQ 큐에 전달하고 `TradeExecutor`는 해당 큐를 소비하여 주문을 실행합니다. 아래와 같이 실행해 볼 수 있습니다.
 

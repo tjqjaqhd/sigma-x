@@ -1,5 +1,6 @@
 import asyncio
 import json
+import os
 import aio_pika
 import logging
 
@@ -27,12 +28,13 @@ async def send_test_message():
         }
         
         # 메시지 전송
+        queue_name = os.getenv("SIGMA_ANALYTICS_QUEUE", "analytics_tasks")
         await channel.default_exchange.publish(
             aio_pika.Message(
                 body=json.dumps(test_message).encode(),
                 delivery_mode=aio_pika.DeliveryMode.PERSISTENT
             ),
-            routing_key="analytics_tasks"
+            routing_key=queue_name
         )
         
         logger.info("Test message sent successfully!")
