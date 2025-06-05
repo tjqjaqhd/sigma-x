@@ -23,6 +23,8 @@ from fastapi import (
 from fastapi.security import OAuth2PasswordBearer
 import aio_pika
 from aio_pika.abc import AbstractChannel
+from passlib.context import CryptContext
+from dotenv import load_dotenv
 
 
 class LoginInput(BaseModel):
@@ -57,7 +59,7 @@ class APIServer:
         channel: str = "ticks",
         order_key: str = "orders",
         users: Optional[Dict[str, Dict[str, str]]] = None,
-        secret_key: str = "secret",
+        secret_key: str = None,
         algorithm: str = "HS256",
         alert_channel: str = "alerts",
         token_expire_seconds: int = 900,
@@ -67,6 +69,7 @@ class APIServer:
         scheduler=None,
         system_status=None,
     ) -> None:
+        load_dotenv()
         self.app = FastAPI()
         self.redis = redis_client
         self.rabbitmq_url = rabbitmq_url
@@ -74,11 +77,14 @@ class APIServer:
         self.order_key = order_key
         self.alert_channel = alert_channel
         self.task_queue = task_queue
+        admin_pw = os.getenv("SIGMA_ADMIN_PASSWORD", "admin")
+        trader_pw = os.getenv("SIGMA_TRADER_PASSWORD", "trader")
+        self.pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
         self.users = users or {
-            "admin": {"password": "admin", "role": "admin"},
-            "trader": {"password": "trader", "role": "trader"},
+            "admin": {"password": self.pwd_context.hash(admin_pw), "role": "admin"},
+            "trader": {"password": self.pwd_context.hash(trader_pw), "role": "trader"},
         }
-        self.secret_key = secret_key
+        self.secret_key = secret_key or os.getenv("SIGMA_SECRET_KEY", "changeme-please-change-this-key")
         self.algorithm = algorithm
         self.token_expire_seconds = token_expire_seconds
         from .strategy_manager import StrategyManager
@@ -92,6 +98,14 @@ class APIServer:
         self.rabbitmq_channel = None
         self._setup_routes()
         self._setup_events()
+
+        @self.app.middleware("http")
+        async def add_security_headers(request, call_next):
+            response = await call_next(request)
+            response.headers["X-Content-Type-Options"] = "nosniff"
+            response.headers["X-Frame-Options"] = "DENY"
+            response.headers["X-XSS-Protection"] = "1; mode=block"
+            return response
 
     def _create_access_token(self, data: dict) -> str:
         data = data.copy()
@@ -113,17 +127,17 @@ class APIServer:
         from fastapi.staticfiles import StaticFiles
         from fastapi.responses import FileResponse
         import os
-        
+
         # Mount static files
         static_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "static")
         if os.path.exists(static_path):
             self.app.mount("/static", StaticFiles(directory=static_path), name="static")
-            
+
             # Serve index.html at root
             @self.app.get("/")
             async def read_index():
                 return FileResponse(os.path.join(static_path, "index.html"))
-        
+
         oauth2_scheme = self.oauth2_scheme
 
         async def get_current_user(token: str = Depends(oauth2_scheme)):
@@ -188,7 +202,7 @@ class APIServer:
                         "status": "FILLED"
                     },
                     {
-                        "id": "2", 
+                        "id": "2",
                         "timestamp": "2024-01-15T10:15:00",
                         "symbol": "GOOGL",
                         "side": "SELL",
@@ -245,7 +259,7 @@ class APIServer:
         async def get_backtests() -> dict[str, list]:
             """백테스트 결과 목록을 조회합니다."""
             from .report_repository import ReportRepository
-            
+
             with self.session_scope() as session:
                 repo = ReportRepository(db_session=session)
                 reports = repo.get_reports(limit=100)
@@ -255,18 +269,17 @@ class APIServer:
         async def queue_backtest(data: dict) -> dict[str, str]:
             """백테스트 작업을 큐에 추가합니다."""
             import json
-            
+
             # 기본 작업 구조
             task = {
                 "type": data.get("type", "strategy_test"),
                 "params": data.get("params", {})
             }
-            
+
             # RabbitMQ에 메시지 발행
             try:
                 channel = await self._get_rabbitmq_channel()
-                queue = await channel.declare_queue(self.task_queue, durable=True)
-                
+
                 await channel.default_exchange.publish(
                     aio_pika.Message(
                         json.dumps(task).encode(),
@@ -274,12 +287,11 @@ class APIServer:
                     ),
                     routing_key=self.task_queue
                 )
-                
+
                 return {"message": "Backtest queued successfully", "task_id": str(hash(json.dumps(task)))}
             except Exception as e:
                 raise HTTPException(status_code=500, detail=f"Failed to queue backtest: {str(e)}")
 
-        from fastapi import Body
         from contextlib import contextmanager
         from .database import SessionLocal, init_db
 
@@ -304,7 +316,7 @@ class APIServer:
         @self.app.post("/token")
         async def login(data: LoginInput = Body(...)) -> dict[str, str]:
             user = self.users.get(data.username)
-            if not user or user["password"] != data.password:
+            if not user or not self.pwd_context.verify(data.password, user["password"]):
                 raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
             token = self._create_access_token({"sub": data.username, "role": user["role"]})
             return {"access_token": token, "token_type": "bearer"}
@@ -415,18 +427,17 @@ class APIServer:
             """백테스트 작업을 생성하고 RabbitMQ에 발행합니다."""
             try:
                 channel = await self._get_rabbitmq_channel()
-                queue = await channel.declare_queue(self.task_queue, durable=True)
-                
+
                 message = aio_pika.Message(
                     body=request.json().encode(),
                     delivery_mode=aio_pika.DeliveryMode.PERSISTENT
                 )
-                
+
                 await channel.default_exchange.publish(
                     message,
                     routing_key=self.task_queue
                 )
-                
+
                 return {"status": "accepted", "message": "Backtest task queued successfully"}
             except Exception as e:
                 raise HTTPException(
