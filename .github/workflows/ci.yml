@@ -42,7 +42,6 @@ jobs:
       uses: actions/setup-node@v4
       with:
         node-version: '20'
-        cache: 'npm'
 
     # 3) 시스템 패키지 --------------------------------------
     - name: Install Graphviz
